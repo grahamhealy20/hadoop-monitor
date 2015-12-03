@@ -1,0 +1,70 @@
+package com.graham.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class BenchmarkResult {
+	@Id
+	private String id;
+	private String type;
+	private String date;
+	private String nrFiles;
+	private String totalMb;
+	private String throughputMb;
+	private String avgIORate;
+	private String stdDeviation;
+	private String totalTime;
+
+	public BenchmarkResult(String type, String date, String nrFiles,  String totalMb, String throughputMb, String avgIORate,
+			String stdDeviation, String totalTime) {
+		this.type = type;
+		this.date = date;
+		this.nrFiles = nrFiles;
+		this.totalMb = totalMb;
+		this.throughputMb = throughputMb;
+		this.avgIORate = avgIORate;
+		this.stdDeviation = stdDeviation;
+		this.totalTime = totalTime;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public String getDate() {
+		return date;
+	}
+	
+	public String getNrFiles() {
+		return nrFiles;
+	}
+
+	public String getTotalMb() {
+		return totalMb;
+	}
+
+	public String getThroughputMb() {
+		return throughputMb;
+	}
+
+	public String getAvgIORate() {
+		return avgIORate;
+	}
+
+	public String getStdDeviation() {
+		return stdDeviation;
+	}
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+}
