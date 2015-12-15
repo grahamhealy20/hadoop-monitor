@@ -77,4 +77,10 @@ public class Cluster {
 	public void runDFSIOBenchmark(int numFiles, int fileSize) {
 		
 	}
+	
+	// Runs TeraSort benchmark
+	public void runTeraSort() {
+		TeraSortBenchmarkThread tera = new TeraSortBenchmarkThread(ipAddress, username);
+		tera.run();
+	}
 }

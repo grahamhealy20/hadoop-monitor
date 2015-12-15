@@ -63,6 +63,22 @@ public class TestController {
 		return mv;
 	}
 	
+	@RequestMapping("/teraSortBench")
+	public ModelAndView teraSortBenchmark() {
+		ModelAndView mv = new ModelAndView("teraSort");
+		return mv;	
+	}
+	
+	@RequestMapping("/runTeraSort")
+	public ModelAndView teraSortRes() {
+		ModelAndView mv = new ModelAndView("teraSortResult");
+		
+		benchmarkTeraSort();
+		
+		return mv;
+	}
+	
+	
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
 	public ModelAndView benchmarks() {
@@ -118,6 +134,12 @@ public class TestController {
 		ClusterManager manager = new ClusterManager();
 		Cluster cluster = manager.getCluster();
 		return cluster.runDFSIOBenchmarkAsync();
+	}
+	
+	private void benchmarkTeraSort() {
+		ClusterManager manager = new ClusterManager();
+		Cluster cluster = manager.getCluster();
+		cluster.runTeraSort();
 	}
 
 	// Runs DFSIO benchmark via command line
