@@ -2,6 +2,7 @@ package com.graham.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PrivilegedExceptionAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,10 +11,37 @@ import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.TestDFSIO;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.mortbay.log.Log;
 
 public class DFSIOBenchmarkThread implements Runnable {
 	private BenchmarkResult bresult;
+	
+	private String ipAddress;
+	private String user;
+	
+	
+	
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+	
+	public DFSIOBenchmarkThread(String ipAddress, String user) {
+		setIpAddress(ipAddress);
+		setUser(user);
+	}
 
 	public void run() {
 		Log.info("Thread created. Running benchmark");
@@ -31,7 +59,13 @@ public class DFSIOBenchmarkThread implements Runnable {
 		// Run DFSIO Benchmark
 		TestDFSIO testDFSIO = new TestDFSIO();
 		JobConf jobConf = new JobConf();
-		jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
+//		jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
+		jobConf.set("test.build.data", "/bench/");
+
+		
+		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress);
+		jobConf.set("hadoop.job.ugi", user);
+		
 		testDFSIO.setConf(jobConf);
 
 		try {
