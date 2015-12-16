@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.BenchmarkResult;
-import com.graham.model.BenchmarkResultService;
+import com.graham.model.dbaccess.*;
 import com.graham.model.Cluster;
 import com.graham.model.ClusterManager;
 
@@ -26,13 +26,16 @@ public class TestController {
 
 	@Autowired
 	private BenchmarkResultService benchmarkResultService;
+
+	@Autowired
+	private ClusterService clusterService;
 	
 	// GET /test/
 	@RequestMapping("/test")
-	public ModelAndView testAction() {
+	public ModelAndView testAction(@RequestParam("id") String id, @RequestParam("numFiles") int numFiles, @RequestParam("fileSize") int fileSize) {
 		System.out.println("in controller");
 		
-		BenchmarkResult result = benchmarkDFSIO();
+		BenchmarkResult result = benchmarkDFSIO(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
 		
 		ModelAndView mv = new ModelAndView("test");
@@ -43,10 +46,10 @@ public class TestController {
 	
 	// GET /test/
 	@RequestMapping("/dfsio")
-	public @ResponseBody BenchmarkResult dfsioAsync() {
+	public @ResponseBody BenchmarkResult dfsioAsync(String id, int numFiles, int fileSize) {
 		System.out.println("in controller");
 		
-		BenchmarkResult result = benchmarkDFSIOAsync();
+		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
 		
 		return result;
@@ -56,14 +59,13 @@ public class TestController {
 	@RequestMapping("/")
 	public ModelAndView index() {
 		
-		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listBenchmarkResultByDate();
-		
-		ModelAndView mv = new ModelAndView("benchmarks");
-		mv.addObject("benchmarks", results);
+		ModelAndView mv = new ModelAndView("login");
+		//mv.addObject("benchmarks", results);
 		return mv;
+		
 	}
 	
-	@RequestMapping("/teraSortBench")
+	@RequestMapping("/teraSort")
 	public ModelAndView teraSortBenchmark() {
 		ModelAndView mv = new ModelAndView("teraSort");
 		return mv;	
@@ -82,10 +84,10 @@ public class TestController {
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
 	public ModelAndView benchmarks() {
-
 		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listBenchmarkResultByDate();
 		
 		ModelAndView mv = new ModelAndView("benchmarks");
+		mv.addObject("clusters", clusterService.listClusters());
 		mv.addObject("benchmarks", results);
 		return mv;
 	}
@@ -124,16 +126,18 @@ public class TestController {
 			return new BenchmarkResult("TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST");
 		}
 
-	private BenchmarkResult benchmarkDFSIO() {
-		ClusterManager manager = new ClusterManager();
-		Cluster cluster = manager.getCluster();
-		return cluster.runDFSIOBenchmark();
+	private BenchmarkResult benchmarkDFSIO(String id, int numFiles, int fileSize) {
+		Cluster cluster = clusterService.getCluster(id);
+		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
+		result.setClusterName(cluster.getName());
+		return result;
 	}
 
-	private BenchmarkResult benchmarkDFSIOAsync() {
-		ClusterManager manager = new ClusterManager();
-		Cluster cluster = manager.getCluster();
-		return cluster.runDFSIOBenchmarkAsync();
+	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) {
+		Cluster cluster = clusterService.getCluster(id);
+		BenchmarkResult result = cluster.runDFSIOBenchmarkAsync(numFiles, fileSize);
+		result.setClusterName(cluster.getName());
+		return result;
 	}
 	
 	private void benchmarkTeraSort() {

@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Benchmarks - Hadoop Monitor</title>
+<title>Clusters - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
@@ -54,21 +54,6 @@
   height: 6px;
 }
 
-
-
-.megabyte:AFTER {
-	content: " MB";
-}
-
-.megabytePerSec:AFTER {
-	content: " MB/sec";
-}
-
-.seconds:AFTER {
-	content: "s";
-}
-
-
 </style>
 </head>
 
@@ -84,16 +69,16 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="benchmarks">Hadoop Monitor</a>
+			<a class="navbar-brand" href="/HadoopMon/benchmarks">Hadoop Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="benchmarks">Benchmarks <span
+				<li><a href="/HadoopMon/benchmarks">Benchmarks</a></li>
+				<li class="active"><a href="clusters">Clusters <span
 						class="sr-only">(current)</span></a></li>
-				<li><a href="/HadoopMon/cluster/clusters">Clusters</a></li>
 			</ul>
 		</div>
 	</div>
@@ -101,65 +86,30 @@
 <body>
 
 	<div class="container-fluid">
-		<h1>Benchmarks</h1>
+		<h1>Clusters</h1>
 		<div class="row">
-
+	
 			<div class="col-md-12 table-responsive">
-			
-				<form id="dfsioForm" class="form-inline" action="test" method="get">
-				  <div class="form-group">
-				    <label for="cluster">Cluster</label>
-				    <select class="form-control" id="id" name="id" required>
-				    	<c:forEach var="cluster" items="${clusters}">
-				    		<option value="${cluster.id}"> ${cluster.name}</option>
-				    	</c:forEach>
-				    </select>
-				  </div>
-				  <div class="form-group">
-				    <label for="numFiles">Number of Files</label>
-				    <input type="number" class="form-control" id="numFiles" name="numFiles" placeholder="1" value="10" min="1" required>
-				  </div>
-				  <div class="form-group">
-				    <label for="fileSize">File Size</label>
-				    <input type="number" class="form-control" id="fileSize" name="fileSize" placeholder="1" value="100" min="1" required>
-				  </div>
-				  
-				  <button type="submit" class="btn btn-primary">Run Benchmark</button>
-				  <button id="dfsioAsync" class="btn btn-primary">Run Benchmark Async</button>
-				</form>
-			
+			<a href="add" class="btn btn-primary">Add Cluster</a>
+				
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Cluster</th>
-							<th>Type</th>
-							<th>Date</th>
-							<th># Files</th>
-							<th>Total MB</th>
-							<th class="megabytePerSec">Throughput</th>
-							<th class="megabytePerSec">Avg IO Rate</th>
-							<th>IO Rate Standard Deviation</th>
-							<th>Total Time Taken</th>
+							<th>Name</th>
+							<th>IP Address</th>
 						</tr>
 
 					</thead>
 
 					<tbody>
-						<c:forEach var="benchmark" items="${benchmarks}">
+						<c:forEach var="cluster" items="${clusters}">
 
 							<tr>
-								<td>${benchmark.clusterName }</td>
-								<td>${benchmark.type}</td>
-								<td>${benchmark.date}</td>
-								<td>${benchmark.nrFiles}</td>
-								<td class="megabyte">${benchmark.totalMb}</td>
-								<td class="megabytePerSec">${benchmark.throughputMb}</td>
-								<td class="megabytePerSec">${benchmark.avgIORate}</td>
-								<td>${benchmark.stdDeviation}</td>
-								<td class="seconds">${benchmark.totalTime}</td>
+								<td>${cluster.name}</td>
+								<td>${cluster.ipAddress}</td>
 								<td><a class="btn btn-info btn-xs"
-									href="benchmark?id=${benchmark.id}">Details</a> <a
-									class="btn btn-danger btn-xs" href="delete?id=${benchmark.id}">Delete</a></td>
+									href="benchmark?id=${cluster.id}">Details</a> <a
+									class="btn btn-danger btn-xs" href="delete?id=${cluster.id}">Delete</a></td>
 							</tr>
 
 						</c:forEach>
@@ -183,13 +133,12 @@
 					url: "dfsio",
 					method: "POST",
 					data: {
-						id: $('#id').val(),
 						numFiles: $('#numFiles').val(),
 						fileSize: $('#fileSize').val()
 					},
 					success: function(data) {
 						console.log(data);
-						$('tbody').prepend('<tr><td>' + data.clusterName + '</td> <td>' + data.type + '</td> <td>' + data.date +'</td> <td>' + data.nrFiles +'</td> <td class="megabyte">' + data.totalMb + '</td> <td class="megabytePerSec">' + data.throughputMb + '</td> <td class="megabytePerSec">'+ data.avgIORate +'</td> <td>'+ data.stdDeviation + '</td> <td class="seconds">'+ data.totalTime +'</td>' +
+						$('tbody').prepend('<tr><td>' + data.type + '</td> <td>' + data.date +'</td> <td>' + data.nrFiles +'</td> <td class="megabyte">' + data.totalMb + '</td> <td class="megabytePerSec">' + data.throughputMb + '</td> <td class="megabytePerSec">'+ data.avgIORate +'</td> <td>'+ data.stdDeviation + '</td> <td class="seconds">'+ data.totalTime +'</td>' +
 							'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
 							'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
 						

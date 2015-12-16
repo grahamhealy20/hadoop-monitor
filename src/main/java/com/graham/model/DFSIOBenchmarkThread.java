@@ -19,9 +19,25 @@ public class DFSIOBenchmarkThread implements Runnable {
 	
 	private String ipAddress;
 	private String user;
-	
-	
-	
+	private int numFiles;
+	private int fileSize;
+
+	public int getNumFiles() {
+		return numFiles;
+	}
+
+	public void setNumFiles(int numFiles) {
+		this.numFiles = numFiles;
+	}
+
+	public int getFileSize() {
+		return fileSize;
+	}
+
+	public void setFileSize(int fileSize) {
+		this.fileSize = fileSize;
+	}
+
 	public String getIpAddress() {
 		return ipAddress;
 	}
@@ -38,9 +54,11 @@ public class DFSIOBenchmarkThread implements Runnable {
 		this.user = user;
 	}
 	
-	public DFSIOBenchmarkThread(String ipAddress, String user) {
+	public DFSIOBenchmarkThread(String ipAddress, String user, int numFiles, int fileSize) {
 		setIpAddress(ipAddress);
 		setUser(user);
+		setNumFiles(numFiles);
+		setFileSize(fileSize);
 	}
 
 	public void run() {
@@ -59,17 +77,17 @@ public class DFSIOBenchmarkThread implements Runnable {
 		// Run DFSIO Benchmark
 		TestDFSIO testDFSIO = new TestDFSIO();
 		JobConf jobConf = new JobConf();
-//		jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
-		jobConf.set("test.build.data", "/bench/");
-
-		
-		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress);
+		jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
+		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress + ":9000");
 		jobConf.set("hadoop.job.ugi", user);
+		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
+		jobConf.set("mapreduce.framework.name", "yarn");
+		//jobConf.set("test.build.data", "/bench/");
 		
 		testDFSIO.setConf(jobConf);
 
 		try {
-			testDFSIO.run(String.format("-write -nrFiles 10 -fileSize 10 -resFile /home/hadoop/%s", fileOutputName)
+			testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile /home/hadoop/%s", getNumFiles(), getFileSize(), fileOutputName)
 					.split(" "));
 		} catch (IOException e) {
 
@@ -95,6 +113,7 @@ public class DFSIOBenchmarkThread implements Runnable {
 			String value = result[1].replace("\n", "");
 			formatRes.add(value);
 		}
+		
 		
 		bresult = new BenchmarkResult(Character.toUpperCase(formatRes.get(0).charAt(0)) + formatRes.get(0).substring(1), formatRes.get(1), formatRes.get(2), formatRes.get(3),
 				formatRes.get(4), formatRes.get(5), formatRes.get(6), formatRes.get(7));

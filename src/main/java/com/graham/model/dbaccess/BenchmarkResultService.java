@@ -1,4 +1,4 @@
-package com.graham.model;
+package com.graham.model.dbaccess;
 
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import com.graham.model.BenchmarkResult;
 
 @Repository
 public class BenchmarkResultService {
@@ -38,7 +40,6 @@ public class BenchmarkResultService {
 	
 	public List<BenchmarkResult> listBenchmarkResultByDate() {
 		Query q = new Query().with(new Sort(Sort.Direction.DESC, "date"));
-		
 		return mongoTemplate.find(q, BenchmarkResult.class, COLLECTION_NAME);
 	}
 	

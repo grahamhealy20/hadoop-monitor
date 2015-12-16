@@ -49,9 +49,13 @@ public class TeraSortBenchmarkThread {
 		ArrayList<String> formatRes = new ArrayList<String>();
 		//Set config
 		JobConf jobConf = new JobConf();
-		jobConf.set("test.build.data", "/bench/");
+		//jobConf.set("test.build.data", "/bench/");
+		
+		jobConf.set("test.build.data", "home/hadoop/benchmark/TeraSort");
 		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress);
 		jobConf.set("hadoop.job.ugi", user);
+		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
+		jobConf.set("mapreduce.framework.name", "yarn");
 		Log.info("\nThread created. Running TeraGen facility\n");
 		
 		//Try and delete previous data
@@ -140,9 +144,7 @@ public class TeraSortBenchmarkThread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		long seconds = jobConf.getTimeDuration("TIme", 0, TimeUnit.SECONDS);
-		Log.info("Seconds " + seconds);
+	
 	}
 	
 	private void runTeraGen() {

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BenchmarkResult {
 	@Id
 	private String id;
+	private String clusterName;
 	private String type;
 	private String date;
 	private String nrFiles;
@@ -34,6 +35,14 @@ public class BenchmarkResult {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getClusterName() {
+		return clusterName;
+	}
+
+	public void setClusterName(String clusterName) {
+		this.clusterName = clusterName;
 	}
 	
 	public String getType() {

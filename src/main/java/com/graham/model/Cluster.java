@@ -5,10 +5,21 @@ import org.mortbay.log.Log;
 import com.jcraft.jsch.Logger;
 
 public class Cluster {
+	
+
+	private String id;
 	private String name;
 	private String ipAddress;
 	private String username;
 	 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -18,13 +29,19 @@ public class Cluster {
 	}
 
 	public Cluster() {
-		this("Test Cluster", "192.168.0.106:9000", "hadoop");
+		
 	}
 	
 	public Cluster(String name, String ipAddress, String username) {
 		this.name = name;
 		this.ipAddress = ipAddress;
 		this.username = username;
+	}
+	
+	public Cluster(String name, String ipAddress) {
+		this.name = name;
+		this.ipAddress = ipAddress;
+		this.username = "hadoop";
 	}
 	
 	
@@ -45,9 +62,9 @@ public class Cluster {
 	}
 
 	// Runs default benchmark
-	public BenchmarkResult runDFSIOBenchmark() {
+	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) {
 		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress());
-		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username);
+		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
 		Thread t = new Thread(dfsio);
 		t.start();
 		try {
@@ -59,9 +76,9 @@ public class Cluster {
 		return dfsio.getBenchmarkResult();
 	}
 	
-	public BenchmarkResult runDFSIOBenchmarkAsync() {
+	public BenchmarkResult runDFSIOBenchmarkAsync(int numFiles, int fileSize) {
 		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
-		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username);
+		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
 		Thread t = new Thread(dfsio);
 		t.start();
 		try {
@@ -73,10 +90,6 @@ public class Cluster {
 		return dfsio.getBenchmarkResult();
 	}
 	
-	// Runs parameterized benchmark
-	public void runDFSIOBenchmark(int numFiles, int fileSize) {
-		
-	}
 	
 	// Runs TeraSort benchmark
 	public void runTeraSort() {
