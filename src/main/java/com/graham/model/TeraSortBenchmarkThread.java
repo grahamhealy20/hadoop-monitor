@@ -52,7 +52,7 @@ public class TeraSortBenchmarkThread {
 		//jobConf.set("test.build.data", "/bench/");
 		
 		jobConf.set("test.build.data", "home/hadoop/benchmark/TeraSort");
-		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress);
+		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress + ":9000");
 		jobConf.set("hadoop.job.ugi", user);
 		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
 		jobConf.set("mapreduce.framework.name", "yarn");

@@ -143,6 +143,8 @@ public class TestController {
 	private void benchmarkTeraSort() {
 		ClusterManager manager = new ClusterManager();
 		Cluster cluster = manager.getCluster();
+		cluster.setIpAddress("192.168.0.106");
+		cluster.setUsername("hadoop");
 		cluster.runTeraSort();
 	}
 
