@@ -62,6 +62,15 @@ public class ClusterController {
 		return new ModelAndView("redirect:/cluster/clusters");
 	}
 	
+	@RequestMapping("/cluster")
+	public ModelAndView cluster(@RequestParam("id") String id) {
+		
+		//Get cluster
+		Cluster cluster = clusterService.getCluster(id);
+		ModelAndView mv = new ModelAndView("overview");
+	    return mv;	
+	}
+	
 	
 	
 	

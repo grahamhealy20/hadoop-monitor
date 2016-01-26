@@ -22,7 +22,8 @@ import com.graham.model.Cluster;
 import com.graham.model.ClusterManager;
 
 @Controller
-public class TestController {
+@RequestMapping("dfsio")
+public class DFSIOController {
 
 	@Autowired
 	private BenchmarkResultService benchmarkResultService;
@@ -117,13 +118,6 @@ public class TestController {
 			BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
 			benchmarkResultService.deleteBenchmarkResult(result);
 			return new ModelAndView("redirect:/benchmarks");
-		}
-		
-		@RequestMapping(value = "/testJSON", method = RequestMethod.GET)
-		public @ResponseBody BenchmarkResult testJSON() {
-		
-		
-			return new BenchmarkResult("TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST", "TEST");
 		}
 
 	private BenchmarkResult benchmarkDFSIO(String id, int numFiles, int fileSize) {

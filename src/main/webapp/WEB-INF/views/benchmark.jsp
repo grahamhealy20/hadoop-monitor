@@ -90,6 +90,7 @@
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="benchmarks">Benchmarks <span class="sr-only">(current)</span></a></li>
+				<li><a href="/HadoopMon/cluster/clusters">Clusters</a></li>
 			</ul>
 		</div>
 	</div>
@@ -107,6 +108,9 @@
 				<h1>Benchmark Result</h1>
 				<h2>Details</h2>
 				<hr />
+
+				<h4>Cluster</h4>
+				<p>${benchmark.clusterName}</p>
 
 				<h4>Type</h4>
 				<p>${benchmark.type}</p>

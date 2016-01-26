@@ -105,7 +105,10 @@
 		<div class="row">
 			<div class="col-md-12">
 			<h2>DFSIO Benchmark Result</h2>
-
+				
+				<h4>Cluster</h4>
+				<p>${bresult.clusterName}</p>
+				
 				<h4>Type</h4>
 				<p>${bresult.type}</p>
 			

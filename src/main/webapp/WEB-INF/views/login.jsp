@@ -90,7 +90,7 @@
     <style>
         #body { 
             position: relative;
-            background: url(resources/images/background.jpg) no-repeat;
+            background: url(/HadoopMon/resources/images/background.jpg) no-repeat;
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-size: cover;
@@ -99,7 +99,7 @@
         
         .blur {
             position: absolute;
-            background: url(resources/images/background.jpg) no-repeat;
+            background: url(/HadoopMon/resources/images/background.jpg) no-repeat;
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-size: cover;

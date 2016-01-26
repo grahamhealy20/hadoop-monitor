@@ -1,7 +1,9 @@
 package com.graham.model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +74,6 @@ public class TeraSortBenchmarkThread {
 			e1.printStackTrace();
 		}
 		
-		
 		TeraGen teraGen = new TeraGen();
 		teraGen.setConf(jobConf);
 		
@@ -113,12 +114,29 @@ public class TeraSortBenchmarkThread {
 			e1.printStackTrace();
 		}
 		
+		PrintStream out = System.out;
+		PrintStream fileOut = null;
+		
+		try {
+			fileOut = new PrintStream(new File(location));
+		} catch (FileNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		System.out.println("Passing stdout to file");
+		System.setOut(fileOut);
+		
 		try {
 			teraSort.run(String.format("%s %s", teraGenLocation, teraSortLocation).split(" "));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// Restore outout to stdout
+		System.setOut(out);
+		System.out.println("Restored stdout");
 		
 		TeraValidate teraValidate = new TeraValidate();
 		teraValidate.setConf(jobConf);
@@ -145,13 +163,5 @@ public class TeraSortBenchmarkThread {
 			e.printStackTrace();
 		}
 	
-	}
-	
-	private void runTeraGen() {
-		
-	}
-	
-	private void runTeraValdidate() {
-		
 	}
 }

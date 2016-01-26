@@ -62,6 +62,7 @@
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="benchmarks">Benchmarks <span class="sr-only">(current)</span></a></li>
+				<li><a href="/HadoopMon/cluster/clusters">Clusters</a></li>
 			</ul>
 		</div>
 	</div>

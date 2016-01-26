@@ -2,7 +2,6 @@ package com.graham.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.PrivilegedExceptionAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,8 +9,8 @@ import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.TestDFSIO;
+import org.apache.hadoop.hdfs.server.balancer.Balancer;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.mortbay.log.Log;
 
 public class DFSIOBenchmarkThread implements Runnable {
@@ -82,6 +81,7 @@ public class DFSIOBenchmarkThread implements Runnable {
 		jobConf.set("hadoop.job.ugi", user);
 		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
 		jobConf.set("mapreduce.framework.name", "yarn");
+
 		//jobConf.set("test.build.data", "/bench/");
 		
 		testDFSIO.setConf(jobConf);
