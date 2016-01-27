@@ -13,6 +13,8 @@ import org.apache.hadoop.hdfs.server.balancer.Balancer;
 import org.apache.hadoop.mapred.JobConf;
 import org.mortbay.log.Log;
 
+import com.graham.model.benchmarks.BenchmarkResult;
+
 public class DFSIOBenchmarkThread implements Runnable {
 	private BenchmarkResult bresult;
 	
@@ -96,25 +98,26 @@ public class DFSIOBenchmarkThread implements Runnable {
 
 		String out = "";
 
-		// Get output
-		File output = new File(location);
-		try {
-			out = FileUtils.readFileToString(output);
-
-			System.out.println("FINISHED: " + out);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		String[] lines = out.split("\n");
-
-		for (String string : lines) {
-			String[] result = string.split(": ");
-			String value = result[1].replace("\n", "");
-			formatRes.add(value);
-		}
+//		// Get output
+//		File output = new File(location);
+//		try {
+//			out = FileUtils.readFileToString(output);
+//
+//			System.out.println("FINISHED: " + out);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		String[] lines = out.split("\n");
+//
+//		for (String string : lines) {
+//			String[] result = string.split(": ");
+//			String value = result[1].replace("\n", "");
+//			formatRes.add(value);
+//		}
 		
-		
+		// Construct a benchmark result from the array list of values
+		formatRes = com.graham.model.utils.utilities.splitDFSIOFile(location);
 		bresult = new BenchmarkResult(Character.toUpperCase(formatRes.get(0).charAt(0)) + formatRes.get(0).substring(1), formatRes.get(1), formatRes.get(2), formatRes.get(3),
 				formatRes.get(4), formatRes.get(5), formatRes.get(6), formatRes.get(7));
 

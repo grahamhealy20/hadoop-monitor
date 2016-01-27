@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>TeraSort - Hadoop Monitor</title>
+<title>Cluster Overview - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
@@ -24,6 +24,11 @@
 	
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></script>
+
+<!-- jQuery Validate 	 -->
+<!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
 
 
 
@@ -51,22 +56,8 @@
   height: 6px;
 }
 
-
-
-.megabyte:AFTER {
-	content: " MB";
-}
-
-.megabytePerSec:AFTER {
-	content: " MB/sec";
-}
-
-.seconds:AFTER {
-	content: "s";
-}
 </style>
 </head>
-
 
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
@@ -86,49 +77,31 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="benchmarks">Benchmarks <span
+				<li><a href="clusters">Clusters <span
 						class="sr-only">(current)</span></a></li>
-				<li><a href="teraSortBench">TeraSort</a></li>		
 			</ul>
 		</div>
 	</div>
 </nav>
 <body>
 
-	<div class="container-fluid">
-		<h1>TeraSort</h1>
-		<div class="row">
+	<div class="sidebar">
+		<ul>
+			<li class="active" ><a href="cluster?id=${cluster.id}">Overview</a></li>
+			<li><a href="/HadoopMon/dfsio/dfsiobenchmarks/?id=${cluster.id}">DFSIO</a></li>
+			<li><a href="/HadoopMon/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
+			<li><a href="/HadoopMon/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
+			<li><a href="configure?id=${cluster.id}">Configure</a></li>
+		</ul>
+	</div>
 
-			<div class="col-md-12 table-responsive">
-				<a class="btn btn-primary" href="runTeraSort">Run Benchmark</a>
-				
-			</div>
-
+	<div id="body" class="container-fluid">
+		<h1>Cluster Overview</h1>
+		<div class="col-md-12">
+			<h2>Name: ${cluster.name}</h2>
+			<h2>IP Address: ${cluster.ipAddress}</h2>
 		</div>
-
-
-
 	</div>
 	
-	<script>
-		$(document).ready(function() {
-			
-			$('#teraSort').click(function(e) {
-				
-				
-				$.ajax({
-					url: "teraSort",
-					success: function(data) {
-						console.log(data);
-					}
-					
-				});
-				e.preventDefault();
-				
-			});
-			
-			
-		});
-	</script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DFSIO Benchmark Result - Hadoop Monitor</title>
+<title>Benchmark Details - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
@@ -21,7 +21,7 @@
 <script
 	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	
-	<!-- PACE JS -->
+<!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
 	
 
@@ -56,17 +56,12 @@
 .breadcrumb {
 	margin-bottom: 5px;
 }
-.megabyte:AFTER {
-	content: " MB";
+
+.milliseconds:AFTER {
+	content: "ms";
 }
 
-.megabytePerSec:AFTER {
-	content: " MB/sec";
-}
 
-.seconds:AFTER {
-	content: "s";
-}
 </style>
 </head>
 
@@ -81,65 +76,46 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="benchmarks">Hadoop Monitor</a>
+			<a class="navbar-brand" href="/HadoopMon/cluster/clusters">Hadoop Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="benchmarks">Benchmarks <span class="sr-only">(current)</span></a></li>
+				<li><a href="/HadoopMon/cluster/clusters">Clusters</a></li>
 			</ul>
 		</div>
 	</div>
 </nav>
 
-
 <body>
 	<ol class="breadcrumb">
 		<li><a href="benchmarks">Benchmarks</a></li>
-		<li class="active">DFSIO Benchmark Result</li>
+		<li class="active">Benchmark Details</li>
 	</ol>
 	<div class="container-fluid">
 
 		<div class="row">
 			<div class="col-md-12">
-			<h2>DFSIO Benchmark Result</h2>
-				
-				<h4>Cluster</h4>
-				<p>${bresult.clusterName}</p>
-				
-				<h4>Type</h4>
-				<p>${bresult.type}</p>
-			
-				<h4>Test Date</h4>
-				<p>${bresult.date}</p>
-				
-				<h4># Files</h4>
-				<p>${bresult.nrFiles}</p>
-			
-				<h4>Total MB Processed</h4>
-				<p class="megabyte">${bresult.totalMb}</p>
-			
-				<h4>Throughput (MB/s)</h4>
-				<p class="megabytePerSec">${bresult.throughputMb}</p>
-			
-				<h4>Average IO Rate</h4>
-				<p class="megabytePerSec">${bresult.avgIORate}</p>
-			
-				<h4>Standard Deviation</h4>
-				<p>${bresult.stdDeviation}</p>
-			
-				<h3>Total Time Taken</h3>
-				<p class="seconds">${bresult.totalTime}</p>
-			
-				<a class="btn btn-primary"href="benchmarks">Back to Benchmarks</a>
-			
-			</div>
-		</div>
-	</div>
+				<h1>Benchmark Result</h1>
+				<h2>Details</h2>
+				<hr />
 
-	
-	
+				<h4>Cluster</h4>
+				<p>${benchmark.clusterName}</p>
+
+				
+				<hr />
+				<a class="btn btn-primary" href="benchmarks">Back to Benchmarks</a>
+				<a class="btn btn-danger" href="delete?id=${benchmark.id}">Delete
+					Benchmark</a>
+			</div>
+
+
+
+		</div>
+
+
+	</div>
 </body>
-</html>

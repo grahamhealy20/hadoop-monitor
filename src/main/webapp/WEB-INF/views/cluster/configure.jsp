@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Clusters - Hadoop Monitor</title>
+<title>Cluster Overveiew - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
@@ -24,6 +24,8 @@
 	
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></script>
 
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
@@ -57,7 +59,6 @@
 </style>
 </head>
 
-
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -69,15 +70,14 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/HadoopMon/benchmarks">Hadoop Monitor</a>
+			<a class="navbar-brand" href="/HadoopMon/cluster/clusters">Hadoop Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="/HadoopMon/benchmarks">Benchmarks</a></li>
-				<li class="active"><a href="clusters">Clusters <span
+				<li><a href="clusters">Clusters <span
 						class="sr-only">(current)</span></a></li>
 			</ul>
 		</div>
@@ -85,70 +85,29 @@
 </nav>
 <body>
 
-	<div class="container-fluid">
-		<h1>Clusters</h1>
-		<div class="row">
-	
-			<div class="col-md-12 table-responsive">
-			<a href="add" class="btn btn-primary">Add Cluster</a>
-				
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>IP Address</th>
-						</tr>
+	<div class="sidebar">
+		<ul>
+			<li><a class="active" href="cluster?id=${cluster.id}">Overview</a></li>
+			<li><a href="/HadoopMon/dfsio/dfsiobenchmarks/?id=${cluster.id}">DFSIO</a></li>
+			<li><a href="/HadoopMon/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
+			<li><a href="/HadoopMon/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
+			<li class="active"><a href="configure?id=${cluster.id}">Configure</a></li>
+		</ul>
+	</div>
 
-					</thead>
-
-					<tbody>
-						<c:forEach var="cluster" items="${clusters}">
-
-							<tr>
-								<td>${cluster.name}</td>
-								<td>${cluster.ipAddress}</td>
-								<td><a class="btn btn-info btn-xs"
-									href="benchmark?id=${cluster.id}">Details</a> <a
-									class="btn btn-danger btn-xs" href="delete?id=${cluster.id}">Delete</a></td>
-							</tr>
-
-						</c:forEach>
-					</tbody>
-				</table>
-			</div>
-
+	<div id="body" class="container-fluid">
+		<h1>Configure Cluster</h1>
+		<div class="col-md-12">
+			<h2>Name: ${cluster.name}</h2>
+			<h2>IP Address: ${cluster.ipAddress}</h2>
 		</div>
-
-
-
+	
 	</div>
 	
 	<script>
 		$(document).ready(function() {
+
 			
-			$('#dfsioAsync').click(function(e) {
-				
-				
-				$.ajax({
-					url: "dfsio",
-					method: "POST",
-					data: {
-						numFiles: $('#numFiles').val(),
-						fileSize: $('#fileSize').val()
-					},
-					success: function(data) {
-						console.log(data);
-						$('tbody').prepend('<tr><td>' + data.type + '</td> <td>' + data.date +'</td> <td>' + data.nrFiles +'</td> <td class="megabyte">' + data.totalMb + '</td> <td class="megabytePerSec">' + data.throughputMb + '</td> <td class="megabytePerSec">'+ data.avgIORate +'</td> <td>'+ data.stdDeviation + '</td> <td class="seconds">'+ data.totalTime +'</td>' +
-							'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
-							'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
-						
-					}
-					
-				});
-				console.log("Preventing Default");
-				e.preventDefault();
-				
-			});
 			
 			
 		});

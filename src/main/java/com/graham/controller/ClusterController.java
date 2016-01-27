@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.graham.model.BenchmarkResult;
 import com.graham.model.Cluster;
+import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.dbaccess.ClusterService;
 
 
@@ -32,14 +32,14 @@ public class ClusterController {
 	public ModelAndView clusters() {
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 		
-		ModelAndView mv = new ModelAndView("clusters");
+		ModelAndView mv = new ModelAndView("/cluster/clusters");
 		mv.addObject("clusters", clusters);
 		return mv;
 	}
 	
 	@RequestMapping("/add")
 	public ModelAndView addCluster() {
-		ModelAndView mv = new ModelAndView("addCluster");
+		ModelAndView mv = new ModelAndView("/cluster/addCluster");
 		return mv;
 	}
 	
@@ -55,8 +55,6 @@ public class ClusterController {
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	public ModelAndView delete(@RequestParam("id") String id) {
-		
-		// Get cluster
 		Cluster cluster = clusterService.getCluster(id); 
 		clusterService.deleteCluster(cluster);
 		return new ModelAndView("redirect:/cluster/clusters");
@@ -64,10 +62,21 @@ public class ClusterController {
 	
 	@RequestMapping("/cluster")
 	public ModelAndView cluster(@RequestParam("id") String id) {
-		
 		//Get cluster
 		Cluster cluster = clusterService.getCluster(id);
-		ModelAndView mv = new ModelAndView("overview");
+		
+		ModelAndView mv = new ModelAndView("/cluster/overview");
+		mv.addObject("cluster", cluster);
+	    return mv;	
+	}
+	
+	@RequestMapping("/configure")
+	public ModelAndView configureCluster(@RequestParam("id") String id) {
+		//Get cluster
+		Cluster cluster = clusterService.getCluster(id);
+		
+		ModelAndView mv = new ModelAndView("/cluster/configure");
+		mv.addObject("cluster", cluster);
 	    return mv;	
 	}
 	

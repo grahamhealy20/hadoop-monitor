@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.graham.model.BenchmarkResult;
 import com.graham.model.dbaccess.*;
 import com.graham.model.Cluster;
 import com.graham.model.ClusterManager;
+import com.graham.model.benchmarks.BenchmarkResult;
 
 @Controller
 @RequestMapping("dfsio")
@@ -93,6 +93,18 @@ public class DFSIOController {
 		return mv;
 	}
 	
+	// GET /benchmarks/
+	@RequestMapping("/dfsiobenchmarks")
+	public ModelAndView benchmarksById(@RequestParam("id") String id) {
+		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
+		
+		ModelAndView mv = new ModelAndView("dfsiobenchmarks");
+		mv.addObject("cluster",  clusterService.getCluster(id));
+		mv.addObject("clusters", clusterService.listClusterById(id));
+		mv.addObject("dfsio", results);
+		return mv;
+	}
+	
 	// GET /benchmarks?id={id}
 	@RequestMapping(value = "/benchmark", method = RequestMethod.GET)
 	public ModelAndView benchmark(@RequestParam("id") String id) {
@@ -131,6 +143,7 @@ public class DFSIOController {
 		Cluster cluster = clusterService.getCluster(id);
 		BenchmarkResult result = cluster.runDFSIOBenchmarkAsync(numFiles, fileSize);
 		result.setClusterName(cluster.getName());
+		result.setClusterId(cluster.getId());
 		return result;
 	}
 	

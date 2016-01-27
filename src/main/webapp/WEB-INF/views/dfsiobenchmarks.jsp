@@ -24,6 +24,7 @@
 	
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></link>
 
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
@@ -53,8 +54,6 @@
   width: 100%;
   height: 6px;
 }
-
-
 
 .megabyte:AFTER {
 	content: " MB";
@@ -98,8 +97,18 @@
 </nav>
 <body>
 
-	<div class="container-fluid">
-		<h1>Benchmarks</h1>
+	<div class="sidebar">
+		<ul>
+			<li><a href="/HadoopMon/cluster/cluster?id=${cluster.id}">Overview</a></li>
+			<li class="active"><a href="?id=${cluster.id}">DFSIO</a></li>
+			<li><a href="/HadoopMon/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
+			<li><a href="/HadoopMon/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
+			<li><a href="/HadoopMon/cluster/configure?id=${cluster.id}">Configure</a></li>
+		</ul>
+	</div>
+
+	<div id="body" class="container-fluid">
+		<h1>DFSIO Benchmarks</h1>
 		<div class="row">
 
 			<div class="col-md-12 table-responsive">
@@ -122,8 +131,7 @@
 				    <input type="number" class="form-control" id="fileSize" name="fileSize" placeholder="1" value="100" min="1" required>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-primary">Run Benchmark</button>
-				  <button id="dfsioAsync" class="btn btn-primary">Run Benchmark Async</button>
+				  <button id="dfsioAsync" class="btn btn-primary">Run Benchmark</button>
 				</form>
 			
 				<table class="table">
@@ -143,7 +151,7 @@
 					</thead>
 
 					<tbody>
-						<c:forEach var="benchmark" items="${benchmarks}">
+						<c:forEach var="benchmark" items="${dfsio}">
 
 							<tr>
 								<td>${benchmark.clusterName }</td>
@@ -178,7 +186,7 @@
 				
 				
 				$.ajax({
-					url: "dfsio",
+					url: "/HadoopMon/dfsio/dfsio",
 					method: "POST",
 					data: {
 						id: $('#id').val(),

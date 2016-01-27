@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>TeraSort - Hadoop Monitor</title>
+<title>Clusters - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
@@ -24,6 +24,9 @@
 	
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
+
+<!-- jQuery Validate 	 -->
+<!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
 
 
 
@@ -51,19 +54,6 @@
   height: 6px;
 }
 
-
-
-.megabyte:AFTER {
-	content: " MB";
-}
-
-.megabytePerSec:AFTER {
-	content: " MB/sec";
-}
-
-.seconds:AFTER {
-	content: "s";
-}
 </style>
 </head>
 
@@ -86,9 +76,8 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="benchmarks">Benchmarks <span
+				<li class="active"><a href="clusters">Clusters <span
 						class="sr-only">(current)</span></a></li>
-				<li><a href="teraSortBench">TeraSort</a></li>		
 			</ul>
 		</div>
 	</div>
@@ -96,12 +85,35 @@
 <body>
 
 	<div class="container-fluid">
-		<h1>TeraSort</h1>
+		<h1>Clusters</h1>
 		<div class="row">
-
+	
 			<div class="col-md-12 table-responsive">
-				<a class="btn btn-primary" href="runTeraSort">Run Benchmark</a>
+			<a href="add" class="btn btn-primary">Add Cluster</a>
 				
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>IP Address</th>
+						</tr>
+
+					</thead>
+
+					<tbody>
+						<c:forEach var="cluster" items="${clusters}">
+
+							<tr>
+								<td>${cluster.name}</td>
+								<td>${cluster.ipAddress}</td>
+								<td><a class="btn btn-info btn-xs"
+									href="cluster?id=${cluster.id}">Details</a> <a
+									class="btn btn-danger btn-xs" href="delete?id=${cluster.id}">Delete</a></td>
+							</tr>
+
+						</c:forEach>
+					</tbody>
+				</table>
 			</div>
 
 		</div>
@@ -113,16 +125,26 @@
 	<script>
 		$(document).ready(function() {
 			
-			$('#teraSort').click(function(e) {
+			$('#dfsioAsync').click(function(e) {
 				
 				
 				$.ajax({
-					url: "teraSort",
+					url: "dfsio",
+					method: "POST",
+					data: {
+						numFiles: $('#numFiles').val(),
+						fileSize: $('#fileSize').val()
+					},
 					success: function(data) {
 						console.log(data);
+						$('tbody').prepend('<tr><td>' + data.type + '</td> <td>' + data.date +'</td> <td>' + data.nrFiles +'</td> <td class="megabyte">' + data.totalMb + '</td> <td class="megabytePerSec">' + data.throughputMb + '</td> <td class="megabytePerSec">'+ data.avgIORate +'</td> <td>'+ data.stdDeviation + '</td> <td class="seconds">'+ data.totalTime +'</td>' +
+							'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
+							'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
+						
 					}
 					
 				});
+				console.log("Preventing Default");
 				e.preventDefault();
 				
 			});

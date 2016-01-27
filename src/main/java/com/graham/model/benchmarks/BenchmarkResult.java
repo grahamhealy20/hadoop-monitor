@@ -1,4 +1,4 @@
-package com.graham.model;
+package com.graham.model.benchmarks;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,6 +8,7 @@ public class BenchmarkResult {
 	@Id
 	private String id;
 	private String clusterName;
+	private String clusterId;
 	private String type;
 	private String date;
 	private String nrFiles;
@@ -76,4 +77,14 @@ public class BenchmarkResult {
 	public String getTotalTime() {
 		return totalTime;
 	}
+
+	public String getClusterId() {
+		return clusterId;
+	}
+
+	public void setClusterId(String clusterId) {
+		this.clusterId = clusterId;
+	}
+	
+	
 }

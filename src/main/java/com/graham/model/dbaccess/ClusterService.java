@@ -7,6 +7,7 @@ import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +36,12 @@ public class ClusterService {
 	
 	public List<Cluster> listClusters() {
 		return mongoTemplate.findAll(Cluster.class, COLLECTION_NAME);
+	}
+	
+	public List<Cluster> listClusterById(String id) {
+		Query q = new Query();
+		q.addCriteria(Criteria.where("id").is(id));
+		return mongoTemplate.find(q, Cluster.class, COLLECTION_NAME);
 	}
 	
 	public void deleteCluster(Cluster cluster) {

@@ -117,12 +117,7 @@ public class TeraSortBenchmarkThread {
 		PrintStream out = System.out;
 		PrintStream fileOut = null;
 		
-		try {
-			fileOut = new PrintStream(new File(location));
-		} catch (FileNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		com.graham.model.utils.utilities.pipeOutputToFile(location);
 		
 		System.out.println("Passing stdout to file");
 		System.setOut(fileOut);
@@ -164,4 +159,5 @@ public class TeraSortBenchmarkThread {
 		}
 	
 	}
+
 }

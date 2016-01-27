@@ -2,6 +2,8 @@ package com.graham.model;
 
 import org.mortbay.log.Log;
 
+import com.graham.model.benchmarks.BenchmarkResult;
+import com.graham.model.benchmarks.MRBenchmarkResult;
 import com.jcraft.jsch.Logger;
 
 public class Cluster {
@@ -88,6 +90,20 @@ public class Cluster {
 			e.printStackTrace();
 		}
 		return dfsio.getBenchmarkResult();
+	}
+	
+	public MRBenchmarkResult runMRBenchmarkAsync(int numRuns) {
+		MRBenchThread mrbench = new MRBenchThread(ipAddress, username, numRuns);
+		Thread t = new Thread(mrbench);
+		t.start();
+		
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
+		return mrbench.getBenchmarkResult();
 	}
 	
 	
