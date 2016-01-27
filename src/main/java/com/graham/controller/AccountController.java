@@ -12,6 +12,11 @@ public class AccountController {
 		return new ModelAndView("login");
 	}
 	
+	@RequestMapping("/")
+	public ModelAndView welcome() {
+		return new ModelAndView("login");
+	}
+	
 	
 	@RequestMapping("Logout")
 	public void logout() {

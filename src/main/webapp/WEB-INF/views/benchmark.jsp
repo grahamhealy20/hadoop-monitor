@@ -97,7 +97,7 @@
 
 <body>
 	<ol class="breadcrumb">
-		<li><a href="benchmarks">Benchmarks</a></li>
+		<li><a href="dfsiobenchmarks?id=${benchmark.clusterId}">Benchmarks</a></li>
 		<li class="active">Benchmark Details</li>
 	</ol>
 	<div class="container-fluid">
@@ -136,8 +136,9 @@
 				<p class="seconds">${benchmark.totalTime}</p>
 
 				<hr />
-				<a class="btn btn-primary" href="benchmarks">Back to Benchmarks</a>
-				<a class="btn btn-danger" href="delete?id=${benchmark.id}">Delete
+				
+				<a class="btn btn-primary" href="dfsiobenchmarks?id=${benchmark.clusterId}">Back to Benchmarks</a>
+				<a class="btn btn-danger" href="delete?id=${benchmark.id}&clusterId=${benchmark.clusterId}">Delete
 					Benchmark</a>
 			</div>
 

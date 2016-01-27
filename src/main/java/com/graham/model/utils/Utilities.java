@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 
-public class utilities {
+public class Utilities {
 	
 	
 	//public static String[] splitFile(String location) {

@@ -64,7 +64,7 @@ public class MRBenchThread implements Runnable {
 		String fileOutputName = "MRBenchmark-" + dateFormat.format(date) + ".txt";
 		String location = "/home/hadoop/" + fileOutputName;
 		
-		com.graham.model.utils.utilities.pipeOutputToFile(location);
+		com.graham.model.utils.Utilities.pipeOutputToFile(location);
 		
 		JobConf jobConf = new JobConf();
 		jobConf.set("test.build.data", "home/hadoop/benchmark/MRBench");
@@ -92,7 +92,7 @@ public class MRBenchThread implements Runnable {
 		}
 			
 		//Format output
-		String[] values = com.graham.model.utils.utilities.splitMRBenchOutput(location); 
+		String[] values = com.graham.model.utils.Utilities.splitMRBenchOutput(location); 
 
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 		String dateString = dateFormat.format(date);

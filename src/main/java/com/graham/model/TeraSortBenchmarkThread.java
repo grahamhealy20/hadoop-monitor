@@ -117,7 +117,7 @@ public class TeraSortBenchmarkThread {
 		PrintStream out = System.out;
 		PrintStream fileOut = null;
 		
-		com.graham.model.utils.utilities.pipeOutputToFile(location);
+		com.graham.model.utils.Utilities.pipeOutputToFile(location);
 		
 		System.out.println("Passing stdout to file");
 		System.setOut(fileOut);

@@ -16,46 +16,44 @@
 
 <!-- jQuery library -->
 <script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
 
 <!-- Latest compiled JavaScript -->
 <script
-	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"></script>
 	
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"><script type="text/javascript"></script>
 
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
 
 
 
-<style>
+<style type="text/css">
 .pace {
-  -webkit-pointer-events: none;
-  pointer-events: none;
-
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+	-webkit-pointer-events: none;
+	pointer-events: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
 
 .pace-inactive {
-  display: none;
+	display: none;
 }
 
 .pace .pace-progress {
-  background: #29d;
-  position: absolute;
-  z-index: 2000;
-  top: 50px;
-  right: 100%;
-  width: 100%;
-  height: 6px;
+	background: #29d;
+	position: absolute;
+	z-index: 2000;
+	top: 50px;
+	right: 100%;
+	width: 100%;
+	height: 6px;
 }
-
 </style>
 </head>
 
@@ -97,20 +95,51 @@
 
 	<div id="body" class="container-fluid">
 		<h1>Configure Cluster</h1>
-		<div class="col-md-12">
-			<h2>Name: ${cluster.name}</h2>
-			<h2>IP Address: ${cluster.ipAddress}</h2>
+		<hr/>
+			<form action="updateCluster" method="post">
+			
+			<input type="hidden" name="id" id="id" value="${cluster.id }">
+			
+			<h2>General Information</h2>
+			<div class="row">
+			
+			
+				<div class="col-md-3">
+					<div class="form-group">
+						
+						
+						<label for="clusterName">Cluster Name</label> 
+						<input type="text"
+							class="form-control" name="clusterName" id="clusterName" value="${cluster.name}">
+					</div>
+
+					<div class="form-group">
+						<label for="ipAddress">IP Address</label>
+						 <input type="text"
+							class="form-control" name="ipAddress" id="ipAddress" value="${cluster.ipAddress}">
+					</div>
+				</div>
+			</div>
+			
+			<hr/>
+			
+			<h2>DFSIO Information</h2>
+			<div class="row">
+				
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="throughputThreshold">Throughput Warning Threshold</label> 
+						<input type="number"
+							class="form-control" name="throughputThreshold" id="throughputThreshold" value="${cluster.throughputThreshold }">
+					</div>
+				</div>
+			
+			</div>
+			
+ 		<button type="submit" class="btn btn-primary">Save</button>
+		</form>
+			
 		</div>
 	
-	</div>
-	
-	<script>
-		$(document).ready(function() {
-
-			
-			
-			
-		});
-	</script>
 </body>
 </html>

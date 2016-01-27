@@ -117,7 +117,7 @@ public class DFSIOBenchmarkThread implements Runnable {
 //		}
 		
 		// Construct a benchmark result from the array list of values
-		formatRes = com.graham.model.utils.utilities.splitDFSIOFile(location);
+		formatRes = com.graham.model.utils.Utilities.splitDFSIOFile(location);
 		bresult = new BenchmarkResult(Character.toUpperCase(formatRes.get(0).charAt(0)) + formatRes.get(0).substring(1), formatRes.get(1), formatRes.get(2), formatRes.get(3),
 				formatRes.get(4), formatRes.get(5), formatRes.get(6), formatRes.get(7));
 

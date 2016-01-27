@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.graham.model.dbaccess.*;
 import com.graham.model.Cluster;
-import com.graham.model.ClusterManager;
 import com.graham.model.benchmarks.BenchmarkResult;
+import com.graham.model.dbaccess.BenchmarkResultService;
+import com.graham.model.dbaccess.ClusterService;
 
 @Controller
 @RequestMapping("dfsio")
@@ -30,6 +30,15 @@ public class DFSIOController {
 
 	@Autowired
 	private ClusterService clusterService;
+	
+	// GET /
+	@RequestMapping("/")
+	public ModelAndView index() {
+		
+		ModelAndView mv = new ModelAndView("login");
+		//mv.addObject("benchmarks", results);
+		return mv;	
+	}
 	
 	// GET /test/
 	@RequestMapping("/test")
@@ -48,39 +57,12 @@ public class DFSIOController {
 	// GET /test/
 	@RequestMapping("/dfsio")
 	public @ResponseBody BenchmarkResult dfsioAsync(String id, int numFiles, int fileSize) {
-		System.out.println("in controller");
-		
+		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
 		
 		return result;
 	}
-	
-	// GET /
-	@RequestMapping("/")
-	public ModelAndView index() {
-		
-		ModelAndView mv = new ModelAndView("login");
-		//mv.addObject("benchmarks", results);
-		return mv;
-		
-	}
-	
-	@RequestMapping("/teraSort")
-	public ModelAndView teraSortBenchmark() {
-		ModelAndView mv = new ModelAndView("teraSort");
-		return mv;	
-	}
-	
-	@RequestMapping("/runTeraSort")
-	public ModelAndView teraSortRes() {
-		ModelAndView mv = new ModelAndView("teraSortResult");
-		
-		benchmarkTeraSort();
-		
-		return mv;
-	}
-	
 	
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
@@ -123,13 +105,13 @@ public class DFSIOController {
 	
 	// GET /benchmarks?id={id}
 		@RequestMapping(value = "/delete", method = RequestMethod.GET)
-		public ModelAndView delete(@RequestParam("id") String id) {
+		public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
 			
 			// Get benchmark result
 			
 			BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
 			benchmarkResultService.deleteBenchmarkResult(result);
-			return new ModelAndView("redirect:/benchmarks");
+			return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
 		}
 
 	private BenchmarkResult benchmarkDFSIO(String id, int numFiles, int fileSize) {
@@ -144,15 +126,13 @@ public class DFSIOController {
 		BenchmarkResult result = cluster.runDFSIOBenchmarkAsync(numFiles, fileSize);
 		result.setClusterName(cluster.getName());
 		result.setClusterId(cluster.getId());
+		
+		// Set flag for poor performance
+//		if(Double.parseDouble(result.getThroughputMb()) < Double.parseDouble(cluster.getThroughputThreshold()))
+//			result.setAlarm(true);
+//		else
+//			result.setAlarm(false);
 		return result;
-	}
-	
-	private void benchmarkTeraSort() {
-		ClusterManager manager = new ClusterManager();
-		Cluster cluster = manager.getCluster();
-		cluster.setIpAddress("192.168.0.106");
-		cluster.setUsername("hadoop");
-		cluster.runTeraSort();
 	}
 
 	// Runs DFSIO benchmark via command line

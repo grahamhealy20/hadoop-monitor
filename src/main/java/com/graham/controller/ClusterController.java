@@ -4,14 +4,12 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
-import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.dbaccess.ClusterService;
 
 
@@ -43,14 +41,20 @@ public class ClusterController {
 		return mv;
 	}
 	
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public ModelAndView saveCluster(@RequestParam("name") String name, @RequestParam("ipAddress") String ipAddress) {
-		Cluster cluster = new Cluster(name, ipAddress);
-		clusterService.addCluster(cluster);
-		ModelAndView mv = new ModelAndView("/cluster/success");
-		mv.addObject("cluster", cluster);
+	@RequestMapping(value = "/updateCluster", method = RequestMethod.POST)
+	public String saveCluster(@RequestParam("id") String id, @RequestParam("clusterName") String name, @RequestParam("ipAddress") String ipAddress, @RequestParam("throughputThreshold") String throughputThreshold) {
 		
-		return mv;
+		Cluster cluster = clusterService.getCluster(id);
+		
+		// Edit variables
+		cluster.setName(name);
+		cluster.setIpAddress(ipAddress);
+		cluster.setThroughputThreshold(throughputThreshold);
+		
+		// Update DB
+		clusterService.updateCluster(cluster);
+		
+		return "redirect:/cluster/configure?id=" + id;
 	}
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)

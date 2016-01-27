@@ -4,7 +4,6 @@ import org.mortbay.log.Log;
 
 import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
-import com.jcraft.jsch.Logger;
 
 public class Cluster {
 	
@@ -13,6 +12,7 @@ public class Cluster {
 	private String name;
 	private String ipAddress;
 	private String username;
+	private String throughputThreshold;
 	 
 	public String getId() {
 		return id;
@@ -61,6 +61,14 @@ public class Cluster {
 
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+	}
+
+	public String getThroughputThreshold() {
+		return throughputThreshold;
+	}
+
+	public void setThroughputThreshold(String throughputThreshold) {
+		this.throughputThreshold = throughputThreshold;
 	}
 
 	// Runs default benchmark

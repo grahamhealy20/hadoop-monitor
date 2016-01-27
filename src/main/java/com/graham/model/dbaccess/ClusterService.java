@@ -49,6 +49,8 @@ public class ClusterService {
 	}
 	
 	public void updateCluster(Cluster cluster) {
-		mongoTemplate.insert(cluster, COLLECTION_NAME);		
+		Cluster clusterToUpdate = mongoTemplate.findOne(Query.query(Criteria.where("id").is(cluster.getId())), Cluster.class);
+		clusterToUpdate = cluster;
+		mongoTemplate.save(clusterToUpdate, COLLECTION_NAME);
 	}
 }

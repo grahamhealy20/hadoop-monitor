@@ -34,7 +34,7 @@
                             <h1 class="text-center">Admin Login</h1>
                         </div>
                         <div class="loginSection">
-                            <form class="loginForm" action="benchmarks">
+                            <form class="loginForm" action="cluster/">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email address</label>
                                 <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" required>

@@ -17,6 +17,7 @@ public class BenchmarkResult {
 	private String avgIORate;
 	private String stdDeviation;
 	private String totalTime;
+	private boolean alarm;
 
 	public BenchmarkResult(String type, String date, String nrFiles,  String totalMb, String throughputMb, String avgIORate,
 			String stdDeviation, String totalTime) {
@@ -85,6 +86,15 @@ public class BenchmarkResult {
 	public void setClusterId(String clusterId) {
 		this.clusterId = clusterId;
 	}
+
+	public boolean isAlarm() {
+		return alarm;
+	}
+
+	public void setAlarm(boolean alarm) {
+		this.alarm = alarm;
+	}
+
 	
 	
 }
