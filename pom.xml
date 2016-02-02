@@ -5,7 +5,7 @@
 	<artifactId>HadoopMon</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>HadoopMon Maven Webapp</name>
+	<name>Hadoop Performance Monitoring Tool</name>
 	<url>http://maven.apache.org</url>
 
 	<repositories>
@@ -36,6 +36,7 @@
 	</repositories>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -81,6 +82,7 @@
             <artifactId>spring-security-web</artifactId>
             <version>4.0.3.RELEASE</version>
         </dependency>
+        
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
@@ -119,7 +121,6 @@
 			<version>2.7.1</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-mapreduce-client-core</artifactId>
@@ -150,7 +151,6 @@
 			<version>1.3</version>
 		</dependency>
 	
-
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -168,7 +168,8 @@
 
 	</dependencies>
 	<build>
-		<finalName>HadoopMon</finalName>
+		<finalName>HadoopMonitor</finalName>
+		
 		<plugins>
 			<plugin>
             <groupId>org.apache.maven.plugins</groupId>

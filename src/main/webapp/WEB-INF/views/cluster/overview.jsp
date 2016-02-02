@@ -25,7 +25,7 @@
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css">
 
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
