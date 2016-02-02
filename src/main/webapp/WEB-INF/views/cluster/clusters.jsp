@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <!DOCTYPE html>
 <html>
@@ -79,6 +81,15 @@
 				<li class="active"><a href="clusters">Clusters <span
 						class="sr-only">(current)</span></a></li>
 			</ul>
+			
+			
+		<ul class="nav navbar-nav navbar-right">
+			<sec:authorize access="isAuthenticated()">
+			    <li><a href=""><sec:authentication property="principal.username" /></a></li>
+			</sec:authorize>
+			
+        	<li><a href="/HadoopMon/logout">Logout</a></li>
+      	</ul>
 		</div>
 	</div>
 </nav>
