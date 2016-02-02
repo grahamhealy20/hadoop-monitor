@@ -5,22 +5,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class AccountController {
-
-	@RequestMapping("/Login")
+public class AccountController {	
+	
+	//Display login page
+	@RequestMapping("/login")
 	public ModelAndView login() {
 		return new ModelAndView("login");
 	}
 	
+	//Default route
 	@RequestMapping("/")
-	public ModelAndView welcome() {
-		return new ModelAndView("login");
-	}
-	
-	
-	@RequestMapping("Logout")
-	public void logout() {
-		
+	public String defaultRoute() {
+		return "redirect:/cluster/";
 	}
 	
 }

@@ -3,6 +3,7 @@ package com.graham.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -16,6 +17,7 @@ import com.mongodb.MongoClient;
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages = {"com.graham.*"})
+@Import({SecurityConfig.class})
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
 	@Override
