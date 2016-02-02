@@ -1,23 +1,17 @@
 package com.graham.model;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.examples.terasort.TeraGen;
 import org.apache.hadoop.examples.terasort.TeraSort;
 import org.apache.hadoop.examples.terasort.TeraValidate;
-import org.apache.hadoop.examples.terasort.TeraGen.Counters;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapreduce.Cluster;
 import org.mortbay.log.Log;
 
 public class TeraSortBenchmarkThread {
@@ -48,7 +42,6 @@ public class TeraSortBenchmarkThread {
 	}
 	
 	public void run() {
-		ArrayList<String> formatRes = new ArrayList<String>();
 		//Set config
 		JobConf jobConf = new JobConf();
 		//jobConf.set("test.build.data", "/bench/");

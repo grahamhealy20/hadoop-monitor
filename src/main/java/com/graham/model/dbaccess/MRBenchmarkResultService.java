@@ -1,7 +1,5 @@
 package com.graham.model.dbaccess;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
 
 @Repository

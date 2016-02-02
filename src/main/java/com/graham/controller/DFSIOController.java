@@ -136,6 +136,7 @@ public class DFSIOController {
 	}
 
 	// Runs DFSIO benchmark via command line
+	@SuppressWarnings("unused")
 	private void benchmarkRuntime() {
 		try {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();

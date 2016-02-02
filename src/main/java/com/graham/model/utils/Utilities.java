@@ -10,12 +10,6 @@ import org.apache.commons.io.FileUtils;
 
 public class Utilities {
 	
-	
-	//public static String[] splitFile(String location) {
-		//File output = new File(location);
-		
-	//}
-	
 	public static ArrayList<String> splitDFSIOFile(String location) {
 		ArrayList<String> values = new ArrayList<String>();
 		// Open DFSIO file
@@ -43,8 +37,6 @@ public class Utilities {
 	
 	
 	public static String[] splitTeraSortOutput(String location) {
-		ArrayList<String> values = new ArrayList<String>();
-		
 		File output = new File(location);
 		String out = readFileToString(output);
 		
