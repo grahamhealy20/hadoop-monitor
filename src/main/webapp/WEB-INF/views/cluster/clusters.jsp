@@ -27,10 +27,6 @@
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
 
-<!-- jQuery Validate 	 -->
-<!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
-
-
 
 <style>
 .pace {
