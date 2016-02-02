@@ -43,7 +43,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	  }
 
 	  public @Bean MongoTemplate mongoTemplate() throws Exception {
-	      return new MongoTemplate(mongo(), "mydatabase");
+	      return new MongoTemplate(mongo(), "testHadoop");
 	  }
 	
 	
