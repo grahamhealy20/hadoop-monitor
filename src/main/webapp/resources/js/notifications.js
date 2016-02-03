@@ -7,12 +7,12 @@ function connect() {
 	stompClient = Stomp.over(socket);
 	stompClient.connect('', '', function(frame) {		        	 
 		console.log('Connected: ' + frame);
-		stompClient.subscribe("/data/1", function(message){
+		stompClient.subscribe("/notification/notifications/userid", function(message){
 
 			var msg = JSON.parse(message.body);
 			console.log(msg);
 
-			$("#time").text(msg.name).fadeIn();
+			
 		});
 	});
 }

@@ -21,7 +21,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	@Autowired
 	private MessageSendingOperations<String> messagingTemplate;
 
-
 	// Publishes cluster metrics every set interval
 	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
