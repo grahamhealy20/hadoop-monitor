@@ -38,7 +38,7 @@ public class BenchmarkResult {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public String getClusterName() {
 		return clusterName;
 	}
@@ -46,7 +46,7 @@ public class BenchmarkResult {
 	public void setClusterName(String clusterName) {
 		this.clusterName = clusterName;
 	}
-	
+
 	public String getType() {
 		return type;
 	}
@@ -54,7 +54,7 @@ public class BenchmarkResult {
 	public String getDate() {
 		return date;
 	}
-	
+
 	public String getNrFiles() {
 		return nrFiles;
 	}
@@ -94,7 +94,4 @@ public class BenchmarkResult {
 	public void setAlarm(boolean alarm) {
 		this.alarm = alarm;
 	}
-
-	
-	
 }

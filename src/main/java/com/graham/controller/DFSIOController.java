@@ -30,63 +30,63 @@ public class DFSIOController {
 
 	@Autowired
 	private ClusterService clusterService;
-	
+
 	// GET /
 	@RequestMapping("/")
 	public ModelAndView index() {
-		
+
 		ModelAndView mv = new ModelAndView("login");
 		//mv.addObject("benchmarks", results);
 		return mv;	
 	}
-	
+
 	// GET /test/
 	@RequestMapping("/test")
 	public ModelAndView testAction(@RequestParam("id") String id, @RequestParam("numFiles") int numFiles, @RequestParam("fileSize") int fileSize) {
 		System.out.println("in controller");
-		
+
 		BenchmarkResult result = benchmarkDFSIO(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
-		
+
 		ModelAndView mv = new ModelAndView("test");
 		mv.addObject("threadOut", "hello");
 		mv.addObject("bresult", result);
 		return mv;
 	}
-	
+
 	// GET /test/
 	@RequestMapping("/dfsio")
 	public @ResponseBody BenchmarkResult dfsioAsync(String id, int numFiles, int fileSize) {
 		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
-		
+
 		return result;
 	}
-	
+
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
 	public ModelAndView benchmarks() {
 		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listBenchmarkResultByDate();
-		
+
 		ModelAndView mv = new ModelAndView("benchmarks");
 		mv.addObject("clusters", clusterService.listClusters());
 		mv.addObject("benchmarks", results);
 		return mv;
 	}
-	
+
 	// GET /benchmarks/
 	@RequestMapping("/dfsiobenchmarks")
 	public ModelAndView benchmarksById(@RequestParam("id") String id) {
 		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
-		
+
 		ModelAndView mv = new ModelAndView("dfsiobenchmarks");
 		mv.addObject("cluster",  clusterService.getCluster(id));
 		mv.addObject("clusters", clusterService.listClusterById(id));
 		mv.addObject("dfsio", results);
 		return mv;
 	}
-	
+
 	// GET /benchmarks?id={id}
 	@RequestMapping(value = "/benchmark", method = RequestMethod.GET)
 	public ModelAndView benchmark(@RequestParam("id") String id) {
@@ -102,17 +102,17 @@ public class DFSIOController {
 		}
 		return mv;
 	}
-	
+
 	// GET /benchmarks?id={id}
-		@RequestMapping(value = "/delete", method = RequestMethod.GET)
-		public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
-			
-			// Get benchmark result
-			
-			BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
-			benchmarkResultService.deleteBenchmarkResult(result);
-			return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
-		}
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
+
+		// Get benchmark result
+
+		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
+		benchmarkResultService.deleteBenchmarkResult(result);
+		return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
+	}
 
 	private BenchmarkResult benchmarkDFSIO(String id, int numFiles, int fileSize) {
 		Cluster cluster = clusterService.getCluster(id);
@@ -126,12 +126,12 @@ public class DFSIOController {
 		BenchmarkResult result = cluster.runDFSIOBenchmarkAsync(numFiles, fileSize);
 		result.setClusterName(cluster.getName());
 		result.setClusterId(cluster.getId());
-		
+
 		// Set flag for poor performance
-//		if(Double.parseDouble(result.getThroughputMb()) < Double.parseDouble(cluster.getThroughputThreshold()))
-//			result.setAlarm(true);
-//		else
-//			result.setAlarm(false);
+		//		if(Double.parseDouble(result.getThroughputMb()) < Double.parseDouble(cluster.getThroughputThreshold()))
+		//			result.setAlarm(true);
+		//		else
+		//			result.setAlarm(false);
 		return result;
 	}
 
@@ -152,8 +152,8 @@ public class DFSIOController {
 			System.out.println("EXIT VAL " + exitCode);
 
 		} catch (IOException e) {
+			// TODO
 			e.printStackTrace();
 		}
-
 	}
 }

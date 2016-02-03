@@ -25,44 +25,43 @@ public class TeraSortController {
 	@Autowired
 	private ClusterService clusterService;
 
-	
 	// GET /
 	@RequestMapping("/")
 	public ModelAndView index() {
 		ModelAndView mv = new ModelAndView("login");
 		return mv;	
 	}
-	
+
 	// GET /test/
 	@RequestMapping("/mrbench")
 	public @ResponseBody MRBenchmarkResult mrBenchAsync(String id, int numRuns) {
 		System.out.println("in controller");
-		
+
 		MRBenchmarkResult result = benchmarkMRBenchAsync(id, numRuns);
 		benchmarkResultService.addBenchmarkResult(result);
-		
+
 		return result;
 	}
-	
+
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
 	public ModelAndView benchmarksById(@RequestParam("id") String id) {
 		// Get all MRBenchmarks
 		ArrayList<MRBenchmarkResult> results = (ArrayList<MRBenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
-		
+
 		ModelAndView mv = new ModelAndView("terasort/benchmarks");
 		mv.addObject("cluster",  clusterService.getCluster(id));
 		mv.addObject("clusters", clusterService.listClusterById(id));
 		mv.addObject("mrbench", results);
 		return mv;
 	}
-	
+
 	// GET /benchmarks?id={id}
 	@RequestMapping(value = "/benchmark", method = RequestMethod.GET)
 	public ModelAndView benchmark(@RequestParam("id") String id) {
-		
+
 		ModelAndView mv;
-		
+
 		// Get benchmark result
 		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
 		if(result != null) {
@@ -74,18 +73,17 @@ public class TeraSortController {
 		}
 		return mv;
 	}
-	
+
 	// GET /benchmarks?id={id}
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	public ModelAndView delete(@RequestParam("id") String id) {
-			
+
 		// Get benchmark result
-		
 		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
 		benchmarkResultService.deleteBenchmarkResult(result);
 		return new ModelAndView("redirect:/benchmarks");
 	}
-		
+
 	private MRBenchmarkResult benchmarkMRBenchAsync(String id, int numRuns) {
 		Cluster cluster = clusterService.getCluster(id);
 		MRBenchmarkResult result = cluster.runMRBenchmarkAsync(numRuns);

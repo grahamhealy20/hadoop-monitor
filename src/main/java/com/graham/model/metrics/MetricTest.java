@@ -7,7 +7,7 @@ public class MetricTest {
 	public String getName() {
 		return name;
 	}
-	
+
 	public MetricTest(String name) {
 		this.name = name;
 	}

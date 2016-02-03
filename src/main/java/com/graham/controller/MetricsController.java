@@ -16,21 +16,22 @@ import com.graham.model.metrics.MetricTest;
 // Controller to handle metrics
 @Controller
 public class MetricsController implements ApplicationListener<BrokerAvailabilityEvent>{
+	private final int DELAY = 1000;
 
 	@Autowired
 	private MessageSendingOperations<String> messagingTemplate;
-	
-	
+
+
 	// Publishes cluster metrics every set interval
-	@Scheduled(fixedDelay = 1000)
+	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		
+
 		String dateStr = dateFormat.format(date);
 		MetricTest mt = new MetricTest(dateStr);
-		
+
 		// Get clusters, loop over each and return metrics on separate channels
 		for(int i = 0; i < 3; i++) {			
 			System.out.println("Sending Cluster Metrics " + i);
@@ -41,6 +42,5 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	@Override
 	public void onApplicationEvent(BrokerAvailabilityEvent arg0) {
 		// TODO Auto-generated method stub
-
 	}
 }

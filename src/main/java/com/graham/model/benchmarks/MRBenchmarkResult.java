@@ -32,7 +32,7 @@ public class MRBenchmarkResult {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public String getClusterName() {
 		return clusterName;
 	}
@@ -44,8 +44,7 @@ public class MRBenchmarkResult {
 	public String getTotalTime() {
 		return totalTime;
 	}
-	
-	
+
 	public String getDataLines() {
 		return dataLines;
 	}
@@ -97,6 +96,4 @@ public class MRBenchmarkResult {
 	public void setNumRuns(int numRuns) {
 		this.numRuns = numRuns;
 	}
-	
-	
 }

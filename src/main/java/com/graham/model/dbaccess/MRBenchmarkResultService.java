@@ -18,9 +18,9 @@ public class MRBenchmarkResultService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
+
 	public static final String COLLECTION_NAME = "mr_benchmark_result";
-	
+
 	public void addBenchmarkResult(MRBenchmarkResult result) {
 		if (!mongoTemplate.collectionExists(MRBenchmarkResult.class)) {
 			mongoTemplate.createCollection(MRBenchmarkResult.class);
@@ -29,24 +29,24 @@ public class MRBenchmarkResultService {
 		mongoTemplate.insert(result, COLLECTION_NAME);
 		Log.info("SAVE SUCCESS!");
 	}
-	
+
 	public MRBenchmarkResult getBenchmarkResult(String id) {
 		return mongoTemplate.findById(id, MRBenchmarkResult.class, COLLECTION_NAME);
 	}
-	
+
 	public List<MRBenchmarkResult> listBenchmarkResult() {
 		return mongoTemplate.findAll(MRBenchmarkResult.class, COLLECTION_NAME);
 	}
-	
+
 	public List<MRBenchmarkResult> listBenchmarkResultByDate() {
 		Query q = new Query().with(new Sort(Sort.Direction.DESC, "date"));
 		return mongoTemplate.find(q, MRBenchmarkResult.class, COLLECTION_NAME);
 	}
-	
+
 	public void deleteBenchmarkResult(MRBenchmarkResult result) {
 		mongoTemplate.remove(result, COLLECTION_NAME);
 	}
-	
+
 	public void updateBenchmarkResult(MRBenchmarkResult result) {
 		mongoTemplate.insert(result, COLLECTION_NAME);		
 	}
@@ -56,5 +56,4 @@ public class MRBenchmarkResultService {
 		q.addCriteria(Criteria.where("clusterId").is(clusterId));
 		return mongoTemplate.find(q, MRBenchmarkResult.class, COLLECTION_NAME);
 	}
-	
 }

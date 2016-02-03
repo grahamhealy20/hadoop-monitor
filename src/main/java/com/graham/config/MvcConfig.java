@@ -26,12 +26,12 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
-	
+
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
-	
+
 	@Bean
 	public InternalResourceViewResolver jspViewResolver() {
 		InternalResourceViewResolver bean = new InternalResourceViewResolver();
@@ -40,14 +40,13 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 		return bean;
 	}
 	
+	// Mongo Bean config
 	public @Bean Mongo mongo() throws Exception {
-	      return new MongoClient("localhost");
-	  }
+		return new MongoClient("localhost");
+	}
 
-	  public @Bean MongoTemplate mongoTemplate() throws Exception {
-	      return new MongoTemplate(mongo(), "testHadoop");
-	  }
-	
-	
-	
+	public @Bean MongoTemplate mongoTemplate() throws Exception {
+		return new MongoTemplate(mongo(), "testHadoop");
+	}
+
 }
