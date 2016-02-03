@@ -103,5 +103,56 @@
 		</div>
 	</div>
 	
+	
+	<script>
+	
+	var stompClient = null;
+	
+	function setConnected(connected) {
+        document.getElementById('connect').disabled = connected;
+        document.getElementById('disconnect').disabled = !connected;
+        document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
+        document.getElementById('response').innerHTML = '';
+	}
+	
+	function trigger() {
+		$.ajax({
+			url: "/HadoopMon/trigger"
+		}).done(function(data) {
+			console.log("Done");
+		});
+	}
+	
+	 function connect() {
+         var socket = new SockJS('/HadoopMon/hello');
+         stompClient = Stomp.over(socket);
+         stompClient.connect('', '', function(frame) {
+        	 
+         setConnected(true);
+             console.log('Connected: ' + frame);
+             stompClient.subscribe("/data/0", function(message){
+                 console.log(message);
+             });
+         });
+     }
+	 
+	 function disconnect() {
+         if (stompClient != null) {
+             stompClient.disconnect();
+         }
+         setConnected(false);
+         console.log("Disconnected");
+     }
+
+     function showGreeting(message) {
+         var response = document.getElementById('response');
+         var p = document.createElement('p');
+         p.style.wordWrap = 'break-word';
+         p.appendChild(document.createTextNode(message));
+         response.appendChild(p);
+     }	
+	
+	</script>
+	
 </body>
 </html>

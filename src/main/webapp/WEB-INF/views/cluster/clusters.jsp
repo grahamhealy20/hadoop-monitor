@@ -27,6 +27,10 @@
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
 
+<script src="${pageContext.request.contextPath}/resources/sockjs-0.3.4.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/stomp.min.js"></script>
+
+<script src="${pageContext.request.contextPath}/resources/js/metricsocket.js"></script>
 
 <style>
 .pace {
@@ -55,7 +59,6 @@
 </style>
 </head>
 
-
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -78,7 +81,6 @@
 						class="sr-only">(current)</span></a></li>
 			</ul>
 			
-			
 		<ul class="nav navbar-nav navbar-right">
 			<sec:authorize access="isAuthenticated()">
 			    <li><a href=""><sec:authentication property="principal.username" /></a></li>
@@ -89,10 +91,12 @@
 		</div>
 	</div>
 </nav>
+
 <body>
 
 	<div class="container-fluid">
 		<h1>Clusters</h1>
+		<h2 id="time"></h2>
 		<div class="row">
 	
 			<div class="col-md-12 table-responsive">
@@ -129,35 +133,8 @@
 
 	</div>
 	
-	<script>
-		$(document).ready(function() {
-			
-			$('#dfsioAsync').click(function(e) {
-				
-				
-				$.ajax({
-					url: "dfsio",
-					method: "POST",
-					data: {
-						numFiles: $('#numFiles').val(),
-						fileSize: $('#fileSize').val()
-					},
-					success: function(data) {
-						console.log(data);
-						$('tbody').prepend('<tr><td>' + data.type + '</td> <td>' + data.date +'</td> <td>' + data.nrFiles +'</td> <td class="megabyte">' + data.totalMb + '</td> <td class="megabytePerSec">' + data.throughputMb + '</td> <td class="megabytePerSec">'+ data.avgIORate +'</td> <td>'+ data.stdDeviation + '</td> <td class="seconds">'+ data.totalTime +'</td>' +
-							'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
-							'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
-						
-					}
-					
-				});
-				console.log("Preventing Default");
-				e.preventDefault();
-				
-			});
-			
-			
-		});
-	</script>
+	
+	
+	
 </body>
 </html>

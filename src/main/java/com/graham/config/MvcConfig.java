@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -15,6 +16,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 
 @EnableWebMvc
+@EnableScheduling
 @Configuration
 @ComponentScan(basePackages = {"com.graham.*"})
 @Import({SecurityConfig.class})
