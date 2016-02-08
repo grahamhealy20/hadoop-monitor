@@ -79,7 +79,7 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/HadoopMon/cluster/clusters">Hadoop Monitor</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/cluster/clusters">Hadoop Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->

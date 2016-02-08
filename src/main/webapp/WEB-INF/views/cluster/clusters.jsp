@@ -70,7 +70,7 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/HadoopMon/cluster/clusters">Hadoop Monitor</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/cluster/clusters">Hadoop Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -86,7 +86,7 @@
 			    <li><a href=""><sec:authentication property="principal.username" /></a></li>
 			</sec:authorize>
 			
-        	<li><a href="/HadoopMon/logout">Logout</a></li>
+        	<li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
       	</ul>
 		</div>
 	</div>
@@ -109,12 +109,10 @@
 							<th>Name</th>
 							<th>IP Address</th>
 						</tr>
-
 					</thead>
 
 					<tbody>
 						<c:forEach var="cluster" items="${clusters}">
-
 							<tr>
 								<td>${cluster.name}</td>
 								<td>${cluster.ipAddress}</td>
@@ -122,20 +120,11 @@
 									href="cluster?id=${cluster.id}">Details</a> <a
 									class="btn btn-danger btn-xs" href="delete?id=${cluster.id}">Delete</a></td>
 							</tr>
-
 						</c:forEach>
 					</tbody>
 				</table>
 			</div>
-
 		</div>
-
-
-
 	</div>
-	
-	
-	
-	
 </body>
 </html>

@@ -109,7 +109,7 @@
     <style>
          #body {
              position: relative;
-             background: url(/HadoopMon/resources/images/background.jpg) no-repeat;
+             background: url(${pageContext.request.contextPath}/resources/images/background.jpg) no-repeat;
              background-attachment: fixed;
              background-repeat: no-repeat;
              background-size: cover;
@@ -118,7 +118,7 @@
         
          .blur { 
              position: absolute; 
-             background: url(/HadoopMon/resources/images/background.jpg) no-repeat;
+             background: url(${pageContext.request.contextPath}/resources/images/background.jpg) no-repeat;
              background-attachment: fixed;
              background-repeat: no-repeat;
              background-size: cover;

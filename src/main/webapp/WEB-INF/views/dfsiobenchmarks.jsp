@@ -85,14 +85,14 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/HadoopMon/cluster/clusters">Hadoop Monitor</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/cluster/clusters">Hadoop Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="/HadoopMon/cluster/clusters">Clusters</a></li>
+				<li><a href="${pageContext.request.contextPath}/cluster/clusters">Clusters</a></li>
 			</ul>
 		</div>
 	</div>
@@ -101,11 +101,11 @@
 
 	<div class="sidebar">
 		<ul>
-			<li><a href="/HadoopMon/cluster/cluster?id=${cluster.id}">Overview</a></li>
+			<li><a href="${pageContext.request.contextPath}/cluster/cluster?id=${cluster.id}">Overview</a></li>
 			<li class="active"><a href="?id=${cluster.id}">DFSIO</a></li>
-			<li><a href="/HadoopMon/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
-			<li><a href="/HadoopMon/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
-			<li><a href="/HadoopMon/cluster/configure?id=${cluster.id}">Configure</a></li>
+			<li><a href="${pageContext.request.contextPath}/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
+			<li><a href="${pageContext.request.contextPath}/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
+			<li><a href="${pageContext.request.contextPath}/cluster/configure?id=${cluster.id}">Configure</a></li>
 		</ul>
 	</div>
 
@@ -176,8 +176,8 @@
 								<td>${benchmark.stdDeviation}</td>
 								<td class="seconds">${benchmark.totalTime}</td>
 								<td>
-								<a class="btn btn-info btn-xs"   href="/HadoopMon/dfsio/benchmark?id=${benchmark.id}">Details</a> 
-								<a class="btn btn-danger btn-xs" href="/HadoopMon/dfsio/delete?id=${benchmark.id}&clusterId=${cluster.id}">Delete</a></td>
+								<a class="btn btn-info btn-xs"   href="${pageContext.request.contextPath}/dfsio/benchmark?id=${benchmark.id}">Details</a> 
+								<a class="btn btn-danger btn-xs" href="${pageContext.request.contextPath}/dfsio/delete?id=${benchmark.id}&clusterId=${cluster.id}">Delete</a></td>
 							</tr>
 
 						</c:forEach>
@@ -199,7 +199,7 @@
 				var header = $("meta[name='_csrf_header']").attr("content");
 				
 				$.ajax({
-					url: "/HadoopMon/dfsio/dfsio",
+					url: "${pageContext.request.contextPath}/dfsio/dfsio",
 					method: "POST",
 					data: {
 						id: $('#id').val(),

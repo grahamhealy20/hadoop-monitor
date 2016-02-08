@@ -27,6 +27,3 @@ function disconnect() {
 	setConnected(false);
 	console.log("Disconnected");
 }
-
-//Connect to websocket
-//connect();

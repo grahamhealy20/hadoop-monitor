@@ -1,12 +1,7 @@
 package com.graham.controller;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -17,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Beans;
-import com.graham.model.metrics.MetricTest;
 import com.graham.model.utils.HttpHelper;
 
 // Controller to handle metrics
