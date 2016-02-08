@@ -96,11 +96,12 @@
 
 	<div class="container-fluid">
 		<h1>Clusters</h1>
-		<h2 id="time"></h2>
 		<div class="row">
 	
 			<div class="col-md-12 table-responsive">
 			<a href="add" class="btn btn-primary">Add Cluster</a>
+				
+				<p id="metrics"></p>
 				
 				<table class="table">
 					<thead>

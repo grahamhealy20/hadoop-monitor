@@ -1,9 +1,11 @@
 package com.graham.controller;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -11,6 +13,7 @@ import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
+import com.graham.model.metrics.Beans;
 import com.graham.model.metrics.MetricTest;
 import com.graham.model.utils.HttpHelper;
 
@@ -28,18 +31,20 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
 
-		http.downloadJmxMetrics("192.168.0.106:50070");
+		
+		Beans metrics = http.downloadJmxMetrics();
+
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 
 		String dateStr = dateFormat.format(date);
-		MetricTest mt = new MetricTest(dateStr);
+		//MetricTest mt = new MetricTest(metrics);
 
 		// Get clusters, loop over each and return metrics on separate channels
 		for(int i = 0; i < 3; i++) {			
 			System.out.println("Sending Cluster Metrics " + i);
-			this.messagingTemplate.convertAndSend("/data/" + i, mt);
+			this.messagingTemplate.convertAndSend("/data/" + i, metrics);
 		}
 	}
 
