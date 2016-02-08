@@ -39,15 +39,10 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date date = new Date();
-
-		String dateStr = dateFormat.format(date);
-		//MetricTest mt = new MetricTest(metrics);
 
 		for (Cluster cluster : clusters) {
 			Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
-			this.messagingTemplate.convertAndSend("/data/" + cluster.getIpAddress(), metrics);
+			this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
 		}
 	}
 

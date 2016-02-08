@@ -87,7 +87,7 @@
 		</div>
 	</div>
 </nav>
-<body onload="connect(${cluster.id})">
+<body onload="connect('${cluster.id}', onMetrics)">
 
 	<div class="sidebar">
 		<ul>
@@ -100,12 +100,45 @@
 	</div>
 
 	<div id="body" class="container-fluid">
-		<h1>Cluster Overview</h1>
-		<div class="col-md-12">
-			<h2>Name: ${cluster.name}</h2>
-			<h2>IP Address: ${cluster.ipAddress}</h2>
+		<div class="row">
+	
+			<h1>Cluster Overview</h1>
+			<div class="col-md-12">
+				<h2>Name: ${cluster.name}</h2>
+				<h2>IP Address: ${cluster.ipAddress}</h2>
+			
+			<br/>
+			</div>
+		</div>
+		
+		<div class="row">
+			<h2>JVM Metrics</h2>
+			<div class="col-md-3">
+	
+				<h4>Non Heap Memory Used</h4>
+				<p id="nonHeapMemory"></p>
+			</div>
+			
+			<div class="col-md-3">
+				<h4>Heap Memory Used</h4>
+				<p id="heapMem"></p>
+			</div>
 		</div>
 	</div>
+	
+	<script>
+	
+	// Websocket callback func
+	function onMetrics(data) {
+		console.log(data);
+		var jvm = data.beans[0];
+		console.log(jvm);
+		$('#nonHeapMemory').text(jvm.MemNonHeapUsedM);
+		$('#heapMem').text(jvm.MemHeapUsedM);
+		
+	}
+	
+	</script>
 	
 </body>
 </html>

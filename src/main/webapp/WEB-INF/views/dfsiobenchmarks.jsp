@@ -7,6 +7,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf" content="${_csrf.token }"/>
+<meta name="_csrf_header" content="${_csrf.headerName }"/>
 
 <title>DFSIO Benchmarks - Hadoop Monitor</title>
 
@@ -133,6 +135,11 @@
 				  </div>
 				  
 				  <button id="dfsioAsync" class="btn btn-primary">Run Benchmark</button>
+				  
+				                              <input type="hidden"                        
+							name="${_csrf.parameterName}"
+							value="${_csrf.token}"/>
+				  
 				</form>
 			
 				<table class="table">
@@ -188,7 +195,8 @@
 		$(document).ready(function() {
 			
 			$('#dfsioAsync').click(function(e) {
-				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
 				
 				$.ajax({
 					url: "/HadoopMon/dfsio/dfsio",
@@ -197,6 +205,9 @@
 						id: $('#id').val(),
 						numFiles: $('#numFiles').val(),
 						fileSize: $('#fileSize').val()
+					},
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader(header, token);
 					},
 					success: function(data) {
 						console.log(data);
