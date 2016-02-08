@@ -30,6 +30,10 @@
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
 
+<script src="${pageContext.request.contextPath}/resources/sockjs-0.3.4.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/stomp.min.js"></script>
+
+<script src="${pageContext.request.contextPath}/resources/js/metricsocket.js"></script>
 
 
 <style>
@@ -83,7 +87,7 @@
 		</div>
 	</div>
 </nav>
-<body>
+<body onload="connect(${cluster.id})">
 
 	<div class="sidebar">
 		<ul>
@@ -102,57 +106,6 @@
 			<h2>IP Address: ${cluster.ipAddress}</h2>
 		</div>
 	</div>
-	
-	
-	<script>
-	
-	var stompClient = null;
-	
-	function setConnected(connected) {
-        document.getElementById('connect').disabled = connected;
-        document.getElementById('disconnect').disabled = !connected;
-        document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
-        document.getElementById('response').innerHTML = '';
-	}
-	
-	function trigger() {
-		$.ajax({
-			url: "/HadoopMon/trigger"
-		}).done(function(data) {
-			console.log("Done");
-		});
-	}
-	
-	 function connect() {
-         var socket = new SockJS('/HadoopMon/hello');
-         stompClient = Stomp.over(socket);
-         stompClient.connect('', '', function(frame) {
-        	 
-         setConnected(true);
-             console.log('Connected: ' + frame);
-             stompClient.subscribe("/data/0", function(message){
-                 console.log(message);
-             });
-         });
-     }
-	 
-	 function disconnect() {
-         if (stompClient != null) {
-             stompClient.disconnect();
-         }
-         setConnected(false);
-         console.log("Disconnected");
-     }
-
-     function showGreeting(message) {
-         var response = document.getElementById('response');
-         var p = document.createElement('p');
-         p.style.wordWrap = 'break-word';
-         p.appendChild(document.createTextNode(message));
-         response.appendChild(p);
-     }	
-	
-	</script>
 	
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.graham.controller;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.http.client.ClientProtocolException;
@@ -13,6 +14,8 @@ import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
+import com.graham.model.Cluster;
+import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Beans;
 import com.graham.model.metrics.MetricTest;
 import com.graham.model.utils.HttpHelper;
@@ -21,6 +24,9 @@ import com.graham.model.utils.HttpHelper;
 @Controller
 public class MetricsController implements ApplicationListener<BrokerAvailabilityEvent>{
 	private final int DELAY = 1000;
+	
+	@Autowired
+	private ClusterService clusterService;
 
 	@Autowired
 	private MessageSendingOperations<String> messagingTemplate;
@@ -30,21 +36,18 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	// Publishes cluster metrics every set interval
 	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
+		// Grab clusters
+		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 
-		
-		Beans metrics = http.downloadJmxMetrics();
-
-		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 
 		String dateStr = dateFormat.format(date);
 		//MetricTest mt = new MetricTest(metrics);
 
-		// Get clusters, loop over each and return metrics on separate channels
-		for(int i = 0; i < 3; i++) {			
-			System.out.println("Sending Cluster Metrics " + i);
-			this.messagingTemplate.convertAndSend("/data/" + i, metrics);
+		for (Cluster cluster : clusters) {
+			Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+			this.messagingTemplate.convertAndSend("/data/" + cluster.getIpAddress(), metrics);
 		}
 	}
 
