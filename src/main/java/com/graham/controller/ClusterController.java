@@ -11,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
-import com.graham.model.utils.HttpHelper;
 
 
 @Controller
@@ -31,9 +30,6 @@ public class ClusterController {
 	public ModelAndView clusters() {
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 
-		HttpHelper http = new HttpHelper();
-		http.downloadHadoopClusterOverview();
-		
 		ModelAndView mv = new ModelAndView("/cluster/clusters");
 		mv.addObject("clusters", clusters);
 		return mv;

@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 import com.graham.model.metrics.MetricTest;
+import com.graham.model.utils.HttpHelper;
 
 // Controller to handle metrics
 @Controller
@@ -21,10 +22,14 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	@Autowired
 	private MessageSendingOperations<String> messagingTemplate;
 
+	private HttpHelper http = new HttpHelper();
+	
 	// Publishes cluster metrics every set interval
 	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
 
+		http.downloadJmxMetrics("192.168.0.106:50070");
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 
