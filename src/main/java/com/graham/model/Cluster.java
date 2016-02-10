@@ -116,8 +116,8 @@ public class Cluster {
 	
 	
 	// Runs TeraSort benchmark
-	public void runTeraSort() {
-		TeraSortBenchmarkThread tera = new TeraSortBenchmarkThread(ipAddress, username);
+	public void runTeraSortBenchmark(int size) {
+		TeraSortBenchmarkThread tera = new TeraSortBenchmarkThread(ipAddress, username, size);
 		tera.run();
 	}
 }

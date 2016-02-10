@@ -27,6 +27,7 @@
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css"></link>
 
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
@@ -74,7 +75,7 @@
 </head>
 
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-fixed-top navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">

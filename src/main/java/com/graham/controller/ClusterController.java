@@ -7,10 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
+import com.graham.model.utils.HttpHelper;
 
 
 @Controller
@@ -40,9 +42,17 @@ public class ClusterController {
 		ModelAndView mv = new ModelAndView("/cluster/addCluster");
 		return mv;
 	}
+	
+	@RequestMapping(value = "/add", method=RequestMethod.POST)
+	public String saveCluster(@RequestParam("name") String name, @RequestParam("ipAddress") String ipAddress) {
+		Cluster cluster = new Cluster(name, ipAddress);
+		
+		clusterService.addCluster(cluster);
+		return "redirect:/cluster/";
+	}
 
 	@RequestMapping(value = "/updateCluster", method = RequestMethod.POST)
-	public String saveCluster(@RequestParam("id") String id, @RequestParam("clusterName") String name, @RequestParam("ipAddress") String ipAddress, @RequestParam("throughputThreshold") String throughputThreshold) {
+	public String updateCluster(@RequestParam("id") String id, @RequestParam("clusterName") String name, @RequestParam("ipAddress") String ipAddress, @RequestParam("throughputThreshold") String throughputThreshold) {
 
 		Cluster cluster = clusterService.getCluster(id);
 
@@ -68,12 +78,13 @@ public class ClusterController {
 	public ModelAndView cluster(@RequestParam("id") String id) {
 		//Get cluster
 		Cluster cluster = clusterService.getCluster(id);
+		
 
 		ModelAndView mv = new ModelAndView("/cluster/overview");
 		mv.addObject("cluster", cluster);
 		return mv;	
 	}
-
+	
 	@RequestMapping("/configure")
 	public ModelAndView configureCluster(@RequestParam("id") String id) {
 		//Get cluster
@@ -82,5 +93,26 @@ public class ClusterController {
 		ModelAndView mv = new ModelAndView("/cluster/configure");
 		mv.addObject("cluster", cluster);
 		return mv;	
+	}
+	
+	@RequestMapping(value = "/log/namenode", produces="text/plain")
+	public @ResponseBody byte[] viewNamenodeLog(@RequestParam("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);
+		HttpHelper http = new HttpHelper();
+
+		//Download logs
+		String namenodeLog = http.downloadNameNodeLog(cluster.getIpAddress());
+		return namenodeLog.getBytes();
+	}
+	
+
+	@RequestMapping(value = "/log/datanode", produces="text/plain")
+	public @ResponseBody byte[] viewDatanodeLog(@RequestParam("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);
+		HttpHelper http = new HttpHelper();
+
+		//Download logs
+		String log = http.downloadDataNodeLog(cluster.getIpAddress());
+		return log.getBytes();
 	}
 }

@@ -7,12 +7,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf" content="${_csrf.token }"/>
+<meta name="_csrf_header" content="${_csrf.headerName }"/>
 
 <title>Cluster Overview - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css"></link>	
 
 <!-- jQuery library -->
 <script
@@ -60,10 +63,15 @@
   height: 6px;
 }
 
+textarea {
+	width: 100%;
+	height: 150px;
+}
+
 </style>
 </head>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-fixed-top navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
@@ -107,26 +115,92 @@
 				<h2>Name: ${cluster.name}</h2>
 				<h2>IP Address: ${cluster.ipAddress}</h2>
 			
-			<br/>
+			<hr/>
 			</div>
 		</div>
 		
 		<div class="row">
 			<h2>JVM Metrics</h2>
-			<div class="col-md-3">
-	
-				<h4>Non Heap Memory Used</h4>
-				<p id="nonHeapMemory"></p>
+			<div class="col-md-12">
+				<div class="col-md-3">
+		
+					<h4>Non Heap Memory Used</h4>
+					<p id="nonHeapMemory"></p>
+				</div>
+				
+				<div class="col-md-3">
+					<h4>Heap Memory Used</h4>
+					<p id="heapMem"></p>
+				</div>
+				
+				<div class="col-md-3">
+					<h4>Heap Memory Used</h4>
+					<p id="heapMem"></p>
+				</div>
+			
 			</div>
 			
-			<div class="col-md-3">
-				<h4>Heap Memory Used</h4>
-				<p id="heapMem"></p>
+			<div class="col-md-12">
+				<div class="col-md-3">
+		
+					<h4>Threads Blocked</h4>
+					<p id="threadsBlocked"></p>
+				</div>
+				
+				<div class="col-md-3">
+					<h4>Threads New</h4>
+					<p id="threadsNew"></p>
+				</div>
+				
+				<div class="col-md-3">
+					<h4>Threads Runnable</h4>
+					<p id="threadsRunnable"></p>
+				</div>
+
+				<div class="col-md-3">
+					<h4>Threads Waiting</h4>
+					<p id="threadsWaiting"></p>
+				</div>
 			</div>
 		</div>
+		
+		<!-- Logs -->
+		<div class="row">
+		<hr/>
+		<h2>System Logs</h2>
+			<div class="col-md-12">
+				<a href="log/namenode?id=${cluster.id }">Name Node</a>
+			</div>
+			<div class="col-md-12">
+				<a href="log/datanode?id=${cluster.id }">Data Node</a>
+			</div>
+			</div>
 	</div>
 	
 	<script>
+	
+	$.ajax({
+		url: "namenodelog",
+		type: "get",
+		data: {
+			id: "${cluster.id}"
+		},
+		success: function(data) {
+			$('#nameNode').text(data);
+		}
+	});
+	
+	//$.ajax({
+		//url: "datanodelog",
+		//type: "get",
+		//data: {
+			//id: "${cluster.id}"
+		//},
+		//success: function(data) {
+			//$('#dataNode').text(data);
+		//}
+	//});
+	
 	
 	// Websocket callback func
 	function onMetrics(data) {
@@ -136,6 +210,10 @@
 		$('#nonHeapMemory').text(jvm.MemNonHeapUsedM);
 		$('#heapMem').text(jvm.MemHeapUsedM);
 		
+		$('#threadsBlocked').text(jvm.ThreadsBlocked);
+		$('#threadsNew').text(jvm.ThreadsNew);
+		$('#threadsRunnable').text(jvm.ThreadsRunnable);
+		$('#threadsWaiting').text(jvm.ThreadsWaiting)
 	}
 	
 	</script>

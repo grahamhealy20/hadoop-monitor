@@ -33,7 +33,7 @@ public class MRBenchController {
 		return mv;	
 	}
 
-	// GET /test/
+	// POST /test/
 	@RequestMapping("/mrbench")
 	public @ResponseBody MRBenchmarkResult mrBenchAsync(String id, int numRuns) {
 		System.out.println("in controller");
@@ -82,7 +82,7 @@ public class MRBenchController {
 		// Get benchmark result
 		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
 		benchmarkResultService.deleteBenchmarkResult(result);
-		return new ModelAndView("redirect:/benchmarks");
+		return new ModelAndView("redirect:mrbenchmarks?id=" + result.getClusterId());
 	}
 
 	private MRBenchmarkResult benchmarkMRBenchAsync(String id, int numRuns) {

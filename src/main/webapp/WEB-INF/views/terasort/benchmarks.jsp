@@ -7,12 +7,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf" content="${_csrf.token }"/>
+<meta name="_csrf_header" content="${_csrf.headerName }"/>
 
 <title>TeraSort Benchmarks - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css"></link>	
 
 <!-- jQuery library -->
 <script
@@ -58,7 +61,7 @@
 </style>
 </head>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-fixed-top navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
@@ -110,8 +113,8 @@
 				  </div>
 				  
 				  <div class="form-group">
-				    <label for="numFiles">Number of Runs</label>
-				    <input type="number" class="form-control" id="numRuns" name="numRuns" placeholder="1" value="10" min="1" required>
+				    <label for="size">Sort Size</label>
+				    <input type="number" class="form-control" id="size" name="size" placeholder="1" value="10" min="1" required>
 				  </div>
 				 
 				  <button id="mrBenchAsync" class="btn btn-primary">Run Benchmark</button>
@@ -163,20 +166,24 @@
 		$(document).ready(function() {
 			
 			$('#mrBenchAsync').click(function(e) {
-				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
 				
 				$.ajax({
-					url: "${pageContext.request.contextPath}/mrbench/mrbench",
+					url: "${pageContext.request.contextPath}/terasort/terasort",
 					method: "POST",
 					data: {
 						id: $('#id').val(),
-						numRuns: $('#numRuns').val()						
+						size: $('#size').val()						
+					},
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader(header, token);
 					},
 					success: function(data) {
 						console.log(data);
-						$('tbody').prepend('<tr><td>' + data.clusterName + '</td> <td>' + data.date + '</td> <td>' + data.numRuns +'</td> <td>' + data.dataLines +'</td> <td>' + data.maps + '</td> <td>' + data.reduces + '</td> <td class="milliseconds">'+ data.totalTime +'</td>' +
-							'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
-							'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
+						//$('tbody').prepend('<tr><td>' + data.clusterName + '</td> <td>' + data.date + '</td> <td>' + data.numRuns +'</td> <td>' + data.dataLines +'</td> <td>' + data.maps + '</td> <td>' + data.reduces + '</td> <td class="milliseconds">'+ data.totalTime +'</td>' +
+							//'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
+							//'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
 						
 					}
 					

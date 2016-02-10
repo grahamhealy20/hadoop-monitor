@@ -75,10 +75,10 @@ public class DFSIOBenchmarkThread implements Runnable {
 		// Run DFSIO Benchmark
 		TestDFSIO testDFSIO = new TestDFSIO();
 		JobConf jobConf = new JobConf();
-		jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
+		//jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
 		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress + ":9000");
 		jobConf.set("hadoop.job.ugi", user);
-		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
+		jobConf.set("yarn.resourcemanager.address", ipAddress + ":5001");
 		jobConf.set("mapreduce.framework.name", "yarn");
 
 		//jobConf.set("test.build.data", "/bench/");

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
+import com.graham.model.metrics.Apps;
 import com.graham.model.metrics.Beans;
 import com.graham.model.utils.HttpHelper;
 
@@ -32,7 +33,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	public void sendDataUpdates() {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
-
 
 		for (Cluster cluster : clusters) {
 			Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());

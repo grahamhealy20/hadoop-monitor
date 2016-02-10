@@ -7,6 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf" content="${_csrf.token }"/>
+<meta name="_csrf_header" content="${_csrf.headerName }"/>
+
 <title>Add a Cluster - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
@@ -23,6 +26,7 @@
 	
 <!-- PACE JS -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css"></link>
 	
 
 <style>
@@ -60,7 +64,7 @@
 </style>
 </head>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-fixed-top navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
@@ -105,6 +109,8 @@
 				    <label for="ipAddress">IP Address</label>
 				    <input type="text" class="form-control" id="ipAddress" name="ipAddress" placeholder="IP Address" required>
 				  </div>
+				  
+				  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<hr />
 				  <a class="btn btn-default" href="clusters">Back to Clusters</a>
 				  <button type="submit" class="btn btn-primary">Add new Cluster</button>

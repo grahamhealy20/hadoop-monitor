@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
-import com.graham.model.benchmarks.MRBenchmarkResult;
+import com.graham.model.benchmarks.TeraSortBenchmarkResult;
 import com.graham.model.dbaccess.ClusterService;
-import com.graham.model.dbaccess.MRBenchmarkResultService;
+import com.graham.model.dbaccess.TeraSortBenchmarkResultService;
 
 @Controller
 @RequestMapping("terasort")
 public class TeraSortController {
 
 	@Autowired
-	private MRBenchmarkResultService benchmarkResultService;
+	private TeraSortBenchmarkResultService benchmarkResultService;
 
 	@Autowired
 	private ClusterService clusterService;
@@ -33,21 +33,21 @@ public class TeraSortController {
 	}
 
 	// GET /test/
-	@RequestMapping("/mrbench")
-	public @ResponseBody MRBenchmarkResult mrBenchAsync(String id, int numRuns) {
+	@RequestMapping("/terasort")
+	public @ResponseBody void teraSortAsync(String id, int size) {
 		System.out.println("in controller");
 
-		MRBenchmarkResult result = benchmarkMRBenchAsync(id, numRuns);
-		benchmarkResultService.addBenchmarkResult(result);
+		benchmarkTerasortAsync(id, size);
+		//benchmarkResultService.addBenchmarkResult(result);
 
-		return result;
+		//return result;
 	}
 
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
 	public ModelAndView benchmarksById(@RequestParam("id") String id) {
 		// Get all MRBenchmarks
-		ArrayList<MRBenchmarkResult> results = (ArrayList<MRBenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
+		ArrayList<TeraSortBenchmarkResult> results = (ArrayList<TeraSortBenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
 
 		ModelAndView mv = new ModelAndView("terasort/benchmarks");
 		mv.addObject("cluster",  clusterService.getCluster(id));
@@ -63,7 +63,7 @@ public class TeraSortController {
 		ModelAndView mv;
 
 		// Get benchmark result
-		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
+		TeraSortBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
 		if(result != null) {
 			mv = new ModelAndView("terasort/benchmark");
 			mv.addObject("benchmark", result);
@@ -79,17 +79,16 @@ public class TeraSortController {
 	public ModelAndView delete(@RequestParam("id") String id) {
 
 		// Get benchmark result
-		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
+		TeraSortBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
 		benchmarkResultService.deleteBenchmarkResult(result);
 		return new ModelAndView("redirect:/benchmarks");
 	}
 
-	private MRBenchmarkResult benchmarkMRBenchAsync(String id, int numRuns) {
+	private void benchmarkTerasortAsync(String id, int size) {
 		Cluster cluster = clusterService.getCluster(id);
-		MRBenchmarkResult result = cluster.runMRBenchmarkAsync(numRuns);
-		result.setClusterName(cluster.getName());
-		result.setClusterId(cluster.getId());
-		return result;
+		cluster.runTeraSortBenchmark(size);
+		//result.setClusterName(cluster.getName());
+		//result.setClusterId(cluster.getId());
 	}
 
 }

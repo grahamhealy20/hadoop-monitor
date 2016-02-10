@@ -18,7 +18,7 @@ public class TeraSortBenchmarkThread {
 	
 	private String ipAddress;
 	private String user;
-	
+	private int size;
 	
 	public String getIpAddress() {
 		return ipAddress;
@@ -36,29 +36,40 @@ public class TeraSortBenchmarkThread {
 		this.user = user;
 	}
 	
-	public TeraSortBenchmarkThread(String ipAddress, String user) {
+	public int getSize() {
+		return size;
+	}
+	
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+	public TeraSortBenchmarkThread(String ipAddress, String user, int size) {
 		setIpAddress(ipAddress);
 		setUser(user);
+		setSize(size);
 	}
 	
 	public void run() {
+		
 		//Set config
 		JobConf jobConf = new JobConf();
 		//jobConf.set("test.build.data", "/bench/");
 		
-		jobConf.set("test.build.data", "home/hadoop/benchmark/TeraSort");
+		//jobConf.set("test.build.data", "home/hadoop/benchmark/TeraSort");
 		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress + ":9000");
 		jobConf.set("hadoop.job.ugi", user);
-		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
+		jobConf.set("yarn.resourcemanager.address", ipAddress + ":5001");
 		jobConf.set("mapreduce.framework.name", "yarn");
+		
 		Log.info("\nThread created. Running TeraGen facility\n");
 		
 		//Try and delete previous data
 		String teraGenFileName = "terasortInput";
 		String teraGenLocation = "/bench/" + teraGenFileName;
 		
-		Log.info("\nDeleting File");
 		try {
+			Log.info("\nDeleting TeraGen File");
 			FileSystem fs = FileSystem.get(jobConf);
 			boolean recursive = true;
 			fs.delete(new Path(teraGenLocation), recursive);
@@ -71,7 +82,7 @@ public class TeraSortBenchmarkThread {
 		teraGen.setConf(jobConf);
 		
 		try{
-		teraGen.run(String.format("100000 %s", teraGenLocation).split(" "));
+		teraGen.run(String.format("%d %s", size, teraGenLocation).split(" "));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -82,7 +93,7 @@ public class TeraSortBenchmarkThread {
 			e.printStackTrace();
 		}
 		
-		Log.info("\nThread created. Running TeraSort benchmark\n");
+		Log.info("\nRunning TeraSort benchmark\n");
 		
 		String teraSortFileName = "terasortOutput";
 		String teraSortLocation = "/bench/" + teraSortFileName;
@@ -91,14 +102,15 @@ public class TeraSortBenchmarkThread {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
 		Date date = new Date();
 		String fileOutputName = "TeraSortBenchmark-" + dateFormat.format(date) + ".txt";
-
 		// File output location
 		String location = "/home/hadoop/" + fileOutputName;
+		
+		
 		TeraSort teraSort = new TeraSort();		
 		teraSort.setConf(jobConf);
 		
-		Log.info("\nDeleting File");
 		try {
+			Log.info("\nDeleting TeraSort Output File if already exists");
 			FileSystem fs = FileSystem.get(jobConf);
 			boolean recursive = true;
 			fs.delete(new Path(teraSortLocation), recursive);
@@ -108,14 +120,10 @@ public class TeraSortBenchmarkThread {
 		}
 		
 		PrintStream out = System.out;
-		PrintStream fileOut = null;
-		
 		com.graham.model.utils.Utilities.pipeOutputToFile(location);
-		
-		System.out.println("Passing stdout to file");
-		System.setOut(fileOut);
-		
+	
 		try {
+			Log.info("Running TeraSort");
 			teraSort.run(String.format("%s %s", teraGenLocation, teraSortLocation).split(" "));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -132,8 +140,8 @@ public class TeraSortBenchmarkThread {
 		String teraValFileName = "terasortValidate";
 		String teraValLocation = "/bench/" + teraValFileName;
 		
-		Log.info("\nDeleting File");
 		try {
+			Log.info("\nDeleting TeraValidate File if already exists");
 			FileSystem fs = FileSystem.get(jobConf);
 			boolean recursive = true;
 			fs.delete(new Path(teraValLocation), recursive);

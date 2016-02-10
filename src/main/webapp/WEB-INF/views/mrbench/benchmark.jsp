@@ -7,11 +7,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf" content="${_csrf.token }"/>
+<meta name="_csrf_header" content="${_csrf.headerName }"/>
+
 <title>Benchmark Details - Hadoop Monitor</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css"></link>	
 
 <!-- jQuery library -->
 <script
@@ -65,7 +69,7 @@
 </style>
 </head>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-fixed-top navbar-inverse">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
@@ -91,7 +95,7 @@
 
 <body>
 	<ol class="breadcrumb">
-		<li><a href="benchmarks">Benchmarks</a></li>
+		<li><a href="mrbenchmarks?id=${benchmark.clusterId }">Benchmarks</a></li>
 		<li class="active">Benchmark Details</li>
 	</ol>
 	<div class="container-fluid">
@@ -107,7 +111,7 @@
 
 				
 				<hr />
-				<a class="btn btn-primary" href="benchmarks">Back to Benchmarks</a>
+				<a class="btn btn-primary" href="mrbenchmarks?id=${benchmark.clusterId}">Back to Benchmarks</a>
 				<a class="btn btn-danger" href="delete?id=${benchmark.id}">Delete
 					Benchmark</a>
 			</div>

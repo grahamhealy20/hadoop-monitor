@@ -68,8 +68,8 @@ public class MRBenchThread implements Runnable {
 		
 		JobConf jobConf = new JobConf();
 		jobConf.set("test.build.data", "home/hadoop/benchmark/MRBench");
-		jobConf.set("fs.defaultFS", "hdfs://192.168.0.106:9000");
-		jobConf.set("yarn.resourcemanager.address", "192.168.0.106:5001");
+		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress +":9000");
+		jobConf.set("yarn.resourcemanager.address", ipAddress + ":5001");
 		jobConf.set("mapreduce.framework.name", "yarn");
 		
 		MRBench mr = new MRBench();

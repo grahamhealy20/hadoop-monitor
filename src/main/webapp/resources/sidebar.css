@@ -3,7 +3,7 @@
 	padding-top: 50px;
  	width: 250px;
 	background-color: rgb(236, 236, 236);
-	position: absolute;
+	position: fixed;
 	top: 0px;
 	left: 0px;
 	height: 100%;
