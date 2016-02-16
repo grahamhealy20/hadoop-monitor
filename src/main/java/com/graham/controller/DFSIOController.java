@@ -3,6 +3,7 @@ package com.graham.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
@@ -46,7 +47,7 @@ public class DFSIOController {
 
 	// GET /test/
 	@RequestMapping("/dfsio")
-	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws IOException {
+	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws IOException, RemoteException {
 		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
@@ -61,7 +62,19 @@ public class DFSIOController {
 			
 		};
 	}
-
+	
+	// Handles an error in Cluster connection
+	@ExceptionHandler(IOException.class)
+	public ResponseEntity<String> handleConnectionFailure() {
+		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+	}
+	
+	// Handles an error in Cluster connection
+	@ExceptionHandler(RemoteException.class)
+	public ResponseEntity<String> handleRemoteError() {
+		return new ResponseEntity<String>(HttpStatus.TOO_MANY_REQUESTS);
+	}
+	
 	// GET /benchmarks/
 	@RequestMapping("/benchmarks")
 	public ModelAndView benchmarks() {
@@ -135,11 +148,6 @@ public class DFSIOController {
 		return result;
 	}
 	
-	// Handles an error in Cluster connection
-	@ExceptionHandler(IOException.class)
-	public ResponseEntity<String> handleConnectionFailure() {
-		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-	}
 
 	// Runs DFSIO benchmark via command line
 	@SuppressWarnings("unused")
