@@ -1,9 +1,16 @@
 package com.graham.controller;
 
+import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,13 +42,43 @@ public class MRBenchController {
 
 	// POST /test/
 	@RequestMapping("/mrbench")
-	public @ResponseBody MRBenchmarkResult mrBenchAsync(String id, int numRuns) {
+	public @ResponseBody Callable<MRBenchmarkResult> mrBenchAsync(String id, int numRuns) throws Exception {
 		System.out.println("in controller");
 
 		MRBenchmarkResult result = benchmarkMRBenchAsync(id, numRuns);
 		benchmarkResultService.addBenchmarkResult(result);
 
-		return result;
+		return new Callable<MRBenchmarkResult>() {
+
+			@Override
+			public MRBenchmarkResult call() throws Exception {
+				// TODO Auto-generated method stub
+				return result;
+			}
+
+		};
+	}
+
+	// Handles an error in Cluster connection
+	@ExceptionHandler({IOException.class, ConnectTimeoutException.class})
+	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
+		ex.printStackTrace();
+		System.out.println("Timeout handled");
+		return new ResponseEntity<String>("Cluster Connection Failure", HttpStatus.BAD_REQUEST);
+	}
+
+	// Handles an error in Cluster connection
+	@ExceptionHandler(RemoteException.class)
+	public ResponseEntity<String> handleRemoteError(RemoteException ex) {
+		ex.printStackTrace();
+		return new ResponseEntity<String>("Cluster error", HttpStatus.TOO_MANY_REQUESTS);
+	}
+
+	// Handles an error in Cluster connection
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
+		ex.printStackTrace();
+		return new ResponseEntity<String>("Bad IP address", HttpStatus.BAD_REQUEST);
 	}
 
 	// GET /benchmarks/
@@ -85,7 +122,7 @@ public class MRBenchController {
 		return new ModelAndView("redirect:mrbenchmarks?id=" + result.getClusterId());
 	}
 
-	private MRBenchmarkResult benchmarkMRBenchAsync(String id, int numRuns) {
+	private MRBenchmarkResult benchmarkMRBenchAsync(String id, int numRuns) throws Exception {
 		Cluster cluster = clusterService.getCluster(id);
 		MRBenchmarkResult result = cluster.runMRBenchmarkAsync(numRuns);
 		result.setClusterName(cluster.getName());

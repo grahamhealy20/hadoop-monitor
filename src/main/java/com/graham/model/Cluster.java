@@ -91,23 +91,12 @@ public class Cluster {
 	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException {
 		Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
 		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-		
-		dfsio.runBenchmark();
-		return dfsio.getBenchmarkResult();
+		return dfsio.runBenchmark();
 	}
 	
-	public MRBenchmarkResult runMRBenchmarkAsync(int numRuns) {
+	public MRBenchmarkResult runMRBenchmarkAsync(int numRuns) throws Exception {
 		MRBenchThread mrbench = new MRBenchThread(ipAddress, username, numRuns);
-		Thread t = new Thread(mrbench);
-		t.start();
-		
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		return mrbench.getBenchmarkResult();
+		return mrbench.run();
 	}
 	
 	

@@ -48,7 +48,7 @@ public class DFSIOController {
 
 	// GET /test/
 	@RequestMapping("/dfsio")
-	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws IOException, RemoteException, IllegalArgumentException, ConnectTimeoutException {
+	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws Exception {
 		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
@@ -60,25 +60,29 @@ public class DFSIOController {
 				// TODO Auto-generated method stub
 				return result;
 			}
-			
+
 		};
 	}
-	
+
 	// Handles an error in Cluster connection
 	@ExceptionHandler({IOException.class, ConnectTimeoutException.class})
-	public ResponseEntity<String> handleConnectionFailure() {
+	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
+		ex.printStackTrace();
+		System.out.println("Timeout handled");
 		return new ResponseEntity<String>("Cluster Connection Failure", HttpStatus.BAD_REQUEST);
 	}
-	
+
 	// Handles an error in Cluster connection
 	@ExceptionHandler(RemoteException.class)
-	public ResponseEntity<String> handleRemoteError() {
+	public ResponseEntity<String> handleRemoteError(RemoteException ex) {
+		ex.printStackTrace();
 		return new ResponseEntity<String>("Cluster error", HttpStatus.TOO_MANY_REQUESTS);
 	}
-	
+
 	// Handles an error in Cluster connection
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
+		ex.printStackTrace();
 		return new ResponseEntity<String>("Bad IP address", HttpStatus.BAD_REQUEST);
 	}
 
@@ -133,27 +137,5 @@ public class DFSIOController {
 		//		else
 		//			result.setAlarm(false);
 		return result;
-	}
-	
-	// Runs DFSIO benchmark via command line
-	@SuppressWarnings("unused")
-	private void benchmarkRuntime() {
-		try {
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-			PumpStreamHandler strHandler = new PumpStreamHandler(outStream);
-			CommandLine cmdLine = CommandLine.parse("./dfsio.sh");
-			DefaultExecutor exec = new DefaultExecutor();
-			exec.setStreamHandler(strHandler);
-			exec.setExitValue(0);
-			exec.setWorkingDirectory(new File("/home/hadoop/hadoop/share/hadoop/mapreduce"));
-			int exitCode = exec.execute(cmdLine);
-
-			System.out.println("OUT " + outStream.toString());
-			System.out.println("EXIT VAL " + exitCode);
-
-		} catch (IOException e) {
-			// TODO
-			e.printStackTrace();
-		}
 	}
 }
