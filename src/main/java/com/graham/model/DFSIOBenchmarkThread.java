@@ -11,6 +11,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.mortbay.log.Log;
 
 import com.graham.model.benchmarks.BenchmarkResult;
+import com.graham.model.utils.Utilities;
 
 public class DFSIOBenchmarkThread implements Runnable {
 	private BenchmarkResult bresult;
@@ -67,10 +68,9 @@ public class DFSIOBenchmarkThread implements Runnable {
 		// Generate unique result file name
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
 		Date date = new Date();
+		
 		String fileOutputName = "DFSIOBenchmark-" + dateFormat.format(date) + ".txt";
-
-		// File output location
-		String location = "/home/hadoop/" + fileOutputName;
+		String location = Utilities.checkDirectory("DFSIO") + "/" +  fileOutputName;
 
 		// Run DFSIO Benchmark
 		TestDFSIO testDFSIO = new TestDFSIO();
@@ -86,7 +86,7 @@ public class DFSIOBenchmarkThread implements Runnable {
 		testDFSIO.setConf(jobConf);
 
 		try {
-			testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile /home/hadoop/%s", getNumFiles(), getFileSize(), fileOutputName)
+			testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile %s", getNumFiles(), getFileSize(), location)
 					.split(" "));
 		} catch (IOException e) {
 

@@ -9,6 +9,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.MRBench;
 
 import com.graham.model.benchmarks.MRBenchmarkResult;
+import com.graham.model.utils.Utilities;
 
 public class MRBenchThread implements Runnable {
 	private MRBenchmarkResult result;
@@ -61,8 +62,9 @@ public class MRBenchThread implements Runnable {
 		// Generate unique result file name
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
 		Date date = new Date();
+		
 		String fileOutputName = "MRBenchmark-" + dateFormat.format(date) + ".txt";
-		String location = "/home/hadoop/" + fileOutputName;
+		String location = Utilities.checkDirectory("MRBench") + "/" +  fileOutputName;
 		
 		com.graham.model.utils.Utilities.pipeOutputToFile(location);
 		

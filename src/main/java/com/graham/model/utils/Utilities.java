@@ -71,6 +71,26 @@ public class Utilities {
 		}
 	}
 	
+	public static String getHomeDirectory() {
+		return System.getProperty("user.home");
+	}
+	
+	public static String getApplicationStorageDirectory() {
+		File directory = new File(getHomeDirectory() + "/monitor/");
+		if(!directory.exists()) {
+			directory.mkdirs();
+		}
+		return directory.toString();
+	}
+	
+	public static String checkDirectory(String location) {
+		File directory = new File(getApplicationStorageDirectory(), location);
+		if(!directory.exists()) {
+			directory.mkdirs();
+		}
+		return directory.toString();
+	}
+	
 	// Reads a file into a string via Apache Commons
 	private static String readFileToString(File fileToRead) {
 		String out = null;
@@ -82,4 +102,5 @@ public class Utilities {
 		}
 		return out;
 	}
+	
 }
