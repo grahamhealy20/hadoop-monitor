@@ -30,7 +30,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	private HttpHelper http = new HttpHelper();
 	
 	// Publishes cluster metrics every set interval
-	@Async
 	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
 		// Grab clusters

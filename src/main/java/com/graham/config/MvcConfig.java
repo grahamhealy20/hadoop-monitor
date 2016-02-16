@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -48,5 +49,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	public @Bean MongoTemplate mongoTemplate() throws Exception {
 		return new MongoTemplate(mongo(), Properties.getString("MvcConfig.mongoDatabase"));
 	}
+	
 
 }
