@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class DFSIOController {
 
 	// GET /test/
 	@RequestMapping("/dfsio")
-	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws IOException, RemoteException {
+	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws IOException, RemoteException, IllegalArgumentException, ConnectTimeoutException {
 		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
@@ -64,26 +65,21 @@ public class DFSIOController {
 	}
 	
 	// Handles an error in Cluster connection
-	@ExceptionHandler(IOException.class)
+	@ExceptionHandler({IOException.class, ConnectTimeoutException.class})
 	public ResponseEntity<String> handleConnectionFailure() {
-		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("Cluster Connection Failure", HttpStatus.BAD_REQUEST);
 	}
 	
 	// Handles an error in Cluster connection
 	@ExceptionHandler(RemoteException.class)
 	public ResponseEntity<String> handleRemoteError() {
-		return new ResponseEntity<String>(HttpStatus.TOO_MANY_REQUESTS);
+		return new ResponseEntity<String>("Cluster error", HttpStatus.TOO_MANY_REQUESTS);
 	}
 	
-	// GET /benchmarks/
-	@RequestMapping("/benchmarks")
-	public ModelAndView benchmarks() {
-		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listBenchmarkResultByDate();
-
-		ModelAndView mv = new ModelAndView("benchmarks");
-		mv.addObject("clusters", clusterService.listClusters());
-		mv.addObject("benchmarks", results);
-		return mv;
+	// Handles an error in Cluster connection
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
+		return new ResponseEntity<String>("Bad IP address", HttpStatus.BAD_REQUEST);
 	}
 
 	// GET /benchmarks/
@@ -125,15 +121,6 @@ public class DFSIOController {
 		return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
 	}
 
-//	private BenchmarkResult benchmarkDFSIO(String id, int numFiles, int fileSize) {
-//		Cluster cluster = clusterService.getCluster(id);
-//		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
-//		result.setClusterName(cluster.getName());
-//		return result;
-//	}
-	
-
-
 	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) throws IOException {
 		Cluster cluster = clusterService.getCluster(id);
 		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
@@ -148,7 +135,6 @@ public class DFSIOController {
 		return result;
 	}
 	
-
 	// Runs DFSIO benchmark via command line
 	@SuppressWarnings("unused")
 	private void benchmarkRuntime() {

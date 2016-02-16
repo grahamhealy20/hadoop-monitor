@@ -7,8 +7,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="_csrf" content="${_csrf.token }"/>
-<meta name="_csrf_header" content="${_csrf.headerName }"/>
+<meta name="_csrf" content="${_csrf.token }" />
+<meta name="_csrf_header" content="${_csrf.headerName }" />
 
 <title>DFSIO Benchmarks - Hadoop Monitor</title>
 
@@ -23,11 +23,14 @@
 <!-- Latest compiled JavaScript -->
 <script
 	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	
+
 <!-- PACE JS -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/sidebar.css"></link>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css"></link>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/pace.min.js"></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/sidebar.css"></link>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/main.css"></link>
 
 <!-- jQuery Validate 	 -->
 <!-- <script src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js"></script> -->
@@ -36,26 +39,25 @@
 
 <style>
 .pace {
-  -webkit-pointer-events: none;
-  pointer-events: none;
-
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+	-webkit-pointer-events: none;
+	pointer-events: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
 
 .pace-inactive {
-  display: none;
+	display: none;
 }
 
 .pace .pace-progress {
-  background: #29d;
-  position: absolute;
-  z-index: 2000;
-  top: 50px;
-  right: 100%;
-  width: 100%;
-  height: 6px;
+	background: #29d;
+	position: absolute;
+	z-index: 2000;
+	top: 50px;
+	right: 100%;
+	width: 100%;
+	height: 6px;
 }
 
 .megabyte:AFTER {
@@ -70,7 +72,14 @@
 	content: "s";
 }
 
-
+.alert {
+	z-index: 600;
+	position: fixed;
+	bottom: 0px;
+	left: 10px;
+	right: 10px;
+	display: none;
+}
 </style>
 </head>
 
@@ -86,14 +95,17 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${pageContext.request.contextPath}/cluster/clusters">Hadoop Monitor</a>
+			<a class="navbar-brand"
+				href="${pageContext.request.contextPath}/cluster/clusters">Hadoop
+				Monitor</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="${pageContext.request.contextPath}/cluster/clusters">Clusters</a></li>
+				<li><a
+					href="${pageContext.request.contextPath}/cluster/clusters">Clusters</a></li>
 			</ul>
 		</div>
 	</div>
@@ -102,11 +114,15 @@
 
 	<div class="sidebar">
 		<ul>
-			<li><a href="${pageContext.request.contextPath}/cluster/cluster?id=${cluster.id}">Overview</a></li>
+			<li><a
+				href="${pageContext.request.contextPath}/cluster/cluster?id=${cluster.id}">Overview</a></li>
 			<li class="active"><a href="?id=${cluster.id}">DFSIO</a></li>
-			<li><a href="${pageContext.request.contextPath}/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
-			<li><a href="${pageContext.request.contextPath}/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
-			<li><a href="${pageContext.request.contextPath}/cluster/configure?id=${cluster.id}">Configure</a></li>
+			<li><a
+				href="${pageContext.request.contextPath}/mrbench/mrbenchmarks?id=${cluster.id}">MRBench</a></li>
+			<li><a
+				href="${pageContext.request.contextPath}/terasort/benchmarks?id=${cluster.id}">TeraSort</a></li>
+			<li><a
+				href="${pageContext.request.contextPath}/cluster/configure?id=${cluster.id}">Configure</a></li>
 		</ul>
 	</div>
 
@@ -115,34 +131,36 @@
 		<div class="row">
 
 			<div class="col-md-12 table-responsive">
-			
+
 				<form id="dfsioForm" class="form-inline" action="test" method="get">
-				  <div class="form-group">
-				    <label for="cluster">Cluster</label>
-				    <select class="form-control" id="id" name="id" required>
-				    	<c:forEach var="cluster" items="${clusters}">
-				    		<option value="${cluster.id}"> ${cluster.name}</option>
-				    	</c:forEach>
-				    </select>
-				  </div>
-				  
-				  <div class="form-group">
-				    <label for="numFiles">Number of Files</label>
-				    <input type="number" class="form-control" id="numFiles" name="numFiles" placeholder="1" value="10" min="1" required>
-				  </div>
-				  <div class="form-group">
-				    <label for="fileSize">File Size</label>
-				    <input type="number" class="form-control" id="fileSize" name="fileSize" placeholder="1" value="100" min="1" required>
-				  </div>
-				  
-				  <button id="dfsioAsync" class="btn btn-primary">Run Benchmark</button>
-				  
-				                              <input type="hidden"                        
-							name="${_csrf.parameterName}"
-							value="${_csrf.token}"/>
-				  
+					<div class="form-group">
+						<label for="cluster">Cluster</label> <select class="form-control"
+							id="id" name="id" required>
+							<c:forEach var="cluster" items="${clusters}">
+								<option value="${cluster.id}">${cluster.name}</option>
+							</c:forEach>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="numFiles">Number of Files</label> <input type="number"
+							class="form-control" id="numFiles" name="numFiles"
+							placeholder="1" value="10" min="1" required>
+					</div>
+					<div class="form-group">
+						<label for="fileSize">File Size</label> <input type="number"
+							class="form-control" id="fileSize" name="fileSize"
+							placeholder="1" value="100" min="1" required>
+					</div>
+
+					<button id="dfsioAsync" class="btn btn-primary">Run
+						Benchmark</button>
+
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+
 				</form>
-			
+
 				<table class="table">
 					<thead>
 						<tr>
@@ -165,7 +183,7 @@
 							<c:if test="${benchmark.alarm eq true}">
 								<c:set value="danger" var="isAlarm"></c:set>
 							</c:if>
-							
+
 							<tr class="${isAlarm}">
 								<td>${benchmark.clusterName }</td>
 								<td>${benchmark.type}</td>
@@ -176,9 +194,10 @@
 								<td class="megabytePerSec">${benchmark.avgIORate}</td>
 								<td>${benchmark.stdDeviation}</td>
 								<td class="seconds">${benchmark.totalTime}</td>
-								<td>
-								<a class="btn btn-info btn-xs"   href="${pageContext.request.contextPath}/dfsio/benchmark?id=${benchmark.id}">Details</a> 
-								<a class="btn btn-danger btn-xs" href="${pageContext.request.contextPath}/dfsio/delete?id=${benchmark.id}&clusterId=${cluster.id}">Delete</a></td>
+								<td><a class="btn btn-info btn-xs"
+									href="${pageContext.request.contextPath}/dfsio/benchmark?id=${benchmark.id}">Details</a>
+									<a class="btn btn-danger btn-xs"
+									href="${pageContext.request.contextPath}/dfsio/delete?id=${benchmark.id}&clusterId=${cluster.id}">Delete</a></td>
 							</tr>
 
 						</c:forEach>
@@ -187,11 +206,12 @@
 			</div>
 
 		</div>
-
-
-
 	</div>
 	
+	
+
+
+
 	<script>
 		$(document).ready(function() {
 			
@@ -224,17 +244,36 @@
 						
 					},
 					 error: function (request, status, error) {
-					        alert(request.responseText);
+					 	//$('.title').text("Error");
+					    $('.title').text(error);
+					    $('.content').text(request.responseText);
+					    $('.alert').slideDown(100);
 					 }
 					
 				});
 				console.log("Preventing Default");
 				e.preventDefault();
 				
+			}); 
+			
+			$('.close').click(function(e) {
+				console.log("preventing click")
+				$('.alert').slideUp(100);
+				e.preventDefault();
 			});
 			
 			
 		});
 	</script>
+
+		<div class="alert alert-danger alert-dismissible" role="alert">
+			<button type="button" class="close"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<strong class="title">Warning!</strong>
+			<p class="content">Better check yourself, you're not looking too
+				good.</p>
+		</div>
 </body>
 </html>

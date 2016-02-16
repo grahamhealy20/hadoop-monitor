@@ -3,13 +3,14 @@ package com.graham.model;
 import java.io.IOException;
 
 import org.mortbay.log.Log;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
 
+@Document
 public class Cluster {
 	
-
 	private String id;
 	private String name;
 	private String ipAddress;

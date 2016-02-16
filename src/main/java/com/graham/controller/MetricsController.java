@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.ResourceAccessException;
@@ -41,7 +40,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}

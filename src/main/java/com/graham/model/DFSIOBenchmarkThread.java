@@ -8,7 +8,6 @@ import java.util.Date;
 
 import org.apache.hadoop.fs.TestDFSIO;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
 
 import com.graham.model.benchmarks.BenchmarkResult;
