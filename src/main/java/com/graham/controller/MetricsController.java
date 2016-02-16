@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
@@ -28,14 +30,20 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	private HttpHelper http = new HttpHelper();
 	
 	// Publishes cluster metrics every set interval
+	@Async
 	@Scheduled(fixedDelay = DELAY)
 	public void sendDataUpdates() {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 
 		for (Cluster cluster : clusters) {
-			Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
-			this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
+			try {
+				Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
+			} catch (ResourceAccessException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 		}
 	}
 

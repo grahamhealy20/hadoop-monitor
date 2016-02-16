@@ -1,5 +1,7 @@
 package com.graham.model;
 
+import java.io.IOException;
+
 import org.mortbay.log.Log;
 
 import com.graham.model.benchmarks.BenchmarkResult;
@@ -70,33 +72,26 @@ public class Cluster {
 	public void setThroughputThreshold(String throughputThreshold) {
 		this.throughputThreshold = throughputThreshold;
 	}
-
-	// Runs default benchmark
-	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) {
-		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress());
-		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-		Thread t = new Thread(dfsio);
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		return dfsio.getBenchmarkResult();
-	}
 	
-	public BenchmarkResult runDFSIOBenchmarkAsync(int numFiles, int fileSize) {
-		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
+//	public BenchmarkResult runDFSIOBenchmarkAsync(int numFiles, int fileSize) {
+//		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
+//		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
+//		Thread t = new Thread(dfsio);
+//		t.start();
+//		try {
+//			t.join();
+//		} catch (InterruptedException e) {
+//			
+//			e.printStackTrace();
+//		}
+//		return dfsio.getBenchmarkResult();
+//	}
+	
+	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException {
+		Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
 		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-		Thread t = new Thread(dfsio);
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
+		
+		dfsio.runBenchmark();
 		return dfsio.getBenchmarkResult();
 	}
 	

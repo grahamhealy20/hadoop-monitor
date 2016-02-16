@@ -179,29 +179,6 @@ textarea {
 	
 	<script>
 	
-	$.ajax({
-		url: "namenodelog",
-		type: "get",
-		data: {
-			id: "${cluster.id}"
-		},
-		success: function(data) {
-			$('#nameNode').text(data);
-		}
-	});
-	
-	//$.ajax({
-		//url: "datanodelog",
-		//type: "get",
-		//data: {
-			//id: "${cluster.id}"
-		//},
-		//success: function(data) {
-			//$('#dataNode').text(data);
-		//}
-	//});
-	
-	
 	// Websocket callback func
 	function onMetrics(data) {
 		console.log(data);

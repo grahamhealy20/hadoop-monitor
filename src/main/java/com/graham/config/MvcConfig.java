@@ -42,11 +42,11 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	
 	// Mongo Bean config
 	public @Bean Mongo mongo() throws Exception {
-		return new MongoClient("localhost");
+		return new MongoClient(Properties.getString("MvcConfig.mongoLocation"));
 	}
 
 	public @Bean MongoTemplate mongoTemplate() throws Exception {
-		return new MongoTemplate(mongo(), "testHadoop");
+		return new MongoTemplate(mongo(), Properties.getString("MvcConfig.mongoDatabase"));
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Date;
 
 import org.apache.hadoop.fs.TestDFSIO;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
 
 import com.graham.model.benchmarks.BenchmarkResult;
@@ -15,7 +16,7 @@ import com.graham.model.utils.Utilities;
 
 public class DFSIOBenchmarkThread implements Runnable {
 	private BenchmarkResult bresult;
-	
+
 	private String ipAddress;
 	private String user;
 	private int numFiles;
@@ -52,7 +53,7 @@ public class DFSIOBenchmarkThread implements Runnable {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	
+
 	public DFSIOBenchmarkThread(String ipAddress, String user, int numFiles, int fileSize) {
 		setIpAddress(ipAddress);
 		setUser(user);
@@ -62,13 +63,52 @@ public class DFSIOBenchmarkThread implements Runnable {
 
 	public void run() {
 		Log.info("Thread created. Running benchmark");
-		
+
 		ArrayList<String> formatRes = new ArrayList<String>();
 
 		// Generate unique result file name
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
 		Date date = new Date();
-		
+
+		String fileOutputName = "DFSIOBenchmark-" + dateFormat.format(date) + ".txt";
+		String location = Utilities.checkDirectory("DFSIO") + "/" +  fileOutputName;
+
+		// Run DFSIO Benchmark
+		TestDFSIO testDFSIO = new TestDFSIO();
+		JobConf jobConf = new JobConf();
+		//jobConf.set("test.build.data", "home/hadoop/benchmark/TestDFSIO");
+		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress + ":9000");
+		jobConf.set("hadoop.job.ugi", user);
+		jobConf.set("yarn.resourcemanager.address", ipAddress + ":5001");
+		jobConf.set("mapreduce.framework.name", "yarn");
+		jobConf.set("ipc.client.connect.max.retries.on.timeouts", "5");
+
+		//jobConf.set("test.build.data", "/bench/");
+
+		testDFSIO.setConf(jobConf);
+
+		try {
+			testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile %s", getNumFiles(), getFileSize(), location)
+					.split(" "));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Construct a benchmark result from the array list of values
+		formatRes = com.graham.model.utils.Utilities.splitDFSIOFile(location);
+		bresult = new BenchmarkResult(Character.toUpperCase(formatRes.get(0).charAt(0)) + formatRes.get(0).substring(1), formatRes.get(1), formatRes.get(2), formatRes.get(3),
+				formatRes.get(4), formatRes.get(5), formatRes.get(6), formatRes.get(7));
+
+		Log.info("Benchmark Complete");
+	}
+
+	public BenchmarkResult runBenchmark() throws IOException {
+		ArrayList<String> formatRes = new ArrayList<String>();
+
+		// Generate unique result file name
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
+		Date date = new Date();
+
 		String fileOutputName = "DFSIOBenchmark-" + dateFormat.format(date) + ".txt";
 		String location = Utilities.checkDirectory("DFSIO") + "/" +  fileOutputName;
 
@@ -82,16 +122,12 @@ public class DFSIOBenchmarkThread implements Runnable {
 		jobConf.set("mapreduce.framework.name", "yarn");
 
 		//jobConf.set("test.build.data", "/bench/");
-		
+
 		testDFSIO.setConf(jobConf);
 
-		try {
-			testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile %s", getNumFiles(), getFileSize(), location)
-					.split(" "));
-		} catch (IOException e) {
+		testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile %s", getNumFiles(), getFileSize(), location)
+				.split(" "));
 
-			e.printStackTrace();
-		}
 
 		// Construct a benchmark result from the array list of values
 		formatRes = com.graham.model.utils.Utilities.splitDFSIOFile(location);
@@ -99,6 +135,7 @@ public class DFSIOBenchmarkThread implements Runnable {
 				formatRes.get(4), formatRes.get(5), formatRes.get(6), formatRes.get(7));
 
 		Log.info("Benchmark Complete");
+		return bresult;
 	}
 
 	public BenchmarkResult getBenchmarkResult() {

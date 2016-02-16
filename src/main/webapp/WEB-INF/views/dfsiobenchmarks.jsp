@@ -222,7 +222,10 @@
 							'<td><a class="btn btn-info btn-xs" href="benchmark?id=' + data.id +'">Details</a> ' +
 							'<a class="btn btn-danger btn-xs" href="delete?id=' + data.id + '">Delete</a></td></td></tr>');
 						
-					}
+					},
+					 error: function (request, status, error) {
+					        alert(request.responseText);
+					 }
 					
 				});
 				console.log("Preventing Default");
