@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="sidebar.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
 </head>
 
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" ng-controller="NavbarCtrl">
@@ -34,14 +33,13 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#/"><strong>{{time | date:format }}</strong></a></li>
+                <li><a href="#/"><strong>{{time | date:format}}</strong></a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav><!-- /.navbar -->
 
 <body>
-
     <!--Template area inside ng-view -->
     <div ng-view>
 
@@ -56,16 +54,14 @@
 
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
-
-
     <script>
-        //Base URL
+        // Base URL
         var baseUrl = "http://192.168.0.106:8080/HadoopMon";
 
         // App declaration
         var app = angular.module('admin', ['ngRoute']);
 
-        //App configuration
+        // App configuration
         app.config(function ($routeProvider) {
 
             $routeProvider.
@@ -176,8 +172,7 @@
             $scope.isAlert = function (result) {
                 if (result.throughputMb < 10) {
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
@@ -195,9 +190,13 @@
                         id: $scope.cluster.id,
                         numFiles: $scope.form.nrFiles,
                         fileSize: $scope.form.fileSize
-                    }), {
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                    })
+                    }),
+                    {
+                       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    }).then(function (data) {
+                        console.log(data);
+                    }, handleError);
+
                 } else {
                     console.log("invalid");
                 }
@@ -241,39 +240,33 @@
             );
         });
 
-
         // Controller for sidebar
         app.controller('SidebarCtrl', function ($scope, $location) {
-
             //Check for current path for active element
             $scope.isCurrentPath = function (path) {
                 return $location.path() == path;
             }
         });
 
+        // Controller for the navigation bar
         app.controller('NavbarCtrl', function ($scope, $interval) {
-
             $scope.format = 'M/d/yy h:mm:ss a';
             $interval(function () {
                 $scope.time = Date.now();
             }, 10);
-
         });
 
         // Error Handler
         function handleError(response, status, error) {
-
+            console.log(response);
         }
 
-
-        //Sidebar directive
-
+        // Sidebar directive
         app.directive('sidebar', function () {
             return {
                 templateUrl: 'utils/sidebar.html'
             }
         });
-
 
     </script>
 </body>
