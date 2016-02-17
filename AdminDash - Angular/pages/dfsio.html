@@ -44,7 +44,7 @@
                     <a href="" class="btn btn-primary slide-tog">Compare</a>
                     <div class="action-area pull-right">
 
-                       <form name="benchmarkForm" class="form-inline" ng-submit="runDFSIOBenchmark()">
+                       <div ng-form name="benchmarkForm" class="form-inline">
                           <div class="form-group">
                              <label>Type</label>
                              <select class="form-control" ng-model="form.type">
@@ -62,8 +62,9 @@
                           <label for="fileSize">File Size (Mb)</label>
                           <input type="number" class="form-control" id="fileSize" placeholder="100" ng-model="form.fileSize" required min="1">
                         </div>
-                           <button type="submit" class="btn btn-primary">Run Benchmark</button>
-                       </form>
+   
+                           <a ng-click="runDFSIOBenchmark()" class="btn btn-primary">Run Benchmark</a>
+                       </div>
 
                     </div>
 

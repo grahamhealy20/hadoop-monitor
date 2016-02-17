@@ -185,21 +185,17 @@
             // Run benchmark on server
             $scope.runDFSIOBenchmark = function () {
 
-                console.log("num files:" + $scope.form.nrFiles);
-                console.log("file size:" + $scope.form.fileSize);
                 // Check if form is valid
                 if ($scope.benchmarkForm.$valid) {
-                    console.log("valid");
+                    console.log("id:" + $scope.cluster.id);
+                    console.log("num files:" + $scope.form.nrFiles);
+                    console.log("file size:" + $scope.form.fileSize);
+
                     $http.post(baseUrl + "/dfsio/dfsio", {
                         id: $scope.cluster.id,
                         numFiles: $scope.form.nrFiles,
                         fileSize: $scope.form.fileSize
-                    }).then(
-                        function (data) {
-
-                        },
-                        handleError
-                    );
+                    })
                 } else {
                     console.log("invalid");
                 }
