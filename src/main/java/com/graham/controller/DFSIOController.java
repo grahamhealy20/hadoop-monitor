@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,21 +29,38 @@ public class DFSIOController {
 
 	@Autowired
 	private BenchmarkResultService benchmarkResultService;
-
 	@Autowired
 	private ClusterService clusterService;
+	
+	// === DEPRACATED JSP CODE === //
 
-	// GET /
-	@RequestMapping("/")
-	public ModelAndView index() {
+	// GET /benchmarks/
+	@RequestMapping("/dfsiobenchmarks")
+	public ModelAndView benchmarksById(@RequestParam("id") String id) {
+		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
 
-		ModelAndView mv = new ModelAndView("login");
-		//mv.addObject("benchmarks", results);
-		return mv;	
+		ModelAndView mv = new ModelAndView("dfsiobenchmarks");
+		mv.addObject("cluster",  clusterService.getCluster(id));
+		mv.addObject("clusters", clusterService.listClusterById(id));
+		mv.addObject("dfsio", results);
+		return mv;
 	}
+	
+	// POST /benchmarks/{id}
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
 
+		// Get benchmark result
+
+		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
+		benchmarkResultService.deleteBenchmarkResult(result);
+		return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
+	}
+	
+	/// === REST FUNCTIONS === ///
+	
 	// GET /test/
-	@RequestMapping("/dfsio")
+	@RequestMapping(value = "/dfsio", method = RequestMethod.POST)
 	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws Exception {
 		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
@@ -57,6 +75,49 @@ public class DFSIOController {
 			}
 		};
 	}
+	
+	// REST GET /benchmarks/
+	@RequestMapping("/benchmarks/{id}")
+	public ResponseEntity<ArrayList<BenchmarkResult>> getBenchmarks(@PathVariable("id") String id) {
+		// Get benchmarks from DB
+		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
+		return new ResponseEntity<ArrayList<BenchmarkResult>>(results, HttpStatus.OK);
+	}
+
+	// GET /benchmarks/{id}
+	@RequestMapping(value = "/benchmark/{id}", method = RequestMethod.GET)
+	public ResponseEntity<BenchmarkResult> benchmark(@PathVariable("id") String id) {
+		
+		// Get benchmark result
+		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
+		if(result != null) {
+			return new ResponseEntity<BenchmarkResult>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	// POST /delete/{id}
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+	public ResponseEntity<String> deleteResult(@PathVariable("id") String id) {
+		// Get benchmark result
+		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
+		benchmarkResultService.deleteBenchmarkResult(result);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	// === PRIVATE CODE === // 
+
+	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) throws IOException {
+		Cluster cluster = clusterService.getCluster(id);
+		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
+		result.setClusterName(cluster.getName());
+		result.setClusterId(cluster.getId());
+		return result;
+	}
+	
+	
+	/// === ERROR HANDLING === ///
 
 	// Handles an error in Cluster connection
 	@ExceptionHandler({IOException.class, ConnectTimeoutException.class})
@@ -78,58 +139,5 @@ public class DFSIOController {
 	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
 		ex.printStackTrace();
 		return new ResponseEntity<String>("Bad IP address", HttpStatus.BAD_REQUEST);
-	}
-
-	// GET /benchmarks/
-	@RequestMapping("/dfsiobenchmarks")
-	public ModelAndView benchmarksById(@RequestParam("id") String id) {
-		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
-
-		ModelAndView mv = new ModelAndView("dfsiobenchmarks");
-		mv.addObject("cluster",  clusterService.getCluster(id));
-		mv.addObject("clusters", clusterService.listClusterById(id));
-		mv.addObject("dfsio", results);
-		return mv;
-	}
-
-	// GET /benchmarks?id={id}
-	@RequestMapping(value = "/benchmark", method = RequestMethod.GET)
-	public ModelAndView benchmark(@RequestParam("id") String id) {
-		ModelAndView mv;
-		// Get benchmark result
-		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
-		if(result != null) {
-			mv = new ModelAndView("benchmark");
-			mv.addObject("benchmark", result);
-		} else {
-			mv = new ModelAndView("error");
-			mv.addObject("message", "Benchmark not found");
-		}
-		return mv;
-	}
-
-	// GET /benchmarks?id={id}
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
-
-		// Get benchmark result
-
-		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
-		benchmarkResultService.deleteBenchmarkResult(result);
-		return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
-	}
-
-	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) throws IOException {
-		Cluster cluster = clusterService.getCluster(id);
-		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
-		result.setClusterName(cluster.getName());
-		result.setClusterId(cluster.getId());
-
-		// Set flag for poor performance
-		//		if(Double.parseDouble(result.getThroughputMb()) < Double.parseDouble(cluster.getThroughputThreshold()))
-		//			result.setAlarm(true);
-		//		else
-		//			result.setAlarm(false);
-		return result;
 	}
 }
