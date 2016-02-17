@@ -31,7 +31,7 @@
          </div>
      </div>
       </div>
-
+       
       <div class="row">
          <div class="col-md-12">
 
@@ -44,10 +44,10 @@
                     <a href="" class="btn btn-primary slide-tog">Compare</a>
                     <div class="action-area pull-right">
 
-                       <div class="form-inline">
+                       <form name="benchmarkForm" class="form-inline" ng-submit="runDFSIOBenchmark()">
                           <div class="form-group">
                              <label>Type</label>
-                             <select class="form-control">
+                             <select class="form-control" ng-model="form.type">
                                 <option>Read</option>
                                 <option>Write</option>
                             </select>
@@ -55,15 +55,15 @@
 
                           <div class="form-group">
                            <label for="nrFiles"># Files</label>
-                           <input type="number" class="form-control" id="nrFiles" placeholder="10">
+                           <input type="number" class="form-control" id="nrFiles" placeholder="10" ng-model="form.nrFiles" required min="1">
                          </div>
 
                          <div class="form-group">
                           <label for="fileSize">File Size (Mb)</label>
-                          <input type="number" class="form-control" id="fileSize" placeholder="100">
+                          <input type="number" class="form-control" id="fileSize" placeholder="100" ng-model="form.fileSize" required min="1">
                         </div>
-                        <a href="" ng-click="runDFSIOBenchmark()" class="btn btn-primary">Run Benchmark</a>
-                       </div>
+                           <button type="submit" class="btn btn-primary">Run Benchmark</button>
+                       </form>
 
                     </div>
 
@@ -84,7 +84,7 @@
 
                       <tbody>
 
-                          <tr ng-repeat="result in results">
+                          <tr ng-class="{ danger: isAlert(result) }" ng-repeat="result in results">
                               <td>{{result.type}}</td>
                               <td>{{result.date}}</td>
                               <td>{{result.nrFiles}}</td>

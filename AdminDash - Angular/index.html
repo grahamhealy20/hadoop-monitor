@@ -141,6 +141,7 @@
             $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
+
                 },
                 handleError
             );
@@ -169,6 +170,39 @@
                 $http.post(baseUrl + "/dfsio/delete/" + result.id, result).then(function (data) {
                     $scope.results.splice(index, 1);
                 });
+            }
+
+            // to decide wether a result is bad
+            $scope.isAlert = function (result) {
+                if (result.throughputMb < 10) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            // Run benchmark on server
+            $scope.runDFSIOBenchmark = function () {
+
+                console.log("num files:" + $scope.form.nrFiles);
+                console.log("file size:" + $scope.form.fileSize);
+                // Check if form is valid
+                if ($scope.benchmarkForm.$valid) {
+                    console.log("valid");
+                    $http.post(baseUrl + "/dfsio/dfsio", {
+                        id: $scope.cluster.id,
+                        numFiles: $scope.form.nrFiles,
+                        fileSize: $scope.form.fileSize
+                    }).then(
+                        function (data) {
+
+                        },
+                        handleError
+                    );
+                } else {
+                    console.log("invalid");
+                }
             }
         });
 
