@@ -60,7 +60,7 @@
 
     <script>
         //Base URL
-        var baseUrl = "http://localhost:8080/HadoopMon";
+        var baseUrl = "http://192.168.0.106:8080/HadoopMon";
 
         // App declaration
         var app = angular.module('admin', ['ngRoute']);
@@ -92,7 +92,7 @@
                 when('/mrbench/:id',
                 {
                     templateUrl: 'pages/mrbench.html',
-                    controller: 'OverviewCtrl'
+                    controller: 'MRBenchCtrl'
                 }).
                 when('/configure/:id',
                 {
@@ -158,7 +158,44 @@
             );
 
             // Get benchmarks
-            
+            $http.get(baseUrl + "/dfsio/benchmarks/" + $routeParams.id).then(
+                function (data) {
+                    $scope.results = data.data;
+                },
+                handleError
+            );
+
+            $scope.deleteBenchmark = function (index, result) {
+                $http.post(baseUrl + "/dfsio/delete/" + result.id, result).then(function (data) {
+                    $scope.results.splice(index, 1);
+                });
+            }
+        });
+
+        app.controller('MRBenchCtrl', function ($scope, $http, $routeParams) {
+            $scope.message = "This is a test message from angular backend";
+
+            // Get cluster
+            $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
+                function (data) { //Success handler
+                    $scope.cluster = data.data;
+                },
+                handleError
+            );
+
+            // Get benchmarks
+            $http.get(baseUrl + "/mrbench/benchmarks/" + $routeParams.id).then(
+                function (data) {
+                    $scope.results = data.data;
+                },
+                handleError
+            );
+
+            $scope.deleteBenchmark = function (index, result) {
+                $http.post(baseUrl + "/mrbench/delete/" + result.id, result).then(function (data) {
+                    $scope.results.splice(index, 1);
+                });
+            }
         });
 
         app.controller('ConfigureCtrl', function ($scope, $http, $routeParams) {
