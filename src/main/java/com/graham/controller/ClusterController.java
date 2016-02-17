@@ -3,7 +3,11 @@ package com.graham.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +39,47 @@ public class ClusterController {
 		ModelAndView mv = new ModelAndView("/cluster/clusters");
 		mv.addObject("clusters", clusters);
 		return mv;
+	}
+	
+	// REST GET 
+	@RequestMapping("/getclusters")
+	public @ResponseBody ResponseEntity<ArrayList<Cluster>> getClusters() {
+		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
+
+		ResponseEntity<ArrayList<Cluster>> response = new ResponseEntity<>(clusters, HttpStatus.OK);
+		return response;
+	}
+	
+	// REST GET 
+	@RequestMapping("/getcluster/{id}")
+	public @ResponseBody ResponseEntity<Cluster> getCluster(@PathVariable("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);
+
+		ResponseEntity<Cluster> response = new ResponseEntity<>(cluster, HttpStatus.OK);
+		return response;
+	}
+	
+	@RequestMapping(value = "/addcluster", method = RequestMethod.POST)
+	public ResponseEntity<Cluster> addClusterRest(@RequestBody Cluster cluster) {		
+		Cluster c = clusterService.addCluster(cluster); 
+		if(c.getId() != null) {
+			return new ResponseEntity<Cluster>(cluster, HttpStatus.CREATED);
+		}
+		else {
+			return new ResponseEntity<Cluster>(cluster, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@RequestMapping(value = "/deletecluster", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteCluster(@RequestBody Cluster cluster) {		
+		clusterService.deleteCluster(cluster);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/editcluster", method = RequestMethod.PUT)
+	public ResponseEntity<Cluster> editCluster(@RequestBody Cluster cluster) {		
+		clusterService.updateCluster(cluster);
+		return new ResponseEntity<Cluster>(cluster, HttpStatus.OK);
 	}
 
 	@RequestMapping("/add")
