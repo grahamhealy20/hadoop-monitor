@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.utils.HttpHelper;
-
 
 @Controller
 @RequestMapping("cluster")
@@ -70,7 +70,8 @@ public class ClusterController {
 		}
 	}
 	
-	@RequestMapping(value = "/deletecluster", method = RequestMethod.DELETE)
+	@CrossOrigin
+	@RequestMapping(value = "/deletecluster/", method = RequestMethod.POST)
 	public ResponseEntity<String> deleteCluster(@RequestBody Cluster cluster) {		
 		clusterService.deleteCluster(cluster);
 		return new ResponseEntity<>(HttpStatus.OK);

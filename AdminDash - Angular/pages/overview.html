@@ -1,0 +1,203 @@
+﻿<!--<div class="sidebar">
+    <ul>
+        <li class="active">
+            <a ng-href="#/">Overview</a>
+        </li>
+        <li>
+            <a ng-href="#/jobs">Jobs</a>
+        </li>
+        <li>
+            <a ng-href="#/dfsio">DFSIO</a>
+        </li>
+    </ul>
+</div>-->
+<sidebar></sidebar>
+
+<!-- Demo of Overview page with metrics -->
+<div class="main container-fluid">
+    <h1>Cluster Overview <small>{{message}}</small></h1>
+
+    <!-- Top row -->
+    <div class="row">
+        <div class="col-md-4">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div>
+                        <h2>{{cluster.name}} <small>2,500 Nodes</small></h2>
+                        <h2><small>{{cluster.ipAddress}}</small></h2>
+                        <div class="action-area pull-right">
+                            <a href="" class="btn btn-danger pull-right">Delete</a>
+                            <a ng-href="#/configure/{{cluster.id}}" class="btn btn-primary pull-right">Configure</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="panel panel-default">
+                <canvas id="testCanvas"></canvas>
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>Alerts</h3>
+                </div>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Alert</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="danger">
+                            <td>
+                                Heap Memory
+                            </td>
+                            <td>
+                                80mb
+                            </td>
+                        </tr>
+                        <tr class="warning">
+                            <td>
+                                Stack Memory
+                            </td>
+                            <td>
+                                30mb
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div> <!-- row -->
+
+    <h2>JVM Metrics</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default danger">
+                <div class="panel-body">
+                    <h3>CPU Usage</h3>
+                    <h1>21%</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>RAM Usage</h3>
+                    <h1>65%</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>I/O Rate</h3>
+                    <h1>100 Mb</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>CPU Usage</h3>
+                    <h1>21%</h1>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- row -->
+
+    <h2>Hadoop Metrics</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Storage</h3>
+                    <canvas id="pie"></canvas>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <h2>Job History</h2>
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Basic panel example
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- row -->
+
+    <h2>Logs</h2>
+    <div class="row">
+
+
+    </div>
+
+</div>
+
+
+<script>
+       var ctx = $('#testCanvas').get(0).getContext("2d");
+       var options = {
+           responsive: true,
+           scaleShowLabels: false,
+           showXAxisLabel:false,
+           maintainAspectRatio: true
+       }
+       var data = {
+          labels: ["Monday", "Tuesday", "Webdnesday", "Thursday", "Friday"],
+          datasets: [
+             {
+                label: "Dataset 1",
+                data: [10, 19, 5 , 6, 7]
+             }
+          ]
+       };
+
+       var chart = new Chart(ctx).Line(data, options);
+
+       var ctx2 = $('#pie').get(0).getContext("2d");
+       var data2 = [
+          {
+             value: 60,
+             label: "Used"
+          },
+          {
+             value: 40,
+             label: "Free"
+          }
+
+       ];
+
+       var chart2 = new Chart(ctx2).Doughnut(data2, options);
+
+
+
+</script>
