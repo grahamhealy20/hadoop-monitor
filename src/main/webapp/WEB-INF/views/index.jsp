@@ -47,20 +47,24 @@
     </div>
     
     <div class="alert alert-danger alert-dismissible" role="alert">
-	  <button type="button" class="close" <span aria-hidden="true">&times;</span></button>
-	  <strong class="title">Error</strong> <p class="error-content"> Better check yourself, you're not looking too good</p>
+	  <button type="button" class="close"> <span aria-hidden="true">&times;</span></button>
+	  <strong class="title">Error</strong> <p class="error-content"></p>
 	</div>
 
     <!-- JS -->
     <script src="resources/js/jquery-2.2.0.min.js"></script>
     <script src="resources/js/Chart.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+     
+    <!-- Websocket JS -->
+    <script src="resources/js/sockjs-0.3.4.min.js"></script>
+    <script src="resources/js/stomp.min.js"></script>
+    <script src="resources/js/metricsocket.js"></script>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
+	<!-- Angular JS -->
     <script src="resources/js/angular.min.js"></script>
     <script src="resources/js/angular-route.min.js"></script>
-        <script src="resources/js/angular-animate.min.js"></script>
+    <script src="resources/js/angular-animate.min.js"></script>
     
     <script src="resources/js/loading-bar.js"></script>
     
@@ -140,10 +144,19 @@
 
         app.controller('OverviewCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
+            
+            $scope.format = 'M/d/yy h:mm:ss a';
 
             $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
-                    $scope.cluster = data.data;
+                    
+                	//Set cluster object
+                	$scope.cluster = data.data;
+                	             	
+                	//Init websocket
+                	connect($scope.cluster.id, function(data) { 
+                		$scope.serverTime = data.time;
+                	}, handleError)
                 },
                 handleError
             );
@@ -297,6 +310,11 @@
                 templateUrl: 'resources/utils/sidebar.html'
             }
         });
+		
+		////////// Metrics Socket //////////
+		function metricsSocketCallback(data) {
+			console.log(data);
+		}
         
         ////////// Error Handler //////////
         function handleError(response) {

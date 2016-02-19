@@ -36,8 +36,8 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 
 		for (Cluster cluster : clusters) {
 			try {
-				Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
-				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
+				//Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), "{" + "\"time\"" + ":" + "\"" + System.currentTimeMillis() + "\"" + "}");
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
 				//e.printStackTrace();
