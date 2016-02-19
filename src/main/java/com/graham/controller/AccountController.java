@@ -22,7 +22,7 @@ public class AccountController {
 	//Default route
 	@RequestMapping("/")
 	public String defaultRoute() {
-		return "redirect:/cluster/";
+		return "index";
 	}
 
 	@RequestMapping("/logout")
