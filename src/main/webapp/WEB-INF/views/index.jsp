@@ -66,7 +66,7 @@
     
     <script>
         // Base URL
-        var baseUrl = "http://localhost:8080/HadoopMon";
+        var BASE_URL = "http://localhost:8080/HadoopMon";
 
         // App declaration
         var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate']);
@@ -114,17 +114,29 @@
         app.controller('ClustersCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 			
-            $http.get(baseUrl + "/cluster/getclusters").then(
+            $http.get(BASE_URL + "/cluster/getclusters").then(
                 function (data) { //Success handler
-                    console.log(data);
                     $scope.clusters = data.data;
                 },
                 handleError
             );
+            
+            $scope.addCluster = function (cluster) {
+            		//Add cluster
+            		$http.post(BASE_URL + "/cluster/addcluster", cluster).then(function(data) {
+                    	$scope.clusters.push(data.data);
+            		},
+            		handleError
+            		);
+
+            	
+            	
+            	
+            }
 
             // Code to remove a cluster
             $scope.deleteCluster = function (index, cluster) {
-                $http.post(baseUrl + "/cluster/deletecluster/", cluster).then(function (data) {
+                $http.post(BASE_URL + "/cluster/deletecluster/", cluster).then(function (data) {
                     $scope.clusters.splice(index, 1);
                 });
             }
@@ -133,7 +145,7 @@
         app.controller('OverviewCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },
@@ -144,7 +156,7 @@
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
 
@@ -157,7 +169,7 @@
             $scope.message = "This is a test message from angular backend";
 
             // Get cluster
-            $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },
@@ -165,7 +177,7 @@
             );
 
             // Get benchmarks
-            $http.get(baseUrl + "/dfsio/benchmarks/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/dfsio/benchmarks/" + $routeParams.id).then(
                 function (data) {
                     $scope.results = data.data;
                 },
@@ -173,7 +185,7 @@
             );
 
             $scope.deleteBenchmark = function (index, result) {
-                $http.post(baseUrl + "/dfsio/delete/" + result.id, result).then(function (data) {
+                $http.post(BASE_URL + "/dfsio/delete/" + result.id, result).then(function (data) {
                     $scope.results.splice(index, 1);
                 });
             }
@@ -196,7 +208,7 @@
                     console.log("num files:" + $scope.form.nrFiles);
                     console.log("file size:" + $scope.form.fileSize);
 
-                    $http.post(baseUrl + "/dfsio/dfsio", $.param({
+                    $http.post(BASE_URL + "/dfsio/dfsio", $.param({
                         id: $scope.cluster.id,
                         numFiles: $scope.form.nrFiles,
                         fileSize: $scope.form.fileSize
@@ -217,7 +229,7 @@
             $scope.message = "This is a test message from angular backend";
 
             // Get cluster
-            $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },
@@ -225,7 +237,7 @@
             );
 
             // Get benchmarks
-            $http.get(baseUrl + "/mrbench/benchmarks/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/mrbench/benchmarks/" + $routeParams.id).then(
                 function (data) {
                     $scope.results = data.data;
                 },
@@ -233,7 +245,7 @@
             );
 
             $scope.deleteBenchmark = function (index, result) {
-                $http.post(baseUrl + "/mrbench/delete/" + result.id, result).then(function (data) {
+                $http.post(BASE_URL + "/mrbench/delete/" + result.id, result).then(function (data) {
                     $scope.results.splice(index, 1);
                 });
             }
@@ -242,7 +254,7 @@
         app.controller('ConfigureCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(baseUrl + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },

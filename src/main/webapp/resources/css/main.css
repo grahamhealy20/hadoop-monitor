@@ -57,7 +57,6 @@ body {
 
 td .btn {
     margin: 3px;
-    padding: 3px 3px
 }
 
 .alert {
@@ -67,4 +66,12 @@ td .btn {
 	left: 20px;
 	right: 20px;
 	z-index: 9999;
+}
+
+.search-box {
+	padding: 0px;
+}
+
+a i {
+	padding-right: 6px;
 }

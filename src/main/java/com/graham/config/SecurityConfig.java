@@ -23,15 +23,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable();
 		
-//			http.authorizeRequests()
-//						.antMatchers("/resources/**").permitAll()
-//						.anyRequest().authenticated()
-//						.and()
-//				.formLogin()
-//					.loginPage("/login")
-//					.permitAll()
-//						.and()
-//				.httpBasic();
+			http.authorizeRequests()
+						.antMatchers("/resources/**").permitAll()
+						.anyRequest().authenticated()
+						.and()
+				.formLogin()
+					.loginPage("/login")
+					.permitAll()
+						.and()
+				.httpBasic();
+		
+		
+//		http.authorizeRequests()
+//		.antMatchers("/resources/**").permitAll()
+//		.anyRequest().authenticated()
+//		.and()
+//.formLogin()
+//	.loginPage("/login")
+//	.permitAll()
+//		.and()
+//.httpBasic();
 		
 	}
 }
