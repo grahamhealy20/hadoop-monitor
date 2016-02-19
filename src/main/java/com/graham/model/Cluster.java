@@ -2,6 +2,7 @@ package com.graham.model;
 
 import java.io.IOException;
 
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -88,7 +89,7 @@ public class Cluster {
 //		return dfsio.getBenchmarkResult();
 //	}
 	
-	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException {
+	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException, ConnectTimeoutException {
 		Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
 		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
 		return dfsio.runBenchmark();

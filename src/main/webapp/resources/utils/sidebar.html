@@ -1,9 +1,9 @@
-﻿<!--SIDEBAR DIRECTIVE -->
+<!--SIDEBAR DIRECTIVE -->
 
 <div class="sidebar" ng-controller="SidebarCtrl">
     <ul>
         <li ng-class="{ active: isCurrentPath('/cluster/' + cluster.id) }">
-            <a ng-href="#/cluster/{{cluster.id}}"><i class="fa fa-home"></i> Overview</a>
+            <a ng-href="#/cluster/{{cluster.id}}"><i class="fa fa-home"></i>Overview</a>
         </li>
         <li ng-class="{ active: isCurrentPath('/jobs/' + cluster.id) }">
             <a ng-href="#/jobs/{{cluster.id}}"><i class="fa fa-tasks"></i> Jobs</a>

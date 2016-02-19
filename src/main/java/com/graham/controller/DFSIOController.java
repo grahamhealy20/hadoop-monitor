@@ -108,7 +108,7 @@ public class DFSIOController {
 	
 	// === PRIVATE CODE === // 
 
-	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) throws IOException {
+	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) throws IOException, ConnectTimeoutException {
 		Cluster cluster = clusterService.getCluster(id);
 		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
 		result.setClusterName(cluster.getName());
@@ -122,22 +122,22 @@ public class DFSIOController {
 	// Handles an error in Cluster connection
 	@ExceptionHandler({IOException.class, ConnectTimeoutException.class})
 	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
-		ex.printStackTrace();
-		System.out.println("Timeout handled");
-		return new ResponseEntity<String>("Cluster Connection Failure", HttpStatus.BAD_REQUEST);
+		//ex.printStackTrace();
+		System.out.println("Connection Timeout Failure");
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Connection Failure\"" + "}", HttpStatus.BAD_REQUEST);
 	}
 
 	// Handles an error in Cluster connection
 	@ExceptionHandler(RemoteException.class)
 	public ResponseEntity<String> handleRemoteError(RemoteException ex) {
 		ex.printStackTrace();
-		return new ResponseEntity<String>("Cluster error", HttpStatus.TOO_MANY_REQUESTS);
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Cluster Error\"" + "}", HttpStatus.TOO_MANY_REQUESTS);
 	}
 
 	// Handles an error in Cluster connection
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
 		ex.printStackTrace();
-		return new ResponseEntity<String>("Bad IP address", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Bad IP Address\"" + "}", HttpStatus.BAD_REQUEST);
 	}
 }

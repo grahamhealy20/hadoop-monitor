@@ -7,6 +7,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
+	<link rel="stylesheet" href="resources/css/loading-bar.css"/>
     <link rel="stylesheet" href="resources/css/sidebar.css" />
     <link rel="stylesheet" href="resources/css/main.css" />
     
@@ -44,6 +45,11 @@
     <div ng-view>
 
     </div>
+    
+    <div class="alert alert-danger alert-dismissible" role="alert">
+	  <button type="button" class="close" <span aria-hidden="true">&times;</span></button>
+	  <strong class="title">Error</strong> <p class="error-content"> Better check yourself, you're not looking too good</p>
+	</div>
 
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
@@ -54,13 +60,16 @@
 
     <script src="resources/js/angular.min.js"></script>
     <script src="resources/js/angular-route.min.js"></script>
+        <script src="resources/js/angular-animate.min.js"></script>
+    
+    <script src="resources/js/loading-bar.js"></script>
     
     <script>
         // Base URL
         var baseUrl = "http://localhost:8080/HadoopMon";
 
         // App declaration
-        var app = angular.module('admin', ['ngRoute']);
+        var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate']);
 
         // App configuration
         app.config(function ($routeProvider) {
@@ -241,7 +250,7 @@
             );
         });
 
-        // Controller for sidebar
+		////////// Controller for sidebar //////////
         app.controller('SidebarCtrl', function ($scope, $location) {
             //Check for current path for active element
             $scope.isCurrentPath = function (path) {
@@ -249,7 +258,7 @@
             }
         });
 
-        // Controller for the navigation bar
+		////////// Controller for the navigation bar //////////
         app.controller('NavbarCtrl', function ($scope, $interval) {
             $scope.format = 'M/d/yy h:mm:ss a';
             $interval(function () {
@@ -257,18 +266,28 @@
             }, 10);
         });
 
-        // Error Handler
-        function handleError(response, status, error) {
-            console.log(response);
-        }
-
-        // Sidebar directive
+		////////// Sidebar directive //////////
         app.directive('sidebar', function () {
             return {
                 templateUrl: 'resources/utils/sidebar.html'
             }
         });
-
+        
+        ////////// Error Handler //////////
+        function handleError(response) {
+            $('.error-content').text(response.data.message);
+        	$('.alert').slideDown(250);
+        	
+        	//Close alert box after 2 seconds
+        	setTimeout(function() {
+        		$('.alert').slideUp(250);
+        	}, 5000);
+        }
+        
+        // Close down alert
+        $('.close').click(function(e) {
+        	$('.alert').slideUp(250);
+        })
     </script>
 </body>
 </html>

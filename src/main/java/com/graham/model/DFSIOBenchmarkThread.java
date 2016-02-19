@@ -8,6 +8,7 @@ import java.util.Date;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.TestDFSIO;
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
 
 import com.graham.model.benchmarks.BenchmarkResult;
@@ -61,7 +62,7 @@ public class DFSIOBenchmarkThread {
 	}
 
 
-	public BenchmarkResult runBenchmark() throws IOException {
+	public BenchmarkResult runBenchmark() throws IOException, ConnectTimeoutException {
 		ArrayList<String> formatRes = new ArrayList<String>();
 
 		// Generate unique result file name
@@ -80,7 +81,7 @@ public class DFSIOBenchmarkThread {
 		conf.set("yarn.resourcemanager.address", ipAddress + ":5001");
 		conf.set("mapreduce.framework.name", "yarn");
 		conf.set("output.dir", "/balancer/");
-		conf.set("ipc.client.connect.max.retries.on.timeouts", "5");
+		conf.set("ipc.client.connect.max.retries.on.timeouts", "1");
 		testDFSIO.setConf(conf);
 
 		

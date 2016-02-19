@@ -8,7 +8,7 @@
     background-color: rgb(28, 34, 52);
     transition: 0.2s all ease;
     overflow-x: hidden;
-}
+    }
 
 .main {
     margin-left: 200px;
@@ -51,21 +51,35 @@
         .sidebar ul li a.active {
             color: rgb(42, 44, 50);
         }
+        
+        .sidebar a p {
+        	overflow-x: hide;
+    		display:inline;
+   		}
+        
 
 /* Media Queries */
 @media only screen and (max-width: 1000px) {
     .sidebar {
-        margin-left: -180px;
+        width: 50px;
     }
-
+    .sidebar a p {
+    	display:none;
+    }
     .main {
-        margin-left: 20px;
+        margin-left: 50px;
     }
+    
+
 }
 
 @media only screen and (max-width: 768px) {
     .sidebar {
-        margin-left: -200px;
+        width: 0px;
+    }
+    
+    .sidebar a p {
+    	display:none;
     }
 
     .main {
