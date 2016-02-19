@@ -52,7 +52,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="cluster in clusters | filter:query | orderBy: 'name' ">
+							<tr class="cluster" ng-repeat="cluster in clusters | filter:query | orderBy: 'name' ">
 								<td>{{cluster.name}}</td>
 								<td>{{cluster.ipAddress}}</td>
 								<!-- Option Links-->

@@ -76,8 +76,10 @@
     <h2>JVM Metrics</h2>
     <div class="row">
         <div class="col-md-3">
-            <div class="panel panel-default danger">
+            <div class="panel panel-default">
+				<div class="meter" ng-style="{backgroundColor: getMetricColour(21), width: '21%'}"></div>
                 <div class="panel-body">
+
                     <h3>CPU Usage</h3>
                     <h1>21%</h1>
                 </div>
@@ -86,6 +88,7 @@
 
         <div class="col-md-3">
             <div class="panel panel-default">
+            	<div class="meter" ng-style="{backgroundColor: getMetricColour(65), width: '65%'}"></div>
                 <div class="panel-body">
                     <h3>RAM Usage</h3>
                     <h1>65%</h1>
@@ -95,6 +98,7 @@
 
         <div class="col-md-3">
             <div class="panel panel-default">
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(100), width: '100%'}"></div>
                 <div class="panel-body">
                     <h3>I/O Rate</h3>
                     <h1>100 Mb</h1>
@@ -104,9 +108,10 @@
 
         <div class="col-md-3">
             <div class="panel panel-default">
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(30), width: '30%'}" ></div>
                 <div class="panel-body">
                     <h3>CPU Usage</h3>
-                    <h1>21%</h1>
+                    <h1>30%</h1>
                 </div>
             </div>
         </div>

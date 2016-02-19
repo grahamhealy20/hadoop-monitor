@@ -79,3 +79,15 @@ a i {
 .centre {
 	text-align: center;
 }
+
+.panel {
+	position: relative;
+}
+
+.meter {
+	position: absolute;
+	top: 0px;
+	height: 5px;
+	width: 0px;
+	transition: 0.5s all ease; 
+}

@@ -52,7 +52,7 @@
 	</div>
 
     <!-- JS -->
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="resources/js/jquery-2.2.0.min.js"></script>
     <script src="resources/js/Chart.min.js"></script>
 
     <!-- Latest compiled and minified JavaScript -->
@@ -147,6 +147,24 @@
                 },
                 handleError
             );
+
+            // Decides the color of metric bar 
+            $scope.getMetricColour = function(metric) {
+				
+            	var value  = parseFloat(metric);
+           		// Decide colour
+            	if(value < 24) {
+            		return "lightblue";
+            	} else if (value < 49) {
+            		return "aquamarine";
+            	} else if (value < 74) {
+            		return "orange";
+            	} else if (value <= 100) {
+            		return "lightcoral";
+            	} else {
+            		return "lightblue";
+            	}
+            }
         });
 
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
