@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
 import com.graham.model.benchmarks.BenchmarkResult;
@@ -31,32 +29,7 @@ public class DFSIOController {
 	private BenchmarkResultService benchmarkResultService;
 	@Autowired
 	private ClusterService clusterService;
-	
-	// === DEPRACATED JSP CODE === //
-
-	// GET /benchmarks/
-	@RequestMapping("/dfsiobenchmarks")
-	public ModelAndView benchmarksById(@RequestParam("id") String id) {
-		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
-
-		ModelAndView mv = new ModelAndView("dfsiobenchmarks");
-		mv.addObject("cluster",  clusterService.getCluster(id));
-		mv.addObject("clusters", clusterService.listClusterById(id));
-		mv.addObject("dfsio", results);
-		return mv;
-	}
-	
-	// POST /benchmarks/{id}
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
-
-		// Get benchmark result
-
-		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
-		benchmarkResultService.deleteBenchmarkResult(result);
-		return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
-	}
-	
+		
 	/// === REST FUNCTIONS === ///
 	
 	// GET /test/

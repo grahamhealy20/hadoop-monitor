@@ -83,14 +83,12 @@
                               <td>{{result.totalTime}}</td>
                               <td>
                                   <a ng-click="deleteBenchmark($index, result)" class="btn btn-danger">Delete</a>
-
                               </td>
-                              
-                          </tr>
-                          		<tr ng-show="!results.length"><td>No Results to display</td></tr>				
+                          </tr>			
 
                       </tbody>
                   </table>
+                  <p class="centre" ng-show="!results.length">No results to display</p>
               </div>
 
 

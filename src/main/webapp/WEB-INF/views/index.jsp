@@ -73,7 +73,7 @@
 
         // App configuration
         app.config(function ($routeProvider) {
-
+        	
             $routeProvider.
                 when('/',
                 {
@@ -114,7 +114,7 @@
         app.controller('ClustersCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 			
-            $http.get(BASE_URL + "/cluster/getclusters").then(
+            $http.get(BASE_URL + "/cluster/clusters").then(
                 function (data) { //Success handler
                     $scope.clusters = data.data;
                 },
@@ -123,20 +123,16 @@
             
             $scope.addCluster = function (cluster) {
             		//Add cluster
-            		$http.post(BASE_URL + "/cluster/addcluster", cluster).then(function(data) {
+            		$http.post(BASE_URL + "/cluster/add", cluster).then(function(data) {
                     	$scope.clusters.push(data.data);
             		},
             		handleError
             		);
-
-            	
-            	
-            	
             }
 
             // Code to remove a cluster
             $scope.deleteCluster = function (index, cluster) {
-                $http.post(BASE_URL + "/cluster/deletecluster/", cluster).then(function (data) {
+                $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
                     $scope.clusters.splice(index, 1);
                 });
             }
@@ -145,7 +141,7 @@
         app.controller('OverviewCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },
@@ -156,10 +152,9 @@
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
-
                 },
                 handleError
             );
@@ -169,7 +164,7 @@
             $scope.message = "This is a test message from angular backend";
 
             // Get cluster
-            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },
@@ -229,7 +224,7 @@
             $scope.message = "This is a test message from angular backend";
 
             // Get cluster
-            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },
@@ -254,7 +249,7 @@
         app.controller('ConfigureCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(BASE_URL + "/cluster/getcluster/" + $routeParams.id).then(
+            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
                 },

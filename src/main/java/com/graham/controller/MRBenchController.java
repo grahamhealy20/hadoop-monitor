@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
 import com.graham.model.benchmarks.MRBenchmarkResult;
@@ -31,49 +29,6 @@ public class MRBenchController {
 	private MRBenchmarkResultService benchmarkResultService;
 	@Autowired
 	private ClusterService clusterService;
-
-	// === DEPRACATED FUNCTIONS === //
-
-	// GET /benchmarks/
-	@RequestMapping("/mrbenchmarks")
-	public ModelAndView benchmarksById(@RequestParam("id") String id) {
-		// Get all MRBenchmarks
-		ArrayList<MRBenchmarkResult> results = (ArrayList<MRBenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
-
-		ModelAndView mv = new ModelAndView("mrbench/benchmarks");
-		mv.addObject("cluster",  clusterService.getCluster(id));
-		mv.addObject("clusters", clusterService.listClusterById(id));
-		mv.addObject("mrbench", results);
-		return mv;
-	}
-
-	// GET /benchmarks?id={id}
-	@RequestMapping(value = "/benchmark", method = RequestMethod.GET)
-	public ModelAndView benchmark(@RequestParam("id") String id) {
-
-		ModelAndView mv;
-
-		// Get benchmark result
-		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
-		if(result != null) {
-			mv = new ModelAndView("mrbench/benchmark");
-			mv.addObject("benchmark", result);
-		} else {
-			mv = new ModelAndView("error");
-			mv.addObject("message", "Benchmark not found");
-		}
-		return mv;
-	}
-
-	// GET /benchmarks?id={id}
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public ModelAndView delete(@RequestParam("id") String id) {
-
-		// Get benchmark result
-		MRBenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
-		benchmarkResultService.deleteBenchmarkResult(result);
-		return new ModelAndView("redirect:mrbenchmarks?id=" + result.getClusterId());
-	}
 	
 	// === REST FUNCTIONS === //
 	
