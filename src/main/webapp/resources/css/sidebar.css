@@ -8,7 +8,22 @@
     background-color: rgb(28, 34, 52);
     transition: 0.2s width ease;
     overflow-x: hidden;
+    overflow-y: hidden;    
     }
+
+/* ANIMATIONS
+
+@-webkit-keyframes slide {
+	0% 		{width: 0px;}
+	100% 	{width: 200px;}
+	}
+
+@-webkit-keyframes fade {
+	0% 		{opacity: 0;}
+	100% 	{opacity: 1;}
+	}
+*/
+
 
 .main {
     margin-left: 200px;
@@ -43,6 +58,7 @@
             text-decoration: none;
             text-align: center;
             color: rgb(255, 255, 255);
+            display: inline;
         }
 
         .sidebar ul li i {
