@@ -71,7 +71,7 @@
     
     <script>
         // Base URL
-        var BASE_URL = "http://localhost:8080/HadoopMon";
+        var BASE_URL = "/HadoopMon";
 
         // App declaration
         var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate', 'chart.js']);
