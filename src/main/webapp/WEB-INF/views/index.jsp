@@ -265,7 +265,29 @@
 
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
-
+            
+            $scope.jobs = [
+                           {id: "123"},
+                           {id: "60"},
+                           {id: "100"}
+                           ];
+            
+            $scope.jobComparison = [];
+            
+            // Compare a job
+            $scope.addJobToComparison = function (index, job) {          	
+            	// Check for match
+            	for(var i = 0; i < $scope.jobComparison.length; i++) {	
+            		if($scope.jobComparison[i] == job) {
+            			// Remove if in list
+            			$scope.jobComparison.splice(i, 1);
+            			return true;
+            		} 
+            	}
+            	// Else add to list
+            	$scope.jobComparison.push(job);
+            }
+            
             $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;

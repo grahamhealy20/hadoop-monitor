@@ -8,11 +8,13 @@
     <div class="col-md-12">
 
         <div class="row comparison">
-            <div class="panel panel-default" style="height: 200px;">
+            <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Comparison</h3>
-                    <div class="area">
-
+                   <div>  	
+						<ul>
+							<li ng-repeat="job in jobComparison">{{job.id}}</li>
+						</ul>
                     </div>
                 </div>
             </div>
@@ -62,39 +64,16 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th># Files</th>
-                            <th>File Size (Mb)</th>
-                            <th>Throughput</th>
+                            <th>ID</th>
                         </tr>
                     </thead>
 
                     <tbody>
-
-                        <tr data-id="1" data-val="10">
-                            <td>Write</td>
-                            <td>11/2/16</td>
-                            <td>10</td>
-                            <td>100</td>
-                            <td>1000</td>
+		
+                        <tr ng-repeat="job in jobs" ng-click="addJobToComparison($index, job)">
+                            <td>{{job.id}}</td>
                         </tr>
 
-                        <tr data-id="2" data-val="20">
-                            <td>Write</td>
-                            <td>11/2/16</td>
-                            <td>10</td>
-                            <td>100</td>
-                            <td>1000</td>
-                        </tr>
-
-                        <tr data-id="3" data-val="40" class="danger">
-                            <td>Write</td>
-                            <td>11/2/16</td>
-                            <td>10</td>
-                            <td>100</td>
-                            <td>50</td>
-                        </tr>
                     </tbody>
                 </table>
                 <p class="centre" ng-show="!jobs.length">No jobs to display</p>

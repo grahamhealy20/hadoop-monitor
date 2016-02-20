@@ -36,18 +36,13 @@ body {
     margin-top: 10px;
 }
 
-
-#chartParent {
-    width: 80%;
-    height: 80%;
-    position: relative;
-}
-
-#pie {
-}
-
 .comparison {
     display: none;
+
+}
+
+.comparison .panel {
+	 height: 200px;
 }
 
 .slide-tog {
