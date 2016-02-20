@@ -7,6 +7,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
+	<link rel="stylesheet" href="resources/css/angular-chart.min.css" />
 	<link rel="stylesheet" href="resources/css/loading-bar.css"/>
     <link rel="stylesheet" href="resources/css/sidebar.css" />
     <link rel="stylesheet" href="resources/css/main.css" />
@@ -65,7 +66,7 @@
     <script src="resources/js/angular.min.js"></script>
     <script src="resources/js/angular-route.min.js"></script>
     <script src="resources/js/angular-animate.min.js"></script>
-    
+    <script src="resources/js/angular-chart.min.js"></script>
     <script src="resources/js/loading-bar.js"></script>
     
     <script>
@@ -73,7 +74,7 @@
         var BASE_URL = "http://localhost:8080/HadoopMon";
 
         // App declaration
-        var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate']);
+        var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate', 'chart.js']);
 
         // App configuration
         app.config(function ($routeProvider) {
@@ -160,6 +161,10 @@
                 },
                 handleError
             );
+            
+            $scope.setWidth = function (width) {
+            	return width + "%";
+            }
 
             // Decides the color of metric bar 
             $scope.getMetricColour = function(metric) {
@@ -178,6 +183,84 @@
             		return "lightblue";
             	}
             }
+            
+            // Decides
+            $scope.getNetCarat = function(metric) {
+            	
+            	var value = parseFloat(metric);
+            	if (value < $scope.prevMetrics.net) {
+            		return "fa fa-caret-down fa-3x";
+            	}
+            	else if (value > $scope.prevMetrics.net) {
+            		return "fa fa-caret-up fa-3x";
+            	}
+            }
+            
+ 			$scope.getCpuCarat = function(metric) {
+            	
+            	var value = parseFloat(metric);
+            	if (value < $scope.prevMetrics.cpu) {
+            		return "fa fa-caret-down fa-3x";
+            	}
+            	else if (value > $scope.prevMetrics.cpu) {
+            		return "fa fa-caret-up fa-3x";
+            	}
+            }
+ 			
+ 			$scope.getIOCarat = function(metric) {
+            	
+            	var value = parseFloat(metric);
+            	if (value < $scope.prevMetrics.io) {
+            		return "fa fa-caret-down fa-3x";
+            	}
+            	else if (value > $scope.prevMetrics.io) {
+            		return "fa fa-caret-up fa-x3";
+            	} else {
+            		return "fa fa-minus fa-3x";
+            	}
+            }
+ 			
+ 			$scope.getRamCarat = function(metric) {
+            	
+            	var value = parseFloat(metric);
+            	if (value < $scope.prevMetrics.ram) {
+            		return "fa fa-caret-down fa-3x";
+            	}
+            	else if (value > $scope.prevMetrics.ram) {
+            		return "fa fa-caret-up fa-3x";
+            	}
+            }
+            
+            ///////// TEST METRIC DATA /////////
+            $scope.metrics = {
+            		cpu: 21,
+            		ram: 65,
+            		io: 100,
+            		net: 30
+            };
+            
+            ///////// TEST METRIC DATA /////////
+            $scope.prevMetrics = {
+            		cpu: 50,
+            		ram: 70,
+            		io: 100,
+            		net: 81
+            };
+            
+            ///////// CHART JS /////////
+            $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+            $scope.series = ['Series A', 'Series B'];
+            $scope.data = [
+              [65, 59, 80, 81, 56, 55, 40],
+              [28, 48, 40, 19, 86, 27, 90]
+            ];
+            
+            $scope.labels2 = ["Free", "Used"];
+            $scope.data2 = [40, 60];
+            
+            $scope.onClick = function (points, evt) {
+              console.log(points, evt);
+            };
         });
 
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
@@ -286,6 +369,11 @@
                 },
                 handleError
             );
+            
+            
+            $scope.updateCluster = function (cluster) {
+            	console.log(cluster);
+            }
         });
 
 		////////// Controller for sidebar //////////

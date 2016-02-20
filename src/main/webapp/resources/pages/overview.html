@@ -28,7 +28,15 @@
         <div class="col-md-4">
 
             <div class="panel panel-default">
-                <canvas id="testCanvas"></canvas>
+              <div class="panel-body">
+                <h3>Storage</h3>
+              <div>
+               <canvas id="line" class="chart chart-line" chart-data="data"
+				  	chart-labels="labels" chart-series="series"
+				  	chart-click="onClick" >
+				</canvas> 
+              </div>
+              </div> 
             </div>
 
         </div>
@@ -77,41 +85,66 @@
     <div class="row">
         <div class="col-md-3">
             <div class="panel panel-default">
-				<div class="meter" ng-style="{backgroundColor: getMetricColour(21), width: '21%'}"></div>
+				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.cpu), width: setWidth(metrics.cpu)}"></div>
                 <div class="panel-body">
-
-                    <h3>CPU Usage</h3>
-                    <h1>21%</h1>
+                    <div class="pull-left">
+                    	<h3>CPU Usage</h3>
+	                    <h1>{{metrics.cpu}} %</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getCpuCarat(metrics.cpu)"></i>
+	                    <h3>{{prevMetrics.cpu}} %</h3>
+	                </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="panel panel-default">
-            	<div class="meter" ng-style="{backgroundColor: getMetricColour(65), width: '65%'}"></div>
+            	<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.ram), width: setWidth(metrics.ram)}"></div>
                 <div class="panel-body">
-                    <h3>RAM Usage</h3>
-                    <h1>65%</h1>
+                    <div class="pull-left">
+                    	<h3>RAM Usage</h3>
+	                    <h1>{{metrics.ram}} Mb</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getRamCarat(metrics.ram)"></i>
+	                    <h3>{{prevMetrics.ram}} Mb</h1>
+	                </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="panel panel-default">
-            <div class="meter" ng-style="{backgroundColor: getMetricColour(100), width: '100%'}"></div>
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.io), width: setWidth(metrics.io)}"></div>
                 <div class="panel-body">
-                    <h3>I/O Rate</h3>
-                    <h1>100 Mb</h1>
+					<div class="pull-left">
+                    	<h3>I/O Rate</h3>
+	                    <h1>{{metrics.io}} %</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getIOCarat(metrics.io)"></i>
+	                    <h3>{{prevMetrics.io}} %</h1>
+	                </div>
                 </div>
+
+                
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="panel panel-default">
-            <div class="meter" ng-style="{backgroundColor: getMetricColour(30), width: '30%'}" ></div>
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.net), width: setWidth(metrics.net)}" ></div>
                 <div class="panel-body">
-                    <h3>CPU Usage</h3>
-                    <h1>30%</h1>
+	                <div class="pull-left">
+	                    <h3>Network Usage</h3>
+	                    <h1>{{metrics.net}} %</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getNetCarat(metrics.net)"></i>
+	                    <h3>{{prevMetrics.net}} %</h1>
+	                </div>
                 </div>
             </div>
         </div>
@@ -124,14 +157,29 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Storage</h3>
-                    <canvas id="pie"></canvas>
+                    <div>
+			            <canvas id="bar" class="chart chart-bar"
+						  chart-data="data" chart-labels="labels"> chart-series="series"
+						</canvas>
+                    </div>
                 </div>
             </div>
+        </div> <!-- col-md-4 -->
+        
+                <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Storage</h3>
+                    <div>
+			            <canvas id="doughnut" class="chart chart-doughnut"
+						  chart-data="data2" chart-labels="labels2">
+						</canvas> 
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col-md-4 -->
 
-
-        </div>
-
-    </div>
+    </div> <!-- row -->
 
     <h2>Logs</h2>
     <div class="row">
@@ -140,43 +188,3 @@
     </div>
 
 </div>
-
-
-<script>
-       var ctx = $('#testCanvas').get(0).getContext("2d");
-       var options = {
-           responsive: true,
-           scaleShowLabels: false,
-           showXAxisLabel:false,
-           maintainAspectRatio: true
-       }
-       var data = {
-          labels: ["Monday", "Tuesday", "Webdnesday", "Thursday", "Friday"],
-          datasets: [
-             {
-                label: "Dataset 1",
-                data: [10, 19, 5 , 6, 7]
-             }
-          ]
-       };
-
-       var chart = new Chart(ctx).Line(data, options);
-
-       var ctx2 = $('#pie').get(0).getContext("2d");
-       var data2 = [
-          {
-             value: 60,
-             label: "Used"
-          },
-          {
-             value: 40,
-             label: "Free"
-          }
-
-       ];
-
-       var chart2 = new Chart(ctx2).Doughnut(data2, options);
-
-
-
-</script>

@@ -88,6 +88,10 @@ a i {
 	position: absolute;
 	top: 0px;
 	height: 5px;
-	width: 0px;
-	transition: 0.5s all ease; 
+	width: 0%;
+	transition: 0.5s all ease-in; 
+}
+
+h2 {
+	margin-top: 5px;
 }
