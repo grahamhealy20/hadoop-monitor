@@ -138,12 +138,13 @@
             // Code to remove a cluster
             $scope.deleteCluster = function (index, cluster) {
                 $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
+                	console.log("Deleting index: " + index);
                     $scope.clusters.splice(index, 1);
                 });
             }
         });
 
-        app.controller('OverviewCtrl', function ($scope, $http, $routeParams) {
+        app.controller('OverviewCtrl', function ($scope, $http, $routeParams, $timeout) {
             $scope.message = "This is a test message from angular backend";
             
             $scope.format = 'M/d/yy h:mm:ss a';
