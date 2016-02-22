@@ -29,6 +29,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 				container.addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
+		dispatcher.setAsyncSupported(true);
 	}
 
 }

@@ -1,18 +1,24 @@
 package com.graham.model.utils;
 
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import com.graham.model.metrics.App;
-import com.graham.model.metrics.Apps;
-import com.graham.model.metrics.Beans;
+import com.graham.model.metrics.Applications;
+import com.graham.model.metrics.Metrics;
 
 
 //Class used to help download from REST endpoints
 public class HttpHelper {
 
-	public Beans downloadJmxMetrics(String ipAddress) {
+	public Metrics downloadJmxMetrics(String ipAddress) throws ResourceAccessException {
 		RestTemplate temp = new RestTemplate();
-		Beans obj = temp.getForObject("http://" + ipAddress + ":50070/jmx?qry=Hadoop:service=NameNode,name=JvmMetrics", Beans.class);
+		Metrics obj = temp.getForObject("http://" + ipAddress + ":50070/jmx", Metrics.class);
+		return obj;
+	}
+	
+	public Applications downloadClusterApps(String ipAddress) throws ResourceAccessException {
+		RestTemplate temp = new RestTemplate();
+		Applications obj = temp.getForObject("http://" + ipAddress + ":8088/ws/v1/cluster/apps", Applications.class);
 		return obj;
 	}
 	
@@ -27,11 +33,4 @@ public class HttpHelper {
 		String obj = temp.getForObject("http://" + ipAddress + ":8088/logs/hadoop-hadoop-namenode-" + ipAddress + ".log", String.class);
 		return obj;
 	}
-	
-	public void downloadResourceManagerApps(String ipAddress) {
-		RestTemplate temp = new RestTemplate();
-		Apps obj = temp.getForObject("http://" + ipAddress + ":8088/ws/v1/cluster/apps", Apps.class);
-		System.out.println(obj);
-	}
-	
 }

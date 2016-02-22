@@ -5,12 +5,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.MRBench;
 
 import com.graham.model.benchmarks.MRBenchmarkResult;
+import com.graham.model.utils.Utilities;
 
-public class MRBenchThread implements Runnable {
+public class MRBenchThread {
 	private MRBenchmarkResult result;
 	private String ipAddress;
 	private String user;
@@ -55,33 +56,31 @@ public class MRBenchThread implements Runnable {
 		setNumRuns(numRuns);	
 	}
 	
-	public void run() {
+	public MRBenchmarkResult run() throws Exception {
 		PrintStream out = System.out;
 		
 		// Generate unique result file name
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
 		Date date = new Date();
+		
 		String fileOutputName = "MRBenchmark-" + dateFormat.format(date) + ".txt";
-		String location = "/home/hadoop/" + fileOutputName;
+		String location = Utilities.checkDirectory("MRBench") + "/" +  fileOutputName;
 		
 		com.graham.model.utils.Utilities.pipeOutputToFile(location);
 		
-		JobConf jobConf = new JobConf();
-		jobConf.set("test.build.data", "home/hadoop/benchmark/MRBench");
-		jobConf.set("fs.defaultFS", "hdfs://" + ipAddress +":9000");
-		jobConf.set("yarn.resourcemanager.address", ipAddress + ":5001");
-		jobConf.set("mapreduce.framework.name", "yarn");
+		Configuration conf = new Configuration();
+		conf.set("fs.defaultFS", "hdfs://" + ipAddress + ":9000");
+		conf.set("hadoop.job.ugi", user);
+		conf.set("yarn.resourcemanager.address", ipAddress + ":5001");
+		conf.set("mapreduce.framework.name", "yarn");
+		conf.set("output.dir", "/balancer/");
+		conf.set("ipc.client.connect.max.retries.on.timeouts", "5");
 		
 		MRBench mr = new MRBench();
-		mr.setConf(jobConf);
+		mr.setConf(conf);
 			
-		try {
-			mr.run(String.format("-numRuns %d", numRuns)
-					.split(" "));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mr.run(String.format("-numRuns %d", numRuns)
+				.split(" "));
 		
 		// Set output back to Stdout
 		try {
@@ -98,9 +97,6 @@ public class MRBenchThread implements Runnable {
 		String dateString = dateFormat.format(date);
 		
 		result = new MRBenchmarkResult(numRuns, values[0], values[2], values[3], dateString, values[4]);
-	}
-
-	public MRBenchmarkResult getBenchmarkResult() {
 		return result;
 	}
 }

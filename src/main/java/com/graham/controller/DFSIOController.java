@@ -1,20 +1,20 @@
 package com.graham.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.graham.model.Cluster;
 import com.graham.model.benchmarks.BenchmarkResult;
@@ -27,133 +27,90 @@ public class DFSIOController {
 
 	@Autowired
 	private BenchmarkResultService benchmarkResultService;
-
 	@Autowired
 	private ClusterService clusterService;
-
-	// GET /
-	@RequestMapping("/")
-	public ModelAndView index() {
-
-		ModelAndView mv = new ModelAndView("login");
-		//mv.addObject("benchmarks", results);
-		return mv;	
-	}
-
+		
+	/// === REST FUNCTIONS === ///
+	
 	// GET /test/
-	@RequestMapping("/test")
-	public ModelAndView testAction(@RequestParam("id") String id, @RequestParam("numFiles") int numFiles, @RequestParam("fileSize") int fileSize) {
-		System.out.println("in controller");
-
-		BenchmarkResult result = benchmarkDFSIO(id, numFiles, fileSize);
-		benchmarkResultService.addBenchmarkResult(result);
-
-		ModelAndView mv = new ModelAndView("test");
-		mv.addObject("threadOut", "hello");
-		mv.addObject("bresult", result);
-		return mv;
-	}
-
-	// GET /test/
-	@RequestMapping("/dfsio")
-	public @ResponseBody BenchmarkResult dfsioAsync(String id, int numFiles, int fileSize) {
+	@RequestMapping(value = "/dfsio", method = RequestMethod.POST)
+	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws Exception {
 		// Run benchmark and store it
 		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
 		benchmarkResultService.addBenchmarkResult(result);
 
-		return result;
+		return new Callable<BenchmarkResult>() {
+
+			@Override
+			public BenchmarkResult call() throws Exception {
+				// TODO Auto-generated method stub
+				return result;
+			}
+		};
 	}
-
-	// GET /benchmarks/
-	@RequestMapping("/benchmarks")
-	public ModelAndView benchmarks() {
-		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listBenchmarkResultByDate();
-
-		ModelAndView mv = new ModelAndView("benchmarks");
-		mv.addObject("clusters", clusterService.listClusters());
-		mv.addObject("benchmarks", results);
-		return mv;
-	}
-
-	// GET /benchmarks/
-	@RequestMapping("/dfsiobenchmarks")
-	public ModelAndView benchmarksById(@RequestParam("id") String id) {
+	
+	// REST GET /benchmarks/
+	@RequestMapping("/benchmarks/{id}")
+	public ResponseEntity<ArrayList<BenchmarkResult>> getBenchmarks(@PathVariable("id") String id) {
+		// Get benchmarks from DB
 		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
-
-		ModelAndView mv = new ModelAndView("dfsiobenchmarks");
-		mv.addObject("cluster",  clusterService.getCluster(id));
-		mv.addObject("clusters", clusterService.listClusterById(id));
-		mv.addObject("dfsio", results);
-		return mv;
+		return new ResponseEntity<ArrayList<BenchmarkResult>>(results, HttpStatus.OK);
 	}
 
-	// GET /benchmarks?id={id}
-	@RequestMapping(value = "/benchmark", method = RequestMethod.GET)
-	public ModelAndView benchmark(@RequestParam("id") String id) {
-		ModelAndView mv;
+	// GET /benchmarks/{id}
+	@RequestMapping(value = "/benchmark/{id}", method = RequestMethod.GET)
+	public ResponseEntity<BenchmarkResult> benchmark(@PathVariable("id") String id) {
+		
 		// Get benchmark result
 		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id);
 		if(result != null) {
-			mv = new ModelAndView("benchmark");
-			mv.addObject("benchmark", result);
+			return new ResponseEntity<BenchmarkResult>(result, HttpStatus.OK);
 		} else {
-			mv = new ModelAndView("error");
-			mv.addObject("message", "Benchmark not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return mv;
 	}
-
-	// GET /benchmarks?id={id}
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public ModelAndView delete(@RequestParam("id") String id, @RequestParam("clusterId") String clusterId) {
-
+	
+	// POST /delete/{id}
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+	public ResponseEntity<String> deleteResult(@PathVariable("id") String id) {
 		// Get benchmark result
-
 		BenchmarkResult result = benchmarkResultService.getBenchmarkResult(id); 
 		benchmarkResultService.deleteBenchmarkResult(result);
-		return new ModelAndView("redirect:/dfsio/dfsiobenchmarks?id="+clusterId);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	// === PRIVATE CODE === // 
 
-	private BenchmarkResult benchmarkDFSIO(String id, int numFiles, int fileSize) {
+	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) throws IOException, ConnectTimeoutException {
 		Cluster cluster = clusterService.getCluster(id);
 		BenchmarkResult result = cluster.runDFSIOBenchmark(numFiles, fileSize);
 		result.setClusterName(cluster.getName());
-		return result;
-	}
-
-	private BenchmarkResult benchmarkDFSIOAsync(String id, int numFiles, int fileSize) {
-		Cluster cluster = clusterService.getCluster(id);
-		BenchmarkResult result = cluster.runDFSIOBenchmarkAsync(numFiles, fileSize);
-		result.setClusterName(cluster.getName());
 		result.setClusterId(cluster.getId());
-
-		// Set flag for poor performance
-		//		if(Double.parseDouble(result.getThroughputMb()) < Double.parseDouble(cluster.getThroughputThreshold()))
-		//			result.setAlarm(true);
-		//		else
-		//			result.setAlarm(false);
 		return result;
 	}
+	
+	
+	/// === ERROR HANDLING === ///
 
-	// Runs DFSIO benchmark via command line
-	@SuppressWarnings("unused")
-	private void benchmarkRuntime() {
-		try {
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-			PumpStreamHandler strHandler = new PumpStreamHandler(outStream);
-			CommandLine cmdLine = CommandLine.parse("./dfsio.sh");
-			DefaultExecutor exec = new DefaultExecutor();
-			exec.setStreamHandler(strHandler);
-			exec.setExitValue(0);
-			exec.setWorkingDirectory(new File("/home/hadoop/hadoop/share/hadoop/mapreduce"));
-			int exitCode = exec.execute(cmdLine);
+	// Handles an error in Cluster connection
+	@ExceptionHandler({IOException.class, ConnectTimeoutException.class})
+	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
+		//ex.printStackTrace();
+		System.out.println("Connection Timeout Failure");
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Connection Failure\"" + "}", HttpStatus.BAD_REQUEST);
+	}
 
-			System.out.println("OUT " + outStream.toString());
-			System.out.println("EXIT VAL " + exitCode);
+	// Handles an error in Cluster connection
+	@ExceptionHandler(RemoteException.class)
+	public ResponseEntity<String> handleRemoteError(RemoteException ex) {
+		ex.printStackTrace();
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Cluster Error\"" + "}", HttpStatus.TOO_MANY_REQUESTS);
+	}
 
-		} catch (IOException e) {
-			// TODO
-			e.printStackTrace();
-		}
+	// Handles an error in Cluster connection
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
+		ex.printStackTrace();
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Bad IP Address\"" + "}", HttpStatus.BAD_REQUEST);
 	}
 }

@@ -1,13 +1,17 @@
 package com.graham.model;
 
+import java.io.IOException;
+
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
 
+@Document
 public class Cluster {
 	
-
 	private String id;
 	private String name;
 	private String ipAddress;
@@ -70,48 +74,30 @@ public class Cluster {
 	public void setThroughputThreshold(String throughputThreshold) {
 		this.throughputThreshold = throughputThreshold;
 	}
-
-	// Runs default benchmark
-	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) {
-		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress());
+	
+//	public BenchmarkResult runDFSIOBenchmarkAsync(int numFiles, int fileSize) {
+//		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
+//		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
+//		Thread t = new Thread(dfsio);
+//		t.start();
+//		try {
+//			t.join();
+//		} catch (InterruptedException e) {
+//			
+//			e.printStackTrace();
+//		}
+//		return dfsio.getBenchmarkResult();
+//	}
+	
+	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException, ConnectTimeoutException {
+		Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
 		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-		Thread t = new Thread(dfsio);
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		return dfsio.getBenchmarkResult();
+		return dfsio.runBenchmark();
 	}
 	
-	public BenchmarkResult runDFSIOBenchmarkAsync(int numFiles, int fileSize) {
-		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
-		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-		Thread t = new Thread(dfsio);
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		return dfsio.getBenchmarkResult();
-	}
-	
-	public MRBenchmarkResult runMRBenchmarkAsync(int numRuns) {
+	public MRBenchmarkResult runMRBenchmarkAsync(int numRuns) throws Exception {
 		MRBenchThread mrbench = new MRBenchThread(ipAddress, username, numRuns);
-		Thread t = new Thread(mrbench);
-		t.start();
-		
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		return mrbench.getBenchmarkResult();
+		return mrbench.run();
 	}
 	
 	

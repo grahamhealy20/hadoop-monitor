@@ -20,13 +20,14 @@ public class ClusterService {
 
 	public static final String COLLECTION_NAME = "clusters";
 
-	public void addCluster(Cluster cluster) {
+	public Cluster addCluster(Cluster cluster) {
 		if (!mongoTemplate.collectionExists(Cluster.class)) {
 			mongoTemplate.createCollection(Cluster.class);
 		}		
 		cluster.setId(UUID.randomUUID().toString());
 		mongoTemplate.insert(cluster, COLLECTION_NAME);
 		Log.info("SAVE SUCCESS!");
+		return cluster;
 	}
 
 	public Cluster getCluster(String id) {

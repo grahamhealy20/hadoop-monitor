@@ -1,0 +1,198 @@
+<sidebar></sidebar>
+
+<!-- Demo of Overview page with metrics -->
+<div class="main container-fluid">
+    <h1>Cluster Overview <small>{{message}}</small></h1>
+
+    <!-- Top row -->
+    <div class="row">
+        <div class="col-md-4">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div>
+                        <h2>{{cluster.name}} <small>2,500 Nodes</small></h2>
+                        <h2><small>{{cluster.ipAddress}}</small></h2>
+                        <div class="action-area pull-right">
+                            <a href="" class="btn btn-danger pull-right"><i class="fa fa-trash"> </i> Delete</a>
+                            <a ng-href="#/configure/{{cluster.id}}" class="btn btn-primary pull-right"><i class="fa fa-cogs"> </i> Configure</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <h3>Storage</h3>
+              <div>
+               <canvas id="line" class="chart chart-line" chart-data="data"
+				  	chart-labels="labels" chart-series="series"
+				  	chart-click="onClick" >
+				</canvas> 
+              </div>
+              </div> 
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+					{{serverTime | date:format}}
+                    <h3>Alerts</h3>
+                </div>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Alert</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="danger">
+                            <td>
+                                Heap Memory
+                            </td>
+                            <td>
+                                80mb
+                            </td>
+                        </tr>
+                        <tr class="warning">
+                            <td>
+                                Stack Memory
+                            </td>
+                            <td>
+                                30mb
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div> <!-- row -->
+
+    <h2>JVM Metrics</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.cpu), width: setWidth(metrics[0].MemHeapUsedM, metrics[0].MemHeapMaxM)}"></div>
+                <div class="panel-body">
+                    <div class="pull-left">
+                    	<h3>Heap Usage</h3>
+	                    <h1>{{metrics[0].MemHeapUsedM | number:2}} Mb</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
+	                    <h3>{{prevMetrics[0].MemHeapUsedM | number:2}} Mb</h3>
+	                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+            	<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.ram), width: setWidth(metrics.ram)}"></div>
+                <div class="panel-body">
+                    <div class="pull-left">
+                    	<h3>RAM Usage</h3>
+	                    <h1>{{metrics.ram}} Mb</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
+	                    <h3>{{prevMetrics.ram}} Mb</h3>
+	                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.io), width: setWidth(metrics.io)}"></div>
+                <div class="panel-body">
+					<div class="pull-left">
+                    	<h3>I/O Rate</h3>
+	                    <h1>{{metrics.io}} %</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
+	                    <h3>{{prevMetrics.io}} %</h3>
+	                </div>
+                </div>
+
+                
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.net), width: setWidth(metrics.net)}" ></div>
+                <div class="panel-body">
+	                <div class="pull-left">
+	                    <h3>Network Usage</h3>
+	                    <h1>{{metrics.net}} %</h1>
+	                </div>
+	                <div class="pull-right">
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
+	                    <h3>{{prevMetrics.net}} %</h3>
+	                </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- row -->
+
+    <h2>Hadoop Metrics</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Storage</h3>
+                    <div>
+					<canvas id="line" class="chart chart-line" chart-data="cpuLoad"
+					  	chart-labels="cpuLabels" >
+				</canvas> 
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col-md-4 -->
+        
+                <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Storage</h3>
+                    <div>
+			            <canvas id="doughnut" class="chart chart-doughnut"
+						  chart-data="data2" chart-labels="labels2">
+						</canvas> 
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col-md-4 -->
+
+    </div> <!-- row -->
+
+    <h2>Logs</h2>
+    <div class="row">
+    	<div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="cluster/log/namenode/{{cluster.id}}">Namenode Log</a>
+                    <a href="cluster/log/datanode/{{cluster.id}}">Datanode Log</a>
+                </div>
+            </div>    		
+    	
+    	</div>
+		
+    </div>
+
+</div>

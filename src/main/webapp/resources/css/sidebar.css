@@ -1,0 +1,102 @@
+.sidebar {
+    z-index: 400;
+    position: fixed;
+    top: 50px;
+    height: 100%;
+    width: 200px;
+    /*background-color: rgb(42, 44, 50);*/
+    background-color: rgb(28, 34, 52);
+    transition: 0.2s width ease;
+    overflow-x: hidden;
+    overflow-y: hidden;    
+    }
+
+/* ANIMATIONS
+
+@-webkit-keyframes slide {
+	0% 		{width: 0px;}
+	100% 	{width: 200px;}
+	}
+
+@-webkit-keyframes fade {
+	0% 		{opacity: 0;}
+	100% 	{opacity: 1;}
+	}
+*/
+
+
+.main {
+    margin-left: 200px;
+    transition: 0.2s all ease;
+}
+
+/* Sidebar list code */
+.sidebar ul {
+    /*text-align: center;*/
+    padding-left: 0px;
+}
+
+    .sidebar ul li {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        transition: 0.2s background-color ease;
+        height: 50px;
+    }
+
+        .sidebar ul li:hover {
+            background-color: rgb(62, 66, 75);
+        }
+
+        .sidebar ul li.active {
+            background-color: rgb(173, 83, 116);
+        }
+
+        .sidebar ul li a {
+            padding-left: 10px;
+            /*font-weight: 700;*/
+            font-size: 2rem;
+            text-decoration: none;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            display: inline;
+        }
+
+        .sidebar ul li i {
+
+            padding-right: 10px;
+        }
+
+        .sidebar ul li a.active {
+            color: rgb(42, 44, 50);
+        } 		
+ 	      
+ /* Tablet */	      
+@media only screen and (max-width: 1000px) {
+    .sidebar {
+        width: 50px;
+    }
+    
+	.sidebar ul li a {
+		padding-left: 15px;
+    }
+    
+    
+    .sidebar a span {
+    	display: none;
+    }
+
+    .main {
+        margin-left: 50px;
+    }
+}
+
+ /* Mobile */
+@media only screen and (max-width: 768px) {
+    .sidebar {
+        width: 0px;
+    }
+   
+    .main {
+        margin-left: 0px;
+    }
+}
