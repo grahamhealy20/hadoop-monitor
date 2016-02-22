@@ -12,6 +12,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
+import com.graham.model.metrics.Applications;
 import com.graham.model.metrics.Metrics;
 import com.graham.model.utils.HttpHelper;
 
@@ -37,6 +38,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 		for (Cluster cluster : clusters) {
 			try {
 				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+				Applications apps = http.downloadClusterApps(cluster.getIpAddress());
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
