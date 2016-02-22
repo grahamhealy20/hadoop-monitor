@@ -139,7 +139,8 @@
             $scope.deleteCluster = function (index, cluster) {
                 $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
                 	console.log("Deleting index: " + index);
-                    $scope.clusters.splice(index, 1);
+                	if(data.status == 200)
+                    	$scope.clusters.splice(index, 1);
                 });
             }
         });
@@ -148,6 +149,9 @@
 
             $scope.metrics = {};
             $scope.prevMetrics = {};
+            $scope.cpuLoad = [[]];
+            $scope.cpuLoadLabels = ['Time'];
+            
             $scope.message = "This is a test message from angular backend";
             
             $scope.format = 'M/d/yy h:mm:ss a';
@@ -162,17 +166,26 @@
                 	connect($scope.cluster.id, function(data) {
                         console.log(data);
                         $scope.prevMetrics = $scope.metrics;
-                		$scope.metrics = data.beans[0];
-
-
-
+                		$scope.metrics = data.beans;
+                		
+                		$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
+                		$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
+                		
+                		var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
+                		var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
+                		
+                        $scope.data2 = [capacityFree, capacityUsed];
                 	}, handleError)
                 },
                 handleError
             );
             
-            $scope.setWidth = function (width) {
-            	return width + "%";
+            // Convert a value to a %
+            $scope.setWidth = function (width, max) {
+            	var percent = (parseFloat(width) / parseFloat(max) * 100);
+            	if(percent > 0) {
+            		return percent + "%";
+            	}
             }
 
             // Decides the color of metric bar 
@@ -194,67 +207,21 @@
             }
             
             // Decides
-            $scope.getNetCarat = function(metric) {
-            	
-            	var value = parseFloat(metric);
-            	if (value < $scope.prevMetrics.net) {
-            		return "fa fa-caret-down fa-3x";
-            	}
-            	else if (value > $scope.prevMetrics.net) {
-            		return "fa fa-caret-up fa-3x";
-            	}
-            }
-            
- 			$scope.getCpuCarat = function(metric) {
-            	
-            	var value = parseFloat(metric);
-            	if (value < $scope.prevMetrics.cpu) {
-            		return "fa fa-caret-down fa-3x";
-            	}
-            	else if (value > $scope.prevMetrics.cpu) {
-            		return "fa fa-caret-up fa-3x";
-            	}
-            }
- 			
- 			$scope.getIOCarat = function(metric) {
-            	
-            	var value = parseFloat(metric);
-            	if (value < $scope.prevMetrics.io) {
-            		return "fa fa-caret-down fa-3x";
-            	}
-            	else if (value > $scope.prevMetrics.io) {
-            		return "fa fa-caret-up fa-x3";
-            	} else {
-            		return "fa fa-minus fa-3x";
-            	}
-            }
- 			
- 			$scope.getRamCarat = function(metric) {
-            	
-            	var value = parseFloat(metric);
-            	if (value < $scope.prevMetrics.ram) {
-            		return "fa fa-caret-down fa-3x";
-            	}
-            	else if (value > $scope.prevMetrics.ram) {
-            		return "fa fa-caret-up fa-3x";
-            	}
-            }
-//
-//            ///////// TEST METRIC DATA /////////
-//            $scope.metrics = {
-//            		cpu: 21,
-//            		ram: 65,
-//            		io: 100,
-//            		net: 30
-//            };
-//
-//            ///////// TEST METRIC DATA /////////
-//            $scope.prevMetrics = {
-//            		cpu: 50,
-//            		ram: 70,
-//            		io: 100,
-//            		net: 81
-//            };
+           
+			$scope.getCarat = function(metric, previousMetric) {
+			  	var value = parseFloat(metric);
+			  	var prevValue = parseFloat(previousMetric);
+				if (value < prevValue ) {
+			        return "fa fa-caret-down fa-3x";
+			    }
+			    else if (value > prevValue ) {
+			    	return "fa fa-caret-up fa-3x";
+				}
+			    else {
+			    	return "fa fa-minus fa-3x";
+			    }
+			}
+                       	
             
             ///////// CHART JS /////////
             $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
@@ -264,8 +231,8 @@
               [28, 48, 40, 19, 86, 27, 90]
             ];
             
-            $scope.labels2 = ["Free", "Used"];
-            $scope.data2 = [40, 60];
+            $scope.labels2 = ["Free GB", "Used GB"];
+
             
             $scope.onClick = function (points, evt) {
               console.log(points, evt);

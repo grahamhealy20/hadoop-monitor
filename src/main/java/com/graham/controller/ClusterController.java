@@ -67,8 +67,8 @@ public class ClusterController {
 		return new ResponseEntity<Cluster>(cluster, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/log/namenode", produces="text/plain")
-	public @ResponseBody byte[] viewNamenodeLog(@RequestParam("id") String id) {
+	@RequestMapping(value = "/log/namenode/{id}", produces="text/plain")
+	public @ResponseBody byte[] viewNamenodeLog(@PathVariable("id") String id) {
 		Cluster cluster = clusterService.getCluster(id);
 		HttpHelper http = new HttpHelper();
 
@@ -77,8 +77,8 @@ public class ClusterController {
 		return namenodeLog.getBytes();
 	}
 	
-	@RequestMapping(value = "/log/datanode", produces="text/plain")
-	public @ResponseBody byte[] viewDatanodeLog(@RequestParam("id") String id) {
+	@RequestMapping(value = "/log/datanode/{id}", produces="text/plain")
+	public @ResponseBody byte[] viewDatanodeLog(@PathVariable("id") String id) {
 		Cluster cluster = clusterService.getCluster(id);
 		HttpHelper http = new HttpHelper();
 

@@ -1,10 +1,9 @@
 package com.graham.model.utils;
 
-import com.graham.model.metrics.Metrics;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import com.graham.model.metrics.Beans;
+import com.graham.model.metrics.Metrics;
 
 
 //Class used to help download from REST endpoints
@@ -12,7 +11,7 @@ public class HttpHelper {
 
 	public Metrics downloadJmxMetrics(String ipAddress) throws ResourceAccessException {
 		RestTemplate temp = new RestTemplate();
-		Metrics obj = temp.getForObject("http://" + ipAddress + ":50070/jmx?qry=Hadoop:*", Metrics.class);
+		Metrics obj = temp.getForObject("http://" + ipAddress + ":50070/jmx", Metrics.class);
 		return obj;
 	}
 	

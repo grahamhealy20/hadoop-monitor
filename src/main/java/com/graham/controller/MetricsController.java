@@ -2,7 +2,6 @@ package com.graham.controller;
 
 import java.util.ArrayList;
 
-import com.graham.model.metrics.Metrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -13,7 +12,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
-import com.graham.model.metrics.Beans;
+import com.graham.model.metrics.Metrics;
 import com.graham.model.utils.HttpHelper;
 
 // Controller to handle metrics

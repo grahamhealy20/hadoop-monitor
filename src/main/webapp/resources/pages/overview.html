@@ -85,15 +85,15 @@
     <div class="row">
         <div class="col-md-3">
             <div class="panel panel-default">
-				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.cpu), width: setWidth(metrics.cpu)}"></div>
+				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.cpu), width: setWidth(metrics[0].MemHeapUsedM, metrics[0].MemHeapMaxM)}"></div>
                 <div class="panel-body">
                     <div class="pull-left">
-                    	<h3>CPU Usage</h3>
-	                    <h1>{{metrics.cpu}} %</h1>
+                    	<h3>Heap Usage</h3>
+	                    <h1>{{metrics[0].MemHeapUsedM | number:2}} Mb</h1>
 	                </div>
 	                <div class="pull-right">
-	                	<i ng-class="getCpuCarat(metrics.cpu)"></i>
-	                    <h3>{{prevMetrics.cpu}} %</h3>
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
+	                    <h3>{{prevMetrics[0].MemHeapUsedM | number:2}} Mb</h3>
 	                </div>
                 </div>
             </div>
@@ -108,7 +108,7 @@
 	                    <h1>{{metrics.ram}} Mb</h1>
 	                </div>
 	                <div class="pull-right">
-	                	<i ng-class="getRamCarat(metrics.ram)"></i>
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
 	                    <h3>{{prevMetrics.ram}} Mb</h3>
 	                </div>
                 </div>
@@ -124,7 +124,7 @@
 	                    <h1>{{metrics.io}} %</h1>
 	                </div>
 	                <div class="pull-right">
-	                	<i ng-class="getIOCarat(metrics.io)"></i>
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
 	                    <h3>{{prevMetrics.io}} %</h3>
 	                </div>
                 </div>
@@ -142,7 +142,7 @@
 	                    <h1>{{metrics.net}} %</h1>
 	                </div>
 	                <div class="pull-right">
-	                	<i ng-class="getNetCarat(metrics.net)"></i>
+	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
 	                    <h3>{{prevMetrics.net}} %</h3>
 	                </div>
                 </div>
@@ -158,9 +158,9 @@
                 <div class="panel-body">
                     <h3>Storage</h3>
                     <div>
-			            <canvas id="bar" class="chart chart-bar"
-						  chart-data="data" chart-labels="labels"> chart-series="series"
-						</canvas>
+					<canvas id="line" class="chart chart-line" chart-data="cpuLoad"
+					  	chart-labels="cpuLabels" >
+				</canvas> 
                     </div>
                 </div>
             </div>
@@ -183,8 +183,16 @@
 
     <h2>Logs</h2>
     <div class="row">
-
-
+    	<div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="cluster/log/namenode/{{cluster.id}}">Namenode Log</a>
+                    <a href="cluster/log/datanode/{{cluster.id}}">Datanode Log</a>
+                </div>
+            </div>    		
+    	
+    	</div>
+		
     </div>
 
 </div>
