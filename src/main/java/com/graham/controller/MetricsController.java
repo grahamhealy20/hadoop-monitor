@@ -2,6 +2,7 @@ package com.graham.controller;
 
 import java.util.ArrayList;
 
+import com.graham.model.metrics.Metrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -36,8 +37,8 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 
 		for (Cluster cluster : clusters) {
 			try {
-				//Beans metrics = http.downloadJmxMetrics(cluster.getIpAddress());
-				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), "{" + "\"time\"" + ":" + "\"" + System.currentTimeMillis() + "\"" + "}");
+				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
 				//e.printStackTrace();

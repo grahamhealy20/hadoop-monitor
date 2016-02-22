@@ -145,6 +145,9 @@
         });
 
         app.controller('OverviewCtrl', function ($scope, $http, $routeParams, $timeout) {
+
+            $scope.metrics = {};
+            $scope.prevMetrics = {};
             $scope.message = "This is a test message from angular backend";
             
             $scope.format = 'M/d/yy h:mm:ss a';
@@ -156,8 +159,13 @@
                 	$scope.cluster = data.data;
                 	             	
                 	//Init websocket
-                	connect($scope.cluster.id, function(data) { 
-                		$scope.serverTime = data.time;
+                	connect($scope.cluster.id, function(data) {
+                        console.log(data);
+                        $scope.prevMetrics = $scope.metrics;
+                		$scope.metrics = data.beans[0];
+
+
+
                 	}, handleError)
                 },
                 handleError
@@ -231,22 +239,22 @@
             		return "fa fa-caret-up fa-3x";
             	}
             }
-            
-            ///////// TEST METRIC DATA /////////
-            $scope.metrics = {
-            		cpu: 21,
-            		ram: 65,
-            		io: 100,
-            		net: 30
-            };
-            
-            ///////// TEST METRIC DATA /////////
-            $scope.prevMetrics = {
-            		cpu: 50,
-            		ram: 70,
-            		io: 100,
-            		net: 81
-            };
+//
+//            ///////// TEST METRIC DATA /////////
+//            $scope.metrics = {
+//            		cpu: 21,
+//            		ram: 65,
+//            		io: 100,
+//            		net: 30
+//            };
+//
+//            ///////// TEST METRIC DATA /////////
+//            $scope.prevMetrics = {
+//            		cpu: 50,
+//            		ram: 70,
+//            		io: 100,
+//            		net: 81
+//            };
             
             ///////// CHART JS /////////
             $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
