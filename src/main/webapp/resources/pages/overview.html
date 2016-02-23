@@ -11,7 +11,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div>
-                        <h2>{{cluster.name}} <small>2,500 Nodes</small></h2>
+                        <h2>{{cluster.name}}</h2>
                         <h2><small>{{cluster.ipAddress}}</small></h2>
                         <div class="action-area pull-right">
                             <a href="" class="btn btn-danger pull-right"><i class="fa fa-trash"> </i> Delete</a>
@@ -29,10 +29,10 @@
 
             <div class="panel panel-default">
               <div class="panel-body">
-                <h3>Storage</h3>
+                <h3>Recent DFSIO Benchmarks</h3>
               <div>
-               <canvas id="line" class="chart chart-line" chart-data="data"
-				  	chart-labels="labels" chart-series="series"
+               <canvas id="line" class="chart chart-line" chart-data="dfsioData"
+				  	chart-labels="dfsioLabels"
 				  	chart-click="onClick" >
 				</canvas> 
               </div>
@@ -45,37 +45,14 @@
 
             <div class="panel panel-default">
                 <div class="panel-body">
-					{{serverTime | date:format}}
-                    <h3>Alerts</h3>
-                </div>
-                <!-- Table -->
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Alert</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="danger">
-                            <td>
-                                Heap Memory
-                            </td>
-                            <td>
-                                80mb
-                            </td>
-                        </tr>
-                        <tr class="warning">
-                            <td>
-                                Stack Memory
-                            </td>
-                            <td>
-                                30mb
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <h3>Recent MRBench Benchmarks</h3>
+              <div>
+               <canvas id="line" class="chart chart-line" chart-data="mrbenchData"
+				  	chart-labels="mrbenchLabels"
+				  	chart-click="onClick" >
+				</canvas> 
+              </div>
+              </div> 
             </div>
 
         </div>
@@ -83,9 +60,9 @@
 
     <h2>JVM Metrics</h2>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="panel panel-default">
-				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.cpu), width: setWidth(metrics[0].MemHeapUsedM, metrics[0].MemHeapMaxM)}"></div>
+				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics[0].MemHeapUsedMem), width: setWidth(metrics[0].MemHeapUsedM, metrics[0].MemHeapMaxM)}"></div>
                 <div class="panel-body">
                     <div class="pull-left">
                     	<h3>Heap Usage</h3>
@@ -99,53 +76,37 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="panel panel-default">
-            	<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.ram), width: setWidth(metrics.ram)}"></div>
+            	<div class="meter" ng-style="{backgroundColor: getMetricColour((metrics[5].SystemLoadAverage * 100)), width: setWidth((metrics[5].SystemLoadAverage * 100), 100)}"></div>
                 <div class="panel-body">
                     <div class="pull-left">
-                    	<h3>RAM Usage</h3>
-	                    <h1>{{metrics.ram}} Mb</h1>
+                    	<h3>CPU Load</h3>
+	                    <h1>{{metrics[5].SystemLoadAverage * 100 | number:0}} %</h1>
 	                </div>
 	                <div class="pull-right">
-	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
-	                    <h3>{{prevMetrics.ram}} Mb</h3>
+	                	<i ng-class="getCarat(metrics[5].SystemLoadAverage, prevMetrics[5].SystemLoadAverage)"></i>
+	                    <h3>{{(prevMetrics[5].SystemLoadAverage  * 100 | number:0 )}} %</h3>
 	                </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="panel panel-default">
-            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.io), width: setWidth(metrics.io)}"></div>
+            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics[26].NumOpenConnections * 10), width: setWidth(metrics[26].NumOpenConnections, 10)}"></div>
                 <div class="panel-body">
 					<div class="pull-left">
-                    	<h3>I/O Rate</h3>
-	                    <h1>{{metrics.io}} %</h1>
+                    	<h3>Open Connections</h3>
+	                    <h1>{{metrics[26].NumOpenConnections}} </h1>
 	                </div>
 	                <div class="pull-right">
-	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
-	                    <h3>{{prevMetrics.io}} %</h3>
+	                	<i ng-class="getCarat(metrics[26].NumOpenConnections, prevMetrics[26].NumOpenConnections)"></i>
+	                    <h3>{{prevMetrics[26].NumOpenConnections}} </h3>
 	                </div>
                 </div>
 
                 
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="panel panel-default">
-            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics.net), width: setWidth(metrics.net)}" ></div>
-                <div class="panel-body">
-	                <div class="pull-left">
-	                    <h3>Network Usage</h3>
-	                    <h1>{{metrics.net}} %</h1>
-	                </div>
-	                <div class="pull-right">
-	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
-	                    <h3>{{prevMetrics.net}} %</h3>
-	                </div>
-                </div>
             </div>
         </div>
 
@@ -156,10 +117,10 @@
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h3>Storage</h3>
+                    <h3>Block Replication</h3>
                     <div>
-					<canvas id="line" class="chart chart-line" chart-data="cpuLoad"
-					  	chart-labels="cpuLabels" >
+					<canvas id="doughnut" class="chart chart-doughnut" chart-data="blockData"
+					  	chart-labels="blockLabels" chart-legend="true">
 				</canvas> 
                     </div>
                 </div>
@@ -172,7 +133,7 @@
                     <h3>Storage</h3>
                     <div>
 			            <canvas id="doughnut" class="chart chart-doughnut"
-						  chart-data="data2" chart-labels="labels2">
+						  chart-data="dataStorage" chart-labels="storageLabels" chart-legend="true">
 						</canvas> 
                     </div>
                 </div>

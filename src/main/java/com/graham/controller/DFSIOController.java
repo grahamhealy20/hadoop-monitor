@@ -56,8 +56,15 @@ public class DFSIOController {
 		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
 		return new ResponseEntity<ArrayList<BenchmarkResult>>(results, HttpStatus.OK);
 	}
+	
+	@RequestMapping("/benchmarks/last/{id}")
+	public ResponseEntity<ArrayList<BenchmarkResult>> getLastFiveBenchmarks(@PathVariable("id") String id) {
+		// Get benchmarks from DB
+		ArrayList<BenchmarkResult> results = (ArrayList<BenchmarkResult>) benchmarkResultService.listLastFiveClusterBenchmarkResult(id);
+		return new ResponseEntity<ArrayList<BenchmarkResult>>(results, HttpStatus.OK);
+	}
 
-	// GET /benchmarks/{id}
+	// GET /benchmark/{id}
 	@RequestMapping(value = "/benchmark/{id}", method = RequestMethod.GET)
 	public ResponseEntity<BenchmarkResult> benchmark(@PathVariable("id") String id) {
 		

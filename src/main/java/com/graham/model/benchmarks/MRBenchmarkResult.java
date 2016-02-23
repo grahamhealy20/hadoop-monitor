@@ -13,10 +13,10 @@ public class MRBenchmarkResult {
 	private String dataLines;
 	private String maps;
 	private String reduces;
-	private String date;
+	private long date;
 	private String totalTime;
 
-	public MRBenchmarkResult(int numRuns, String dataLines, String maps, String reduces, String date, String totalTime) {
+	public MRBenchmarkResult(int numRuns, String dataLines, String maps, String reduces, long date, String totalTime) {
 		this.numRuns = numRuns;
 		this.dataLines = dataLines;
 		this.maps = maps;
@@ -69,11 +69,11 @@ public class MRBenchmarkResult {
 		this.reduces = reduces;
 	}
 
-	public String getDate() {
+	public long getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 

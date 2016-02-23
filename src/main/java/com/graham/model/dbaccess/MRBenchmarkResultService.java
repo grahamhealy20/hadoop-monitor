@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
 
 @Repository
@@ -53,6 +54,13 @@ public class MRBenchmarkResultService {
 
 	public List<MRBenchmarkResult> listClusterBenchmarkResultByDate(String clusterId) {
 		Query q = new Query().with(new Sort(Sort.Direction.DESC, "date"));
+		q.addCriteria(Criteria.where("clusterId").is(clusterId));
+		return mongoTemplate.find(q, MRBenchmarkResult.class, COLLECTION_NAME);
+	}
+	
+	public List<MRBenchmarkResult> listLastFiveClusterBenchmarkResult(String clusterId) {
+		Query q = new Query().with(new Sort(Sort.Direction.ASC, "date"));
+		q.limit(5);
 		q.addCriteria(Criteria.where("clusterId").is(clusterId));
 		return mongoTemplate.find(q, MRBenchmarkResult.class, COLLECTION_NAME);
 	}

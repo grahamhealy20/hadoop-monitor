@@ -68,6 +68,7 @@ public class DFSIOBenchmarkThread {
 		// Generate unique result file name
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
 		Date date = new Date();
+		long dateToStore = date.getTime();
 
 		String fileOutputName = "DFSIOBenchmark-" + dateFormat.format(date) + ".txt";
 		String location = Utilities.checkDirectory("DFSIO") + "/" +  fileOutputName;
@@ -90,7 +91,7 @@ public class DFSIOBenchmarkThread {
 
 		// Construct a benchmark result from the array list of values
 		formatRes = com.graham.model.utils.Utilities.splitDFSIOFile(location);
-		bresult = new BenchmarkResult(Character.toUpperCase(formatRes.get(0).charAt(0)) + formatRes.get(0).substring(1), formatRes.get(1), formatRes.get(2), formatRes.get(3),
+		bresult = new BenchmarkResult(Character.toUpperCase(formatRes.get(0).charAt(0)) + formatRes.get(0).substring(1), dateToStore, formatRes.get(2), formatRes.get(3),
 			formatRes.get(4), formatRes.get(5), formatRes.get(6), formatRes.get(7));
 
 		Log.info("Benchmark Complete");

@@ -145,12 +145,14 @@
             }
         });
 
-        app.controller('OverviewCtrl', function ($scope, $http, $routeParams, $timeout) {
+        app.controller('OverviewCtrl', function ($scope, $http, $routeParams, $timeout, $filter ) {
 
             $scope.metrics = {};
             $scope.prevMetrics = {};
             $scope.cpuLoad = [[]];
             $scope.cpuLoadLabels = ['Time'];
+            $scope.storageLabels = ["Free GB", "Used GB"];
+            $scope.blockLabels = ["Replicated", "Unreplicated"];
             
             $scope.message = "This is a test message from angular backend";
             
@@ -171,10 +173,16 @@
                 		$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
                 		$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
                 		
+                		var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+                		var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+                		
                 		var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
                 		var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
                 		
-                        $scope.data2 = [capacityFree, capacityUsed];
+                		//Set chart data
+                        $scope.dataStorage = [capacityFree, capacityUsed];
+                        $scope.blockData = [blocksReplicated, blocksUnderReplicated];
+                        
                 	}, handleError)
                 },
                 handleError
@@ -183,8 +191,11 @@
             // Convert a value to a %
             $scope.setWidth = function (width, max) {
             	var percent = (parseFloat(width) / parseFloat(max) * 100);
-            	if(percent > 0) {
+            	
+            	if(percent > 0 && percent < 100) {
             		return percent + "%";
+            	} else if( percent > 100) {
+            		return "100%";
             	}
             }
 
@@ -221,22 +232,49 @@
 			    	return "fa fa-minus fa-3x";
 			    }
 			}
-                       	
-            
-            ///////// CHART JS /////////
-            $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-            $scope.series = ['Series A', 'Series B'];
-            $scope.data = [
-              [65, 59, 80, 81, 56, 55, 40],
-              [28, 48, 40, 19, 86, 27, 90]
-            ];
-            
-            $scope.labels2 = ["Free GB", "Used GB"];
-
             
             $scope.onClick = function (points, evt) {
               console.log(points, evt);
             };
+            
+            
+            // Grab last 5 dfsio records
+            // Get benchmarks
+            $http.get(BASE_URL + "/dfsio/benchmarks/last/" + $routeParams.id).then(
+                function (data) {
+					console.log(data.data);
+					
+					$scope.dfsioData = [[]];
+					$scope.dfsioLabels = [];
+					$scope.dfsioSeries = ['Total Time']
+					
+					angular.forEach(data.data, function(value, key) {
+						console.log(value.totalTime);
+						$scope.dfsioData[0].push(parseFloat(value.totalTime));
+						$scope.dfsioLabels.push($filter('date')(value.date));
+					});
+                },
+                handleError
+            );
+            
+            // Grab last 5 mrbench records
+            // Get benchmarks
+            $http.get(BASE_URL + "/mrbench/benchmarks/last/" + $routeParams.id).then(
+                function (data) {
+					console.log(data.data);
+					
+					$scope.mrbenchData = [[]];
+					$scope.mrbenchLabels = [];
+					$scope.mrBenchSeries = ['Total Time']
+					
+					angular.forEach(data.data, function(value, key) {
+						console.log(value.totalTime);
+						$scope.mrbenchData[0].push(parseFloat(value.totalTime / 1000));
+						$scope.mrbenchLabels.push($filter('date')(value.date));
+					});
+                },
+                handleError
+            );
         });
 
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
@@ -274,6 +312,7 @@
 
         app.controller('DfsioCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
+            $scope.reverse = true;
 
             // Get cluster
             $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
@@ -323,6 +362,8 @@
                     {
                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                     }).then(function (data) {
+                    	// Success
+                    	$scope.results.push(data.data);
                         console.log(data);
                     }, handleError);
 
@@ -330,11 +371,31 @@
                     console.log("invalid");
                 }
             }
+            
+            
+            // Comparison
+            $scope.dfsioComparison = [];
+            
+            // Compare a job
+            $scope.addResultToComparison = function (index, result) {          	
+            	// Check for match
+            	for(var i = 0; i < $scope.dfsioComparison.length; i++) {	
+            		if($scope.dfsioComparison[i] == result) {
+            			// Remove if in list
+            			$scope.dfsioComparison.splice(i, 1);
+            			return true;
+            		} 
+            	}
+            	// Else add to list
+            	$scope.dfsioComparison.push(result);
+            }
+            
         });
 
         app.controller('MRBenchCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
-
+            $scope.reverse = true;
+            
             // Get cluster
             $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
@@ -356,6 +417,34 @@
                     $scope.results.splice(index, 1);
                 });
             }
+            
+         // Run benchmark on server
+            $scope.runMRBench = function () {
+
+                // Check if form is valid
+                if ($scope.mrbenchForm.$valid) {
+                    console.log("id:" + $scope.cluster.id);
+                    console.log("num files:" + $scope.form.numRuns);
+                    //console.log("file size:" + $scope.form.dataLines);
+
+                    $http.post(BASE_URL + "/mrbench/mrbench", $.param({
+                        id: $scope.cluster.id,
+                        numRuns: $scope.form.numRuns
+                      //  fileSize: $scope.form.fileSize
+                    }),
+                    {
+                       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    }).then(function (data) {
+                    	// Success
+                    	$scope.results.push(data.data);
+                        console.log(data);
+                    }, handleError);
+
+                } else {
+                    console.log("invalid");
+                }
+            }
+            
         });
 
         app.controller('ConfigureCtrl', function ($scope, $http, $routeParams) {
@@ -370,6 +459,10 @@
             
             
             $scope.updateCluster = function (cluster) {
+            	$http.put(BASE_URL + "/cluster/edit", cluster).then(function(response) {
+            		console.log(response);
+            	}, handleError);
+            	
             	console.log(cluster);
             }
         });

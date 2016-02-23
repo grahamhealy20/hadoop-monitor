@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.graham.model.Cluster;
+import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.dbaccess.MRBenchmarkResultService;
@@ -56,6 +57,13 @@ public class MRBenchController {
 	public ResponseEntity<ArrayList<MRBenchmarkResult>> getBenchmarks(@PathVariable("id") String id) {
 		// Get all MRBenchmarks
 		ArrayList<MRBenchmarkResult> results = (ArrayList<MRBenchmarkResult>) benchmarkResultService.listClusterBenchmarkResultByDate(id);
+		return new ResponseEntity<ArrayList<MRBenchmarkResult>>(results, HttpStatus.OK);
+	}
+	
+	@RequestMapping("/benchmarks/last/{id}")
+	public ResponseEntity<ArrayList<MRBenchmarkResult>> getLastFiveBenchmarks(@PathVariable("id") String id) {
+		// Get benchmarks from DB
+		ArrayList<MRBenchmarkResult> results = (ArrayList<MRBenchmarkResult>) benchmarkResultService.listLastFiveClusterBenchmarkResult(id);
 		return new ResponseEntity<ArrayList<MRBenchmarkResult>>(results, HttpStatus.OK);
 	}
 	

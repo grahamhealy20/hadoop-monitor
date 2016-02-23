@@ -12,9 +12,11 @@
          <div class="panel panel-default" style="height: 200px;">
             <div class="panel-body">
                <h3>Comparison</h3>
-               <div class="area">
-
-               </div>
+					<div>  	
+						<ul>
+							<li ng-repeat="result in dfsioComparison">{{result.id}}</li>
+						</ul>
+                    </div>
             </div>
          </div>
      </div>
@@ -26,19 +28,28 @@
             <div class="panel panel-default">
               <div class="panel-body">
                  <div>
-                    <h2>{{cluster.name}} <small>2,500 Nodes</small></h2>
+                    <h2>{{cluster.name}} </h2>
                     <h2><small>{{cluster.ipAddress}}</small></h2>
 
-                    <a href="" class="btn btn-primary slide-tog">Compare</a>
+                    
+					<!-- Search -->
+					<div class="search-box col-md-2">
+						<div class="form-group">
+							<label for="name">Search <i class="fa fa-search"></i></label>
+							<input type="text" class="form-control" id="query" placeholder="Search.." ng-model="query">
+						</div>
+						<a href="" class="btn btn-primary slide-tog">Compare</a>
+					</div>
+                    
                     <div class="action-area pull-right">
-
+						
                        <div ng-form name="benchmarkForm" class="form-inline">
                           <div class="form-group">
                              <label>Type</label>
-                             <select class="form-control" ng-model="form.type">
+                             <!--<select class="form-control" ng-model="form.type">
                                 <option>Read</option>
                                 <option>Write</option>
-                            </select>
+                            </select> -->
                            </div>
 
                           <div class="form-group">
@@ -72,9 +83,9 @@
                       </thead>
 
                       <tbody>
-                          <tr ng-class="{ danger: isAlert(result) }" ng-repeat="result in results">
+                          <tr ng-class="{ danger: isAlert(result) }" ng-repeat="result in results | orderBy:'date':reverse | filter:query" ng-click="addResultToComparison($index, result)">
                               <td>{{result.type}}</td>
-                              <td>{{result.date}}</td>
+                              <td>{{result.date | date:'HH:mm:ss EEE dd MMM yyyy' }}</td>
                               <td>{{result.nrFiles}}</td>
                               <td>{{result.totalMb}}</td>
                               <td>{{result.throughputMb}}</td>

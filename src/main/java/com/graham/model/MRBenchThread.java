@@ -60,8 +60,10 @@ public class MRBenchThread {
 		PrintStream out = System.out;
 		
 		// Generate unique result file name
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH-mm-ss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 		Date date = new Date();
+		
+		long dateToStore = date.getTime();
 		
 		String fileOutputName = "MRBenchmark-" + dateFormat.format(date) + ".txt";
 		String location = Utilities.checkDirectory("MRBench") + "/" +  fileOutputName;
@@ -92,11 +94,8 @@ public class MRBenchThread {
 			
 		//Format output
 		String[] values = com.graham.model.utils.Utilities.splitMRBenchOutput(location); 
-
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-		String dateString = dateFormat.format(date);
 		
-		result = new MRBenchmarkResult(numRuns, values[0], values[2], values[3], dateString, values[4]);
+		result = new MRBenchmarkResult(numRuns, values[0], values[2], values[3], dateToStore, values[4]);
 		return result;
 	}
 }

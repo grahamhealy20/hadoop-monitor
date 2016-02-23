@@ -39,7 +39,7 @@ public class BenchmarkResultService {
 	}
 
 	public List<BenchmarkResult> listBenchmarkResultByDate() {
-		Query q = new Query().with(new Sort(Sort.Direction.DESC, "date"));
+		Query q = new Query().with(new Sort(Sort.Direction.ASC, "date"));
 		return mongoTemplate.find(q, BenchmarkResult.class, COLLECTION_NAME);
 	}
 
@@ -50,9 +50,22 @@ public class BenchmarkResultService {
 	public void updateBenchmarkResult(BenchmarkResult result) {
 		mongoTemplate.insert(result, COLLECTION_NAME);		
 	}
+	
+	public List<BenchmarkResult> listClusterBenchmarkResult(String clusterId) {
+		Query q = new Query();
+		q.addCriteria(Criteria.where("clusterId").is(clusterId));
+		return mongoTemplate.find(q, BenchmarkResult.class, COLLECTION_NAME);
+	}
+	
+	public List<BenchmarkResult> listLastFiveClusterBenchmarkResult(String clusterId) {
+		Query q = new Query().with(new Sort(Sort.Direction.ASC, "date"));
+		q.limit(5);
+		q.addCriteria(Criteria.where("clusterId").is(clusterId));
+		return mongoTemplate.find(q, BenchmarkResult.class, COLLECTION_NAME);
+	}
 
 	public List<BenchmarkResult> listClusterBenchmarkResultByDate(String clusterId) {
-		Query q = new Query().with(new Sort(Sort.Direction.DESC, "date"));
+		Query q = new Query().with(new Sort(Sort.Direction.ASC, "date"));
 		q.addCriteria(Criteria.where("clusterId").is(clusterId));
 		return mongoTemplate.find(q, BenchmarkResult.class, COLLECTION_NAME);
 	}

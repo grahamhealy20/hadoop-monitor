@@ -10,7 +10,7 @@ public class BenchmarkResult {
 	private String clusterName;
 	private String clusterId;
 	private String type;
-	private String date;
+	private long date;
 	private String nrFiles;
 	private String totalMb;
 	private String throughputMb;
@@ -19,7 +19,7 @@ public class BenchmarkResult {
 	private String totalTime;
 	private boolean alarm;
 
-	public BenchmarkResult(String type, String date, String nrFiles,  String totalMb, String throughputMb, String avgIORate,
+	public BenchmarkResult(String type, long date, String nrFiles,  String totalMb, String throughputMb, String avgIORate,
 			String stdDeviation, String totalTime) {
 		this.type = type;
 		this.date = date;
@@ -51,7 +51,7 @@ public class BenchmarkResult {
 		return type;
 	}
 
-	public String getDate() {
+	public long getDate() {
 		return date;
 	}
 
