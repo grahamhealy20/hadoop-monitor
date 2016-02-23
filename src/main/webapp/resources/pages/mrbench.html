@@ -6,18 +6,24 @@
       <!-- Top row -->
 
       <div class="col-md-12">
-
-
-      <div class="row comparison">
-         <div class="panel panel-default" style="height: 200px;">
-            <div class="panel-body">
-               <h3>Comparison</h3>
-               <div class="area">
-
-               </div>
-            </div>
-         </div>
-     </div>
+	      <div class="row comparison">
+	         <div class="panel panel-default">
+	            <div class="panel-body">
+	               <h3>Comparison</h3>
+						<div class="comparisonArea">
+							<div class="comparisonItem" ng-repeat="result in mrbenchComparison">
+								<h3>{{$index + 1 }}</h5>
+								<p><strong>Date: </strong>{{result.date | date:'HH:mm:ss EEE dd MMM yyyy' }}</p>
+								<p><strong># Runs: </strong>{{result.numRuns}}</p>
+								<p><strong>Data Lines: </strong>{{result.dataLines}}</p>
+								<p><strong>Maps: </strong>{{result.maps}}</p>
+								<p><strong>Reduces: </strong>{{result.reduces}} Mb</p>
+								<p><strong>Total Time: </strong>{{(result.totalTime / 1000)}}s</p>
+							</div>
+	                    </div>
+	            </div>
+	         </div>
+	     </div>
       </div>
 
       <div class="row">
@@ -73,7 +79,7 @@
                               <td>{{result.dataLines}}</td>
                               <td>{{result.maps}}</td>
                               <td>{{result.reduces}}</td>
-                              <td>{{result.totalTime}}</td>
+                              <td>{{result.totalTime / 1000}}s</td>
                               <td>
                                   <a ng-click="deleteBenchmark($index, result)" class="btn btn-danger">Delete</a>
                               </td>

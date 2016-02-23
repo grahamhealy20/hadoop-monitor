@@ -444,6 +444,24 @@
                     console.log("invalid");
                 }
             }
+         
+            
+            // Comparison
+            $scope.mrbenchComparison = [];
+            
+            // Compare a job
+            $scope.addResultToComparison = function (index, result) {          	
+            	// Check for match
+            	for(var i = 0; i < $scope.mrbenchComparison.length; i++) {	
+            		if($scope.mrbenchComparison[i] == result) {
+            			// Remove if in list
+            			$scope.mrbenchComparison.splice(i, 1);
+            			return true;
+            		} 
+            	}
+            	// Else add to list
+            	$scope.mrbenchComparison.push(result);
+            }
             
         });
 

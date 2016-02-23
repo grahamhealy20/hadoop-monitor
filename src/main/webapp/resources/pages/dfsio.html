@@ -9,13 +9,20 @@
 
 
       <div class="row comparison">
-         <div class="panel panel-default" style="height: 200px;">
+         <div class="panel panel-default">
             <div class="panel-body">
                <h3>Comparison</h3>
-					<div>  	
-						<ul>
-							<li ng-repeat="result in dfsioComparison">{{result.id}}</li>
-						</ul>
+					<div class="comparisonArea">
+						<div class="comparisonItem" ng-repeat="result in dfsioComparison">
+							<h3>{{$index + 1 }}</h5>
+							<p><strong>Date: </strong>{{result.date | date:'HH:mm:ss EEE dd MMM yyyy' }}</p>
+							<p><strong>Type: </strong>{{result.type}}</p>
+							<p><strong># Files: </strong>{{result.nrFiles}} Mb/s</p>
+							<p><strong>Throughput: </strong>{{result.throughputMb | number: 2}} Mb/s</p>
+							<p><strong>I/O Rate: </strong>{{result.avgIORate | number: 2}} Mb/s</p>
+							<p><strong>I/O Rate SD: </strong>{{result.stdDeviation | number: 2}} Mb</p>
+							<p><strong>Total Time: </strong>{{result.totalTime}}s</p>
+						</div>
                     </div>
             </div>
          </div>
