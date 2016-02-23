@@ -353,6 +353,16 @@
             $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
                 function (data) { //Success handler
                     $scope.cluster = data.data;
+                	
+                    // to decide wether a result is bad
+                    $scope.isAlert = function (result) {
+                        if (result.throughputMb < $scope.cluster.dfsioOptions.throughputLimit || result.avgIORate < $scope.cluster.dfsioOptions.ioLimit || result.stdDeviation > $scope.cluster.dfsioOptions.stdDeviationLimit ) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                
                 },
                 handleError
             );
@@ -371,14 +381,7 @@
                 });
             }
 
-            // to decide wether a result is bad
-            $scope.isAlert = function (result) {
-                if (result.throughputMb < 10) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+           
 
             // Run benchmark on server
             $scope.runDFSIOBenchmark = function () {

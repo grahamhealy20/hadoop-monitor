@@ -17,6 +17,8 @@ public class Cluster {
 	private String ipAddress;
 	private String username;
 	private String throughputThreshold;
+	
+	private DFSIOOptions dfsioOptions;
 	 
 	public String getId() {
 		return id;
@@ -35,7 +37,7 @@ public class Cluster {
 	}
 
 	public Cluster() {
-		
+		dfsioOptions = new DFSIOOptions();
 	}
 	
 	public Cluster(String name, String ipAddress, String username) {
@@ -75,20 +77,15 @@ public class Cluster {
 		this.throughputThreshold = throughputThreshold;
 	}
 	
-//	public BenchmarkResult runDFSIOBenchmarkAsync(int numFiles, int fileSize) {
-//		Log.warn("Running DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
-//		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-//		Thread t = new Thread(dfsio);
-//		t.start();
-//		try {
-//			t.join();
-//		} catch (InterruptedException e) {
-//			
-//			e.printStackTrace();
-//		}
-//		return dfsio.getBenchmarkResult();
-//	}
 	
+	public DFSIOOptions getDfsioOptions() {
+		return dfsioOptions;
+	}
+
+	public void setDfsioOptions(DFSIOOptions dfsioOptions) {
+		this.dfsioOptions = dfsioOptions;
+	}
+
 	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException, ConnectTimeoutException {
 		Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
 		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
@@ -106,4 +103,5 @@ public class Cluster {
 		TeraSortBenchmarkThread tera = new TeraSortBenchmarkThread(ipAddress, username, size);
 		tera.run();
 	}
+	
 }
