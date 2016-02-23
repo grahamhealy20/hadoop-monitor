@@ -41,7 +41,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}

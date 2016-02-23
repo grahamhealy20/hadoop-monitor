@@ -1,17 +1,21 @@
 package com.graham.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.hadoop.net.ConnectTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
@@ -87,13 +91,19 @@ public class ClusterController {
 		return log.getBytes();
 	}
 	
-	@RequestMapping(value = "/jobs/{id}")
-	public @ResponseBody ResponseEntity<Apps> getClusterJobs(@PathVariable("id") String id) {
+	@RequestMapping(value = "/jobs/{id}") 
+	public @ResponseBody ResponseEntity<Apps> getClusterJobs(@PathVariable("id") String id) throws ResourceAccessException {
 		Cluster cluster = clusterService.getCluster(id);
 		HttpHelper http = new HttpHelper();
 		
 		//Download apps
 		Apps apps = http.downloadClusterApps(cluster.getIpAddress());
 		return new ResponseEntity<>(apps, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(ResourceAccessException.class)
+	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
+		//ex.printStackTrace();
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Connection Failure\"" + "}", HttpStatus.BAD_REQUEST);
 	}
 }

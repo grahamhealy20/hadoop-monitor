@@ -76,7 +76,7 @@ public class MRBenchThread {
 		conf.set("yarn.resourcemanager.address", ipAddress + ":5001");
 		conf.set("mapreduce.framework.name", "yarn");
 		conf.set("output.dir", "/balancer/");
-		conf.set("ipc.client.connect.max.retries.on.timeouts", "5");
+		conf.set("ipc.client.connect.max.retries.on.timeouts", "1");
 		
 		MRBench mr = new MRBench();
 		mr.setConf(conf);
