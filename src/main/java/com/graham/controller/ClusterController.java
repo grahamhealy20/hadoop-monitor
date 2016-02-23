@@ -1,6 +1,7 @@
 package com.graham.controller;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 import org.apache.hadoop.net.ConnectTimeoutException;
@@ -92,7 +93,7 @@ public class ClusterController {
 	}
 	
 	@RequestMapping(value = "/jobs/{id}") 
-	public @ResponseBody ResponseEntity<Apps> getClusterJobs(@PathVariable("id") String id) throws ResourceAccessException {
+	public @ResponseBody ResponseEntity<Apps> getClusterJobs(@PathVariable("id") String id) throws ResourceAccessException, ConnectException {
 		Cluster cluster = clusterService.getCluster(id);
 		HttpHelper http = new HttpHelper();
 		
@@ -101,7 +102,7 @@ public class ClusterController {
 		return new ResponseEntity<>(apps, HttpStatus.OK);
 	}
 	
-	@ExceptionHandler(ResourceAccessException.class)
+	@ExceptionHandler({ResourceAccessException.class, ConnectException.class})
 	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
 		//ex.printStackTrace();
 		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Connection Failure\"" + "}", HttpStatus.BAD_REQUEST);
