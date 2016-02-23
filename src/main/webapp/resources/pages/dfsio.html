@@ -94,11 +94,11 @@
                               <td>{{result.type}}</td>
                               <td>{{result.date | date:'HH:mm:ss EEE dd MMM yyyy' }}</td>
                               <td>{{result.nrFiles}}</td>
-                              <td>{{result.totalMb}}</td>
-                              <td>{{result.throughputMb}}</td>
-                              <td>{{result.avgIORate}}</td>
-                              <td>{{result.stdDeviation}}</td>
-                              <td>{{result.totalTime}}</td>
+                              <td>{{result.totalMb | number:2 }} Mb</td>
+                              <td>{{result.throughputMb | number:2 }}</td>
+                              <td>{{result.avgIORate | number:2 }} Mb/s</td>
+                              <td>{{result.stdDeviation | number:2 }} Mb</td>
+                              <td>{{result.totalTime}}s</td>
                               <td>
                                   <a ng-click="deleteBenchmark($index, result)" class="btn btn-danger">Delete</a>
                               </td>

@@ -3,7 +3,7 @@ package com.graham.model.utils;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import com.graham.model.metrics.Applications;
+import com.graham.model.metrics.Apps;
 import com.graham.model.metrics.Metrics;
 
 
@@ -16,9 +16,9 @@ public class HttpHelper {
 		return obj;
 	}
 	
-	public Applications downloadClusterApps(String ipAddress) throws ResourceAccessException {
+	public Apps downloadClusterApps(String ipAddress) throws ResourceAccessException {
 		RestTemplate temp = new RestTemplate();
-		Applications obj = temp.getForObject("http://" + ipAddress + ":8088/ws/v1/cluster/apps", Applications.class);
+		Apps obj = temp.getForObject("http://" + ipAddress + ":8088/ws/v1/cluster/apps", Apps.class);
 		return obj;
 	}
 	

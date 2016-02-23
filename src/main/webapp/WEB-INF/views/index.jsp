@@ -49,8 +49,16 @@
     
     <div class="alert alert-danger alert-dismissible" role="alert">
 	  <button type="button" class="close"> <span aria-hidden="true">&times;</span></button>
-	  <strong class="title">Error</strong> <p class="error-content"></p>
+	  <strong class="error-title">Error</strong> <p class="error-content"></p>
 	</div>
+	
+	<div class="alert alert-success alert-dismissible" role="alert">
+	  <button type="button" class="close"> <span aria-hidden="true">&times;</span></button>
+	  <strong class="success-title">Success</strong> <p class="success-content"></p>
+	</div>
+	
+	
+	
 
     <!-- JS -->
     <script src="resources/js/jquery-2.2.0.min.js"></script>
@@ -118,7 +126,9 @@
         // Controller
         app.controller('ClustersCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
-			
+			$scope.reverse = true;
+            
+            
             $http.get(BASE_URL + "/cluster/clusters").then(
                 function (data) { //Success handler
                     $scope.clusters = data.data;
@@ -130,6 +140,7 @@
             		//Add cluster
             		$http.post(BASE_URL + "/cluster/add", cluster).then(function(data) {
                     	$scope.clusters.push(data.data);
+                    	handleSuccess("Cluster successfully added");
             		},
             		handleError
             		);
@@ -139,8 +150,10 @@
             $scope.deleteCluster = function (index, cluster) {
                 $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
                 	console.log("Deleting index: " + index);
-                	if(data.status == 200)
+                	if(data.status == 200) {
                     	$scope.clusters.splice(index, 1);
+                    	handleSuccess("Cluster successfully deleted");
+                	}
                 });
             }
         });
@@ -279,13 +292,26 @@
 
         app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
             $scope.message = "This is a test message from angular backend";
+            $scope.reverse = true;
             
-            $scope.jobs = [
-                           {id: "123"},
-                           {id: "60"},
-                           {id: "100"}
-                           ];
             
+        	// Get cluster
+            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
+                function (data) { //Success handler
+                	
+                    $scope.cluster = data.data;
+                },
+                handleError
+            );
+            
+            $http.get(BASE_URL + "/cluster/jobs/" + $routeParams.id).then(
+                    function (data) { //Success handler
+                        $scope.jobs = data.data.apps.app;
+                        console.log(data);
+                    },
+                    handleError
+                );
+           
             $scope.jobComparison = [];
             
             // Compare a job
@@ -302,12 +328,21 @@
             	$scope.jobComparison.push(job);
             }
             
-            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
-                function (data) { //Success handler
-                    $scope.cluster = data.data;
-                },
-                handleError
-            );
+            $scope.hasFailed = function (job) {
+            	if(job.finalStatus.trim() == "FAILED") {
+            		return true;
+            	} else {
+            		return false;
+            	}
+            }
+            
+            $scope.isStarted = function (job) {
+            	if(job.state.trim() == "ACCEPTED" || job.state.trim() == "RUNNING") {
+            		return true;
+            	} else {
+            		return false;
+            	}
+            }
         });
 
         app.controller('DfsioCtrl', function ($scope, $http, $routeParams) {
@@ -365,6 +400,7 @@
                     	// Success
                     	$scope.results.push(data.data);
                         console.log(data);
+                        handleSuccess("DFSIO benchmark completed");
                     }, handleError);
 
                 } else {
@@ -438,6 +474,7 @@
                     	// Success
                     	$scope.results.push(data.data);
                         console.log(data);
+                        handleSuccess("MRBench benchmark completed");
                     }, handleError);
 
                 } else {
@@ -479,6 +516,7 @@
             $scope.updateCluster = function (cluster) {
             	$http.put(BASE_URL + "/cluster/edit", cluster).then(function(response) {
             		console.log(response);
+            		handleSuccess("Cluster successfully updated");
             	}, handleError);
             	
             	console.log(cluster);
@@ -516,11 +554,22 @@
         ////////// Error Handler //////////
         function handleError(response) {
             $('.error-content').text(response.data.message);
-        	$('.alert').slideDown(250);
+        	$('.alert-danger').slideDown(250);
         	
         	//Close alert box after 2 seconds
         	setTimeout(function() {
-        		$('.alert').slideUp(250);
+        		$('.alert-danger').slideUp(250);
+        	}, 5000);
+        }
+        
+        ////////// Success Handler //////////
+        function handleSuccess(message) {
+            $('.success-content').text(message);
+        	$('.alert-success').slideDown(250);
+        	
+        	//Close alert box after 2 seconds
+        	setTimeout(function() {
+        		$('.alert-success').slideUp(250);
         	}, 5000);
         }
         

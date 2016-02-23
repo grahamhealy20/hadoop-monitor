@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
+import com.graham.model.metrics.Apps;
 import com.graham.model.utils.HttpHelper;
 
 @Controller
@@ -84,5 +85,15 @@ public class ClusterController {
 		//Download logs
 		String log = http.downloadDataNodeLog(cluster.getIpAddress());
 		return log.getBytes();
+	}
+	
+	@RequestMapping(value = "/jobs/{id}")
+	public @ResponseBody ResponseEntity<Apps> getClusterJobs(@PathVariable("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);
+		HttpHelper http = new HttpHelper();
+		
+		//Download apps
+		Apps apps = http.downloadClusterApps(cluster.getIpAddress());
+		return new ResponseEntity<>(apps, HttpStatus.OK);
 	}
 }

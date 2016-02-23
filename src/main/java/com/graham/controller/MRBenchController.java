@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.graham.model.Cluster;
-import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.dbaccess.MRBenchmarkResultService;

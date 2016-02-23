@@ -8,15 +8,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Apps {
 	
 	@JsonProperty("apps")
-	App[] apps;
+	private Object apps;
 
-	public App[] getApps() {
+	public Object getApps() {
 		return apps;
 	}
 
-	public void setApps(App[] apps) {
+	public void setApps(Object apps) {
 		this.apps = apps;
 	}
-	
-	
+
 }

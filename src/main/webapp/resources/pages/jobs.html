@@ -29,49 +29,37 @@
                 <div class="panel-body">
                     <h2>{{cluster.name}} </h2>
                     <h2><small>{{cluster.ipAddress}}</small></h2>
-                    <div>
-
-                        <a href="" class="btn btn-primary slide-tog">Compare</a>
-                        <div class="action-area pull-right">
-
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    <label>Type</label>
-                                    <select class="form-control">
-                                        <option>Read</option>
-                                        <option>Write</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="nrFiles"># Files</label>
-                                    <input type="number" class="form-control" id="nrFiles" placeholder="10">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="fileSize">File Size (Mb)</label>
-                                    <input type="number" class="form-control" id="fileSize" placeholder="100">
-                                </div>
-                                <a href="" class="btn btn-primary">Run Benchmark</a>
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>User</th>
+                            <th>Name</th>
+                            <th>Queue</th>
+                            <th>State</th>
+                            <th>Final Status</th>
+                            <th>Progress</th>
+                            <th>Started Time</th>
+                            <th>Finished Time</th>
+                            <th>Elapsed Time</th>
                         </tr>
                     </thead>
 
                     <tbody>
 		
-                        <tr ng-repeat="job in jobs" ng-click="addJobToComparison($index, job)">
+                        <tr ng-class="{ info: isStarted(job), danger: hasFailed(job) }" ng-repeat="job in jobs | orderBy:'startedTime':reverse" ng-click="addJobToComparison($index, job)">
                             <td>{{job.id}}</td>
+                            <td>{{job.user}}</td>
+                            <td>{{job.name}}</td>
+                            <td>{{job.queue}}</td>
+                            <td>{{job.state}}</td>
+                            <td>{{job.finalStatus}}</td>
+                            <td>{{job.progress}}%</td>
+                            <td>{{job.startedTime | date:'HH:mm:ss EEE dd MMM yyyy'}}</td>
+                            <td>{{job.finishedTime | date:'HH:mm:ss EEE dd MMM yyyy'}}</td>
+                            <td>{{(job.elapsedTime / 1000)}}s</td>
                         </tr>
 
                     </tbody>
