@@ -200,7 +200,17 @@
                 },
                 handleError
             );
-            
+
+            // Code to remove a cluster
+            $scope.deleteCluster = function (cluster) {
+                $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
+                	if(data.status == 200) {
+                		//Redirect
+                    	window.location="#/clusters";
+                    	handleSuccess("Cluster successfully deleted");
+                	}
+                });
+            };
             // Convert a value to a %
             $scope.setWidth = function (width, max) {
             	var percent = (parseFloat(width) / parseFloat(max) * 100);
