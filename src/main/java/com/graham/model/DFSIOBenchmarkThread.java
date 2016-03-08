@@ -84,8 +84,7 @@ public class DFSIOBenchmarkThread {
 		conf.set("output.dir", "/balancer/");
 		conf.set("ipc.client.connect.max.retries.on.timeouts", "1");
 		testDFSIO.setConf(conf);
-
-		
+			
 		testDFSIO.run(String.format("-write -nrFiles %d -fileSize %d -resFile %s", getNumFiles(), getFileSize(), location)
 				.split(" "));
 

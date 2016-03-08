@@ -3,6 +3,7 @@ package com.graham.model;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.hadoop.hdfs.server.balancer.Balancer;
 import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -79,8 +80,6 @@ public class Cluster {
 	public void setDfsioOptions(DFSIOOptions dfsioOptions) {
 		this.dfsioOptions = dfsioOptions;
 	}
-	
-	
 
 	public ArrayList<Rule> getRules() {
 		return rules;
@@ -88,6 +87,14 @@ public class Cluster {
 
 	public void setRules(ArrayList<Rule> rules) {
 		this.rules = rules;
+	}
+	
+	// Balance the cluster
+	public void balanceCluster() {
+		// Make string args from a conf
+		String conf = "-D fs.defaultFS=hdfs://" + ipAddress + ":9000 -D yarn.resourcemanager.address=" + ipAddress;
+		String[] args = conf.split(" ");		
+		Balancer.main(args);
 	}
 
 	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException, ConnectTimeoutException {

@@ -4,6 +4,13 @@ angular.module('admin').controller('ConfigureCtrl', function (MonitorService, $s
 	MonitorService.getCluster($routeParams.id, function(data) {
 		$scope.cluster = data.data;                
 	}, handleError);
+	
+	$scope.balanceCluster = function() {
+		MonitorService.balanceCluster($routeParams.id, function(response) {
+			console.log(response);
+			handleSuccess("Cluster Successfully Balanced");
+		}, handleError);
+	};
 
 
 	$scope.updateCluster = function (cluster) {

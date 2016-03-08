@@ -162,6 +162,15 @@ public class ClusterController {
 		return new ResponseEntity<>(cluster.getRules(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/{id}/balance") 
+	public @ResponseBody ResponseEntity<String> balanceCluster(@PathVariable("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);		
+		cluster.balanceCluster();	
+		return new ResponseEntity<>("Success", HttpStatus.OK);
+	}
+	
+	
+	
 	
 	
 	///////// EXCEPTION HANDLERS //////////

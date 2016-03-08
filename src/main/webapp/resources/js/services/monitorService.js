@@ -42,6 +42,10 @@ angular.module('admin').service('MonitorService', function($http) {
 		$http.post(BASE_URL + "/cluster/rules/" + id, rule).then(successCallback, errorCallback);
 	}
 	
+	this.balanceCluster = function(id, successCallback, errorCallback) {
+		$http.get(BASE_URL + "/cluster/" + id + "/balance").then(successCallback, errorCallback);
+	}
+	
 	
 
 	///////// JOBS /////////
