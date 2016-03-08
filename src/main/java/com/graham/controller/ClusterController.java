@@ -1,10 +1,14 @@
 package com.graham.controller;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.net.ConnectTimeoutException;
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,13 +76,16 @@ public class ClusterController {
 		return new ResponseEntity<Cluster>(cluster, HttpStatus.OK);
 	}
 	
+	////////// FULL LOGS //////////
+	
 	@RequestMapping(value = "/log/namenode/{id}", produces="text/plain")
-	public @ResponseBody byte[] viewNamenodeLog(@PathVariable("id") String id) {
+	public @ResponseBody byte[] viewNamenodeLog(@PathVariable("id") String id) throws IOException {
 		Cluster cluster = clusterService.getCluster(id);
 		HttpHelper http = new HttpHelper();
 
 		//Download logs
 		String namenodeLog = http.downloadNameNodeLog(cluster.getIpAddress());
+		getLastLines(namenodeLog, 10);
 		return namenodeLog.getBytes();
 	}
 	
@@ -92,6 +99,41 @@ public class ClusterController {
 		return log.getBytes();
 	}
 	
+	////////// LOG TAILS //////////
+	
+	@RequestMapping(value = "/log/namenode/{id}/tail", produces="text/plain")
+	public @ResponseBody Callable<String> viewNamenodeLogTail(@PathVariable("id") String id) throws IOException {
+		Cluster cluster = clusterService.getCluster(id);
+		HttpHelper http = new HttpHelper();
+
+		//Download logs
+		String namenodeLog = http.downloadNameNodeLog(cluster.getIpAddress());
+		return new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				return getLastLines(namenodeLog, 10);
+			}
+		};
+	}
+	
+	@RequestMapping(value = "/log/datanode/{id}/tail", produces="text/plain")
+	public @ResponseBody Callable<String> viewDatanodeLogTail(@PathVariable("id") String id) throws IOException {
+		Cluster cluster = clusterService.getCluster(id);
+		HttpHelper http = new HttpHelper();
+
+		//Download logs
+		String log = http.downloadDataNodeLog(cluster.getIpAddress());
+		
+		return new Callable<String> () {
+			@Override
+			public String call() throws Exception {
+				return getLastLines(log, 10);
+			}		
+		};		
+	}
+	
+	///////// GET JOBS /////////
+	
 	@RequestMapping(value = "/jobs/{id}") 
 	public @ResponseBody ResponseEntity<Apps> getClusterJobs(@PathVariable("id") String id) throws ResourceAccessException, ConnectException {
 		Cluster cluster = clusterService.getCluster(id);
@@ -102,9 +144,33 @@ public class ClusterController {
 		return new ResponseEntity<>(apps, HttpStatus.OK);
 	}
 	
+	///////// EXCEPTION HANDLERS //////////
+	
 	@ExceptionHandler({ResourceAccessException.class, ConnectException.class})
 	public ResponseEntity<String> handleConnectionFailure(Exception ex) {
 		//ex.printStackTrace();
 		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Connection Failure\"" + "}", HttpStatus.BAD_REQUEST);
+	}
+	
+	////////// PRIVATE METHODS //////////
+	
+	// Returns the last n lines of a given string
+	private String getLastLines(String text, int lines) throws IOException {
+		ArrayList<String> list = (ArrayList<String>)IOUtils.readLines(new StringReader(text));
+		ArrayList<String> sub = new ArrayList<String>();
+		String tail = "";
+		
+		for(String line : list) {
+			if(sub.size() >= lines) {
+				sub.remove(0);			
+			}
+			sub.add(line);					
+		}
+		
+		for(String line : sub) {
+			tail += "\n" + line;
+		}
+		
+		return tail;	
 	}
 }

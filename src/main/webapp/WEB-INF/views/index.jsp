@@ -122,43 +122,120 @@
                     redirectTo: '/'
                 });
         });
+        
+        // Service to interact with REST service
+        app.service('MonitorService', function($http) {
+        	
+        	///////// CLUSTERS /////////
+        	
+        	// Get all clusters
+        	this.getClusters = function(successCallback, errorCallback) {
+        		// Do a request then call specified callback funtions
+        		$http.get(BASE_URL + "/cluster/clusters").then(successCallback, errorCallback);
+        	};
+        	
+        	// get a cluster given an id
+        	this.getCluster = function(id, successCallback, errorCallback) {
+        		 $http.get(BASE_URL + "/cluster/cluster/" + id).then(successCallback, errorCallback);
+        	};
+        	
+        	this.addCluster = function(cluster, successCallback, errorCallback) {
+        		$http.post(BASE_URL + "/cluster/add", cluster).then(successCallback, errorCallback);
+        	};
+        	
+        	this.updateCluster = function(cluster, successCallback, errorCallback) {
+        		$http.put(BASE_URL + "/cluster/edit", cluster).then(successCallback, errorCallback);
+        	};
+        	
+        	this.deleteCluster = function (cluster, successCallback, errorCallback) {
+        		$http.post(BASE_URL + "/cluster/delete", cluster).then(successCallback, errorCallback);
+        	};
+        	
+        	this.getNamenodeLogTail = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/cluster/log/namenode/" + id + "/tail").then(successCallback, errorCallback);
+        	};
+        	
+        	this.getDatanodeLogTail = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/cluster/log/datanode/" + id + "/tail").then(successCallback, errorCallback);
+        	};
+        	
+        	///////// JOBS /////////
+        	             	
+        	this.getJobs = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/cluster/jobs/" + id).then(successCallback, errorCallback);
+        	};
+        	
+        	///////// DFSIO /////////
+        	
+        	this.getRecentDFSIOBenchmarks = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/dfsio/benchmarks/last/" + id).then(successCallback, errorCallback);
+        	};
+        	
+        	this.getDFSIOBenchmarks = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/dfsio/benchmarks/" + id).then(successCallback, errorCallback);
+        	};
+        	
+        	this.deleteDFSIOBenchmark = function(benchmark, successCallback, errorCallback) {
+        		 $http.post(BASE_URL + "/dfsio/delete/" + benchmark.id, benchmark).then(successCallback, errorCallback);
+        	};
+        	
+        	this.runDFSIOBenchmark = function(data, successCallback, errorCallback) {
+        		$http.post(BASE_URL + "/dfsio/dfsio", data, {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }).then(successCallback, errorCallback);
+        	};
+        	
+        	///////// MRBENCH /////////
+        	
+        	this.getRecentMRBenchBenchmarks = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/mrbench/benchmarks/last/" + id).then(successCallback, errorCallback);
+        	};
+        	
+        	this.getMRBenchBenchmarks = function(id, successCallback, errorCallback) {
+        		$http.get(BASE_URL + "/mrbench/benchmarks/" + id).then(successCallback, errorCallback);
+        	};
+        	
+        	this.deleteMRBenchBenchmark = function(benchmark, successCallback, errorCallback) {
+        		 $http.post(BASE_URL + "/mrbench/delete/" + benchmark.id, benchmark).then(successCallback, errorCallback);
+        	};
+        	
+        	this.runMRBenchBenchmark = function(data, successCallback, errorCallback) {
+        		$http.post(BASE_URL + "/mrbench/mrbench", data, {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }).then(successCallback, errorCallback);
+        	};
+        });
 
         // Controller
-        app.controller('ClustersCtrl', function ($scope, $http, $routeParams) {
+        app.controller('ClustersCtrl', function (MonitorService, $scope, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 			$scope.reverse = true;
             
-            
-            $http.get(BASE_URL + "/cluster/clusters").then(
-                function (data) { //Success handler
-                    $scope.clusters = data.data;
-                },
-                handleError
-            );
+			MonitorService.getClusters(function (data) { //Success handler				
+                $scope.clusters = data.data;
+            },
+            handleError);		
             
             $scope.addCluster = function (cluster) {
-            		//Add cluster
-            		$http.post(BASE_URL + "/cluster/add", cluster).then(function(data) {
-                    	$scope.clusters.push(data.data);
-                    	handleSuccess("Cluster successfully added");
-            		},
-            		handleError
-            		);
-            }
+	            MonitorService.addCluster(cluster, function(data) {
+	            	$scope.clusters.push(data.data);
+	            	handleSuccess("Cluster successfully added");
+	            }, handleError);
+            }           
 
             // Code to remove a cluster
             $scope.deleteCluster = function (index, cluster) {
-                $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
+                MonitorService.deleteCluster(cluster, function (data) {
                 	console.log("Deleting index: " + index);
                 	if(data.status == 200) {
                     	$scope.clusters.splice(index, 1);
                     	handleSuccess("Cluster successfully deleted");
                 	}
-                });
+                }, handleError);
             }
         });
 
-        app.controller('OverviewCtrl', function ($scope, $http, $routeParams, $timeout, $filter ) {
+        app.controller('OverviewCtrl', function (MonitorService, $scope, $routeParams, $timeout, $filter ) {
 
             $scope.metrics = {};
             $scope.prevMetrics = {};
@@ -171,46 +248,52 @@
             
             $scope.format = 'M/d/yy h:mm:ss a';
 
-            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
-                function (data) { //Success handler
+            MonitorService.getCluster($routeParams.id, function (data) { //Success handler
+                
+            	//Set cluster object
+            	$scope.cluster = data.data;
+            	             	
+            	//Init websocket
+            	connect($scope.cluster.id, function(data) {
+                    console.log(data);
+                    $scope.prevMetrics = $scope.metrics;
+            		$scope.metrics = data.beans;
+            		
+            		$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
+            		$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
+            		
+            		var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+            		var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+            		
+            		var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
+            		var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
+            		
+            		//Set chart data
+                    $scope.dataStorage = [capacityFree, capacityUsed];
+                    $scope.blockData = [blocksReplicated, blocksUnderReplicated];
                     
-                	//Set cluster object
-                	$scope.cluster = data.data;
-                	             	
-                	//Init websocket
-                	connect($scope.cluster.id, function(data) {
-                        console.log(data);
-                        $scope.prevMetrics = $scope.metrics;
-                		$scope.metrics = data.beans;
-                		
-                		$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
-                		$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
-                		
-                		var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-                		var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-                		
-                		var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
-                		var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
-                		
-                		//Set chart data
-                        $scope.dataStorage = [capacityFree, capacityUsed];
-                        $scope.blockData = [blocksReplicated, blocksUnderReplicated];
+            	}, handleError);
+            	
+            },
+            handleError );
+            
+            
+            MonitorService.getNamenodeLogTail($routeParams.id, function(data) {
+            	$scope.namenodelogTail = data.data;
+            }, handleError);
                         
-                	}, handleError)
-                },
-                handleError
-            );
 
             // Code to remove a cluster
             $scope.deleteCluster = function (cluster) {
-                $http.post(BASE_URL + "/cluster/delete", cluster).then(function (data) {
+            	MonitorService.deleteCluster(cluster, function (data) {
                 	if(data.status == 200) {
                 		//Redirect
                     	window.location="#/clusters";
                     	handleSuccess("Cluster successfully deleted");
                 	}
-                });
+                }, handleError);                        
             };
+            
             // Convert a value to a %
             $scope.setWidth = function (width, max) {
             	var percent = (parseFloat(width) / parseFloat(max) * 100);
@@ -262,66 +345,49 @@
             
             
             // Grab last 5 dfsio records
-            // Get benchmarks
-            $http.get(BASE_URL + "/dfsio/benchmarks/last/" + $routeParams.id).then(
-                function (data) {
-					console.log(data.data);
-					
-					$scope.dfsioData = [[]];
-					$scope.dfsioLabels = [];
-					$scope.dfsioSeries = ['Total Time']
-					
-					angular.forEach(data.data, function(value, key) {
-						console.log(value.totalTime);
-						$scope.dfsioData[0].push(parseFloat(value.totalTime));
-						$scope.dfsioLabels.push($filter('date')(value.date));
-					});
-                },
-                handleError
-            );
+            // Get benchmarks            
+            MonitorService.getRecentDFSIOBenchmarks($routeParams.id, function(data) {            				
+				$scope.dfsioData = [[]];
+				$scope.dfsioLabels = [];
+				$scope.dfsioSeries = ['Total Time']
+				
+				angular.forEach(data.data, function(value, key) {					
+					$scope.dfsioData[0].push(parseFloat(value.totalTime));
+					$scope.dfsioLabels.push($filter('date')(value.date));
+				});            	
+            }, handleError);
             
-            // Grab last 5 mrbench records
-            // Get benchmarks
-            $http.get(BASE_URL + "/mrbench/benchmarks/last/" + $routeParams.id).then(
-                function (data) {
-					console.log(data.data);
-					
-					$scope.mrbenchData = [[]];
-					$scope.mrbenchLabels = [];
-					$scope.mrBenchSeries = ['Total Time']
-					
-					angular.forEach(data.data, function(value, key) {
-						console.log(value.totalTime);
-						$scope.mrbenchData[0].push(parseFloat(value.totalTime / 1000));
-						$scope.mrbenchLabels.push($filter('date')(value.date));
-					});
-                },
-                handleError
-            );
+         	// Grab last 5 mrbench records
+            MonitorService.getRecentMRBenchBenchmarks($routeParams.id, function(data) {
+            	$scope.mrbenchData = [[]];
+				$scope.mrbenchLabels = [];
+				$scope.mrBenchSeries = ['Total Time']
+				
+				angular.forEach(data.data, function(value, key) {						
+					$scope.mrbenchData[0].push(parseFloat(value.totalTime / 1000));
+					$scope.mrbenchLabels.push($filter('date')(value.date));
+				});            	
+            }, handleError);
+                        
         });
 
-        app.controller('JobsCtrl', function ($scope, $http, $routeParams) {
+        app.controller('JobsCtrl', function (MonitorService, $scope, $routeParams) {
             $scope.message = "This is a test message from angular backend";
             $scope.reverse = true;
+			
+            // Get cluster
+            MonitorService.getCluster($routeParams.id, function(data) {
+            	$scope.cluster = data.data;            	
+            }, handleError);
+
+            // Get jobs
+            MonitorService.getJobs($routeParams.id, function(data) {
+            	 $scope.jobs = data.data.apps.app;
+                 console.log(data);            	
+            }, handleError);
+
             
-            
-        	// Get cluster
-            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
-                function (data) { //Success handler
-                	
-                    $scope.cluster = data.data;
-                },
-                handleError
-            );
-            
-            $http.get(BASE_URL + "/cluster/jobs/" + $routeParams.id).then(
-                    function (data) { //Success handler
-                        $scope.jobs = data.data.apps.app;
-                        console.log(data);
-                    },
-                    handleError
-                );
-           
+            ///////// JOB COMPARISON /////////
             $scope.jobComparison = [];
             
             // Compare a job
@@ -355,71 +421,58 @@
             }
         });
 
-        app.controller('DfsioCtrl', function ($scope, $http, $routeParams) {
+        app.controller('DfsioCtrl', function (MonitorService, $scope, $routeParams) {
             $scope.message = "This is a test message from angular backend";
             $scope.reverse = true;
-
+           
             // Get cluster
-            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
-                function (data) { //Success handler
-                    $scope.cluster = data.data;
-                	
-                    // to decide wether a result is bad
-                    $scope.isAlert = function (result) {
-                        if (result.throughputMb < $scope.cluster.dfsioOptions.throughputLimit || result.avgIORate < $scope.cluster.dfsioOptions.ioLimit || result.stdDeviation > $scope.cluster.dfsioOptions.stdDeviationLimit ) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+            MonitorService.getCluster($routeParams.id, function(data) {
+            	$scope.cluster = data.data;
+            	
+                // to decide wether a result is bad
+                $scope.isAlert = function (result) {
+                    if (result.throughputMb < $scope.cluster.dfsioOptions.throughputLimit || result.avgIORate < $scope.cluster.dfsioOptions.ioLimit || result.stdDeviation > $scope.cluster.dfsioOptions.stdDeviationLimit ) {
+                        return true;
+                    } else {
+                        return false;
                     }
-                
-                },
-                handleError
-            );
+                };
+            }, handleError);
+            
 
             // Get benchmarks
-            $http.get(BASE_URL + "/dfsio/benchmarks/" + $routeParams.id).then(
-                function (data) {
-                    $scope.results = data.data;
-                },
-                handleError
-            );
+            MonitorService.getDFSIOBenchmarks($routeParams.id, function(data) {
+            	$scope.results = data.data;
+            }, handleError);
+            
 
             $scope.deleteBenchmark = function (index, result) {
-                $http.post(BASE_URL + "/dfsio/delete/" + result.id, result).then(function (data) {
-                    $scope.results.splice(index, 1);
-                });
+            	MonitorService.deleteDFSIOBenchmark(result, function(data) {
+            		$scope.results.splice(index, 1);
+            	}, handleError);
             }
-
-           
 
             // Run benchmark on server
             $scope.runDFSIOBenchmark = function () {
 
                 // Check if form is valid
                 if ($scope.benchmarkForm.$valid) {
-                    console.log("id:" + $scope.cluster.id);
-                    console.log("num files:" + $scope.form.nrFiles);
-                    console.log("file size:" + $scope.form.fileSize);
-
-                    $http.post(BASE_URL + "/dfsio/dfsio", $.param({
-                        id: $scope.cluster.id,
-                        numFiles: $scope.form.nrFiles,
-                        fileSize: $scope.form.fileSize
-                    }),
-                    {
-                       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                    }).then(function (data) {
-                    	// Success
-                    	$scope.results.push(data.data);
-                        console.log(data);
-                        handleSuccess("DFSIO benchmark completed");
-                    }, handleError);
-
+					MonitorService.runDFSIOBenchmark($.param(
+						{
+				        	id: $scope.cluster.id,
+				            numFiles: $scope.form.nrFiles,
+				            fileSize: $scope.form.fileSize
+						}), 
+						function(data) {
+							// Success
+	                    	$scope.results.push(data.data);	                        
+	                        handleSuccess("DFSIO benchmark completed");							
+					}, handleError);
+						                    
                 } else {
                     console.log("invalid");
                 }
-            }
+            };
             
             
             // Comparison
@@ -441,61 +494,43 @@
             
         });
 
-        app.controller('MRBenchCtrl', function ($scope, $http, $routeParams) {
+        app.controller('MRBenchCtrl', function (MonitorService, $scope, $routeParams) {
             $scope.message = "This is a test message from angular backend";
             $scope.reverse = true;
             
-            // Get cluster
-            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
-                function (data) { //Success handler
-                    $scope.cluster = data.data;
-                },
-                handleError
-            );
-
-            // Get benchmarks
-            $http.get(BASE_URL + "/mrbench/benchmarks/" + $routeParams.id).then(
-                function (data) {
-                    $scope.results = data.data;
-                },
-                handleError
-            );
+            MonitorService.getCluster($routeParams.id, function(data) {
+            	$scope.cluster = data.data;            	
+            }, handleError);
+            
+            // Get Benchmarks
+			MonitorService.getMRBenchBenchmarks($routeParams.id, function(data) {				
+				$scope.results = data.data;
+			}, handleError);
+                     
 
             $scope.deleteBenchmark = function (index, result) {
-                $http.post(BASE_URL + "/mrbench/delete/" + result.id, result).then(function (data) {
-                    $scope.results.splice(index, 1);
-                });
+            	MonitorService.deleteMRBenchBenchmark(result, function(data) {
+            		$scope.results.splice(index, 1);
+            	}, handleError);            	
             }
             
-         // Run benchmark on server
-            $scope.runMRBench = function () {
-
+         	// Run benchmark on server
+            $scope.runMRBench = function () {       	         	
                 // Check if form is valid
                 if ($scope.mrbenchForm.$valid) {
-                    console.log("id:" + $scope.cluster.id);
-                    console.log("num files:" + $scope.form.numRuns);
-                    //console.log("file size:" + $scope.form.dataLines);
 
-                    $http.post(BASE_URL + "/mrbench/mrbench", $.param({
-                        id: $scope.cluster.id,
-                        numRuns: $scope.form.numRuns
-                      //  fileSize: $scope.form.fileSize
-                    }),
-                    {
-                       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                    }).then(function (data) {
-                    	// Success
-                    	$scope.results.push(data.data);
-                        console.log(data);
-                        handleSuccess("MRBench benchmark completed");
-                    }, handleError);
-
+                    MonitorService.runMRBenchBenchmark($.param({
+                            id: $scope.cluster.id,
+                        	numRuns: $scope.form.numRuns
+						}), function(data) {
+	                    	$scope.results.push(data.data);	                        
+	                        handleSuccess("MRBench benchmark completed");                    	
+                    	}, handleError);                  
                 } else {
                     console.log("invalid");
                 }
-            }
-         
-            
+            };
+                     
             // Comparison
             $scope.mrbenchComparison = [];
             
@@ -515,25 +550,22 @@
             
         });
 
-        app.controller('ConfigureCtrl', function ($scope, $http, $routeParams) {
+        app.controller('ConfigureCtrl', function (MonitorService, $scope, $routeParams) {
             $scope.message = "This is a test message from angular backend";
 
-            $http.get(BASE_URL + "/cluster/cluster/" + $routeParams.id).then(
-                function (data) { //Success handler
-                    $scope.cluster = data.data;
-                },
-                handleError
-            );
-            
+            MonitorService.getCluster($routeParams.id, function(data) {
+            	$scope.cluster = data.data;                
+            }, handleError);
+                        
             
             $scope.updateCluster = function (cluster) {
-            	$http.put(BASE_URL + "/cluster/edit", cluster).then(function(response) {
+            	
+            	MonitorService.updateCluster(cluster, function(response) {
             		console.log(response);
             		handleSuccess("Cluster successfully updated");
             	}, handleError);
-            	
             	console.log(cluster);
-            }
+            };
         });
 
 		////////// Controller for sidebar //////////
