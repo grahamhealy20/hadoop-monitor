@@ -1,6 +1,7 @@
 package com.graham.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.hadoop.net.ConnectTimeoutException;
 import org.mortbay.log.Log;
@@ -15,10 +16,11 @@ public class Cluster {
 	private String id;
 	private String name;
 	private String ipAddress;
-	private String username;
-	private String throughputThreshold;
+	private String username;	
 	
 	private DFSIOOptions dfsioOptions;
+	
+	private ArrayList<Rule> rules;
 	 
 	public String getId() {
 		return id;
@@ -38,6 +40,7 @@ public class Cluster {
 
 	public Cluster() {
 		dfsioOptions = new DFSIOOptions();
+		rules = new ArrayList<Rule>();
 	}
 	
 	public Cluster(String name, String ipAddress, String username) {
@@ -68,15 +71,6 @@ public class Cluster {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
-
-	public String getThroughputThreshold() {
-		return throughputThreshold;
-	}
-
-	public void setThroughputThreshold(String throughputThreshold) {
-		this.throughputThreshold = throughputThreshold;
-	}
-	
 	
 	public DFSIOOptions getDfsioOptions() {
 		return dfsioOptions;
@@ -84,6 +78,16 @@ public class Cluster {
 
 	public void setDfsioOptions(DFSIOOptions dfsioOptions) {
 		this.dfsioOptions = dfsioOptions;
+	}
+	
+	
+
+	public ArrayList<Rule> getRules() {
+		return rules;
+	}
+
+	public void setRules(ArrayList<Rule> rules) {
+		this.rules = rules;
 	}
 
 	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException, ConnectTimeoutException {

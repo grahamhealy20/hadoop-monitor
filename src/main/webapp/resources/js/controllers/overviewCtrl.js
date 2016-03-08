@@ -42,7 +42,11 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 
 
 	MonitorService.getNamenodeLogTail($routeParams.id, function(data) {
-		$scope.namenodelogTail = data.data;
+		$scope.namenodelogTail = data.data;		
+	}, handleError);
+	
+	MonitorService.getDatanodeLogTail($routeParams.id, function(data) {
+		$scope.datanodelogTail = data.data;	
 	}, handleError);
 
 

@@ -33,6 +33,16 @@ angular.module('admin').service('MonitorService', function($http) {
 	this.getDatanodeLogTail = function(id, successCallback, errorCallback) {
 		$http.get(BASE_URL + "/cluster/log/datanode/" + id + "/tail").then(successCallback, errorCallback);
 	};
+	
+	this.getRules = function(id, successCallback, errorCallback) {
+		$http.get(BASE_URL + "/cluster/rules/" + id).then(successCallback, errorCallback);
+	}
+	
+	this.addRule = function(id, rule, successCallback, errorCallback) {
+		$http.post(BASE_URL + "/cluster/rules/" + id, rule).then(successCallback, errorCallback);
+	}
+	
+	
 
 	///////// JOBS /////////
 

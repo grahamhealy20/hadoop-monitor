@@ -149,7 +149,7 @@
     		<h3>Namenode Log</h3>
             <div class="panel panel-default">
 				<div class="form-group">				  
-				  	<textarea class="form-control" rows="15">{{namenodelogTail}}</textarea>
+				  	<textarea id="namenode-log" class="text-area form-control" rows="10">{{namenodelogTail}}</textarea>
 				</div>            
                 <div class="panel-body">                                	
 					<a class="btn btn-primary pull-right" href="cluster/log/namenode/{{cluster.id}}">Namenode Log Full</a>
@@ -166,7 +166,7 @@
     		<h3>Datanode Log</h3>
             <div class="panel panel-default">
 				<div class="form-group">				  
-				  	<textarea class="form-control" rows="15">{{datanodelogTail}}</textarea>
+				  	<textarea id="datanode-log" class="form-control" rows="10">{{datanodelogTail}}</textarea>
 				</div>
                 <div class="panel-body">                
 
@@ -177,5 +177,5 @@
     	
     	</div>
     </div>
-
+	
 </div>

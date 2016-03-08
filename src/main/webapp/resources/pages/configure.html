@@ -2,7 +2,7 @@
 
 <!-- Demo of Overview page with metrics -->
 <div class="main container-fluid">
-    <h1>Confiugure</h1>
+    <h1>Configure</h1>
     <!-- Top row -->
 
     <div class="row">
@@ -59,6 +59,20 @@
 										 <input type="number" class="form-control" id="stdDeviationLimit" placeholder="10 Mb" ng-model="cluster.dfsioOptions.stdDeviationLimit" required>
 									</div>
 							
+								</div>
+								
+								<div class="col-md-3">
+									<h3>MRBench Options</h3>
+									<div class="form-group">
+										<label for="maps">Maps</label>
+										 <input type="number" class="form-control" id="maps" placeholder="5" ng-model="cluster.mrbenchOptions.maps" required>
+									</div>
+			
+									<div class="form-group">
+										<label for="reduces">Reduces</label>
+										 <input type="number" class="form-control" id="reduces" placeholder="5" ng-model="cluster.mrbenchOptions.reduces" required>
+									</div>
+															
 								</div>
 								
 								

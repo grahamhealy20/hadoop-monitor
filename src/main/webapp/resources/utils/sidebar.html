@@ -1,21 +1,26 @@
 <!--SIDEBAR DIRECTIVE -->
 
 <div class="sidebar" ng-controller="SidebarCtrl">
-    <ul>
-        <li ng-class="{ active: isCurrentPath('/cluster/' + cluster.id) }">
-            <a ng-href="#/cluster/{{cluster.id}}"><i class="fa fa-home"></i> <span>Overview</span></a>
-        </li>
-        <li ng-class="{ active: isCurrentPath('/jobs/' + cluster.id) }">
-            <a ng-href="#/jobs/{{cluster.id}}"><i class="fa fa-tasks"></i> <span>Jobs</span></a>
-        </li>
-        <li ng-class="{ active: isCurrentPath('/dfsio/' + cluster.id) }">
-            <a ng-href="#/dfsio/{{cluster.id}}"><i class="fa fa-hdd-o"></i> <span>DFSIO</span></a>
-        </li>
-        <li ng-class="{ active: isCurrentPath('/mrbench/' + cluster.id) }">
-            <a ng-href="#/mrbench/{{cluster.id}}"><i class="fa fa-map"></i> <span>MRBench</span></a>
-        </li>
-        <li ng-class="{ active: isCurrentPath('/configure/' + cluster.id) }">
-            <a ng-href="#/configure/{{cluster.id}}"><i class="fa fa-cogs"></i> <span>Configure</span></a>
-        </li>
-    </ul>
+	<ul>
+		<li ng-class="{ active: isCurrentPath('/cluster/' + cluster.id) }">
+			<a ng-href="#/cluster/{{cluster.id}}"><i class="fa fa-home"></i>
+				<span>Overview</span></a>
+		</li>
+		<li ng-class="{ active: isCurrentPath('/jobs/' + cluster.id) }">
+			<a ng-href="#/jobs/{{cluster.id}}"><i class="fa fa-tasks"></i> <span>Jobs</span></a>
+		</li>
+		<li ng-class="{ active: isCurrentPath('/dfsio/' + cluster.id) }">
+			<a ng-href="#/dfsio/{{cluster.id}}"><i class="fa fa-hdd-o"></i> <span>DFSIO</span></a>
+		</li>
+		<li ng-class="{ active: isCurrentPath('/mrbench/' + cluster.id) }">
+			<a ng-href="#/mrbench/{{cluster.id}}"><i class="fa fa-map"></i> <span>MRBench</span></a>
+		</li>
+		<li ng-class="{ active: isCurrentPath('/rules/' + cluster.id) }"><a
+			ng-href="#/rules/{{cluster.id}}"><i class="fa fa-tags"></i> <span>Rules</span></a>
+		</li>
+		<li ng-class="{ active: isCurrentPath('/configure/' + cluster.id) }">
+			<a ng-href="#/configure/{{cluster.id}}"><i class="fa fa-cogs"></i>
+				<span>Configure</span></a>
+		</li>
+	</ul>
 </div>

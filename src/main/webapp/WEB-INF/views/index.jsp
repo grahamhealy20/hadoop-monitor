@@ -49,6 +49,7 @@
 	
 	<!-- JS -->
 	<script src="resources/js/jquery-2.2.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 	<script src="resources/js/Chart.min.js"></script>
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -64,6 +65,7 @@
 	<script src="resources/js/angular-animate.min.js"></script>
 	<script src="resources/js/angular-chart.min.js"></script>
 	<script src="resources/js/loading-bar.js"></script>
+	<script src="resources/js/angular-dragdrop.min.js"></script>
 
 	<!-- Main files -->
 	<script src="resources/js/config/angularInit.js"></script>
@@ -74,6 +76,7 @@
 	<script src="resources/js/controllers/jobsCtrl.js"></script>
 	<script src="resources/js/controllers/dfsioCtrl.js"></script>
 	<script src="resources/js/controllers/mrBenchCtrl.js"></script>
+	<script src="resources/js/controllers/rulesCtrl.js"></script>
 	<script src="resources/js/controllers/configureCtrl.js"></script>
 	<script src="resources/js/controllers/navbarCtrl.js"></script>
 	<script src="resources/js/controllers/sidebarCtrl.js"></script>

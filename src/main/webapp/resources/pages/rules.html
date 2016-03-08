@@ -1,0 +1,163 @@
+<sidebar></sidebar>
+
+<!-- Demo of Overview page with metrics -->
+<div class="main container-fluid">
+	<h1>Rules</h1>
+	<!-- Top row -->
+
+	<div class="row">
+
+		<div class="col-md-12">
+
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12">
+							<h2>{{cluster.name}}</h2>
+							<h2>
+								<small>{{cluster.ipAddress}}</small>
+							</h2>
+							<h2>
+								<small>{{cluster.username}}</small>
+							</h2>
+						</div>
+					</div>
+
+					<!-- draggable metrics  -->
+					<h3>Metrics</h3>
+					<div class="row">
+						<div class="col-md-12">
+
+							<div class="metrics-area">
+								<span ng-repeat="metric in metrics" class="badge metric-item" draggable="true" ondragstart="drag(event)">{{metric.name}}</span>								
+							</div>
+							
+							<hr/>
+							<h3>Add Rule</h3>
+							<div class="createArea ">
+								
+								<p>If</p>
+
+								<input type="text" class="form-control metric"
+									ondrop="drop(event)" ondragover="allowDrop(event)"
+									placeholder="drop metric here" ng-model="rule.metric" disabled>
+
+								<p>is</p>
+
+								<select class="form-control" ng-model="rule.operator">
+									<option selected="selected">Equals to</option>
+									<option>Greater than</option>
+									<option>Less than</option>
+									<option>Not Equals</option>
+								</select>
+								
+								<p>value</p>
+								<input type="number" class="form-control value" ng-model="rule.value" placeholder="5">
+								<a href="" ng-click="addRule(rule)">Add</a>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+	</div>
+	
+	<div class="row">
+		
+		<div class="col-md-12">		
+			<div class="panel panel-default">
+				<table class="table table-repsonsive">
+						<thead>
+							<tr>
+								<th>Metric</th>
+								<th>Operator</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="rule" ng-repeat="rule in rules">
+								<td>{{rule.metric}}</td>
+								<td>{{rule.operator}}</td>
+								<td>{{rule.value}}</td>								
+
+							</tr>
+							
+						</tbody>
+
+					</table>
+			</div>
+		</div>
+	
+	</div>
+
+
+</div>
+<!-- row -->
+
+
+<style>
+.metrics-area {
+	margin-bottom: 10px;
+}
+
+.dropArea {
+	display: inline;
+	border: 1px solid black;
+	width: 100px;
+}
+
+.createArea {
+	text-align: center;
+}
+
+.createArea p, select {
+	display: inline !important;
+}
+
+.createArea select {
+	width: 130px;
+}
+
+.metric, .value {	
+	width: 180px;
+	margin: 5px;
+	display: inline-block !important;
+}
+
+.metric-item {
+	margin: 3px;
+}
+</style>
+
+<script>
+	
+	function allowDrop(ev) {
+		ev.preventDefault();
+	}
+	
+	function drag(ev) {
+				
+		var elem = $(ev.target);
+		console.log(elem.text());
+		//Send over metric
+		ev.dataTransfer.setData("element", elem.text());		
+	}
+	
+	function drop(ev) {
+		ev.preventDefault();
+		console.log("Dropping");		
+		// Grab metric
+		var data = ev.dataTransfer.getData("element");
+				
+		$(ev.target).val(data);
+		
+		// update for angular
+		$(ev.target).trigger('input');
+		console.log(data);
+	}
+
+</script>

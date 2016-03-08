@@ -2,7 +2,7 @@
 var BASE_URL = "/HadoopMon";
 
 // App declaration
-var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate', 'chart.js']);
+var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate', 'chart.js', 'ngDragDrop']);
 
         // App configuration
 app.config(function ($routeProvider) {
@@ -32,6 +32,11 @@ app.config(function ($routeProvider) {
         {
         	templateUrl: 'resources/pages/mrbench.html',
         	controller: 'MRBenchCtrl'
+        }).
+        when('/rules/:id',
+        {
+        	templateUrl: 'resources/pages/rules.html',
+            controller: 'RulesCtrl'
         }).
         when('/configure/:id',
         {

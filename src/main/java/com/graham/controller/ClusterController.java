@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Cluster;
+import com.graham.model.Rule;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Apps;
 import com.graham.model.utils.HttpHelper;
@@ -143,6 +144,25 @@ public class ClusterController {
 		Apps apps = http.downloadClusterApps(cluster.getIpAddress());
 		return new ResponseEntity<>(apps, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/rules/{id}", method = RequestMethod.POST) 
+	public @ResponseBody ResponseEntity<Rule> addClusterRule(@PathVariable("id") String id, @RequestBody Rule rule) {
+		Cluster cluster = clusterService.getCluster(id);
+		
+		cluster.getRules().add(rule);
+		clusterService.updateCluster(cluster);
+		
+		return new ResponseEntity<>(rule, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value = "/rules/{id}") 
+	public @ResponseBody ResponseEntity<ArrayList<Rule>> getRulesForCluster(@PathVariable("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);		
+		
+		return new ResponseEntity<>(cluster.getRules(), HttpStatus.OK);
+	}
+	
+	
 	
 	///////// EXCEPTION HANDLERS //////////
 	
