@@ -14,6 +14,7 @@ import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Metrics;
 import com.graham.model.utils.HttpHelper;
+import com.graham.model.utils.RulesParser;
 
 // Controller to handle metrics
 @Controller
@@ -30,13 +31,23 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	
 	// Publishes cluster metrics every set interval
 	@Scheduled(fixedDelay = DELAY)
-	public void sendDataUpdates() {
+	public void sendDataUpdates() throws IllegalArgumentException, IllegalAccessException {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 
 		for (Cluster cluster : clusters) {
 			try {
+				// Get metrics
 				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+				
+				// Parse for rules
+				try {
+					RulesParser.parseRules(metrics, cluster.getRules());
+				} catch (Exception e) {
+					throw e;
+				}
+				
+				
 				//Applications apps = http.downloadClusterApps(cluster.getIpAddress());
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
 			} catch (ResourceAccessException e) {
