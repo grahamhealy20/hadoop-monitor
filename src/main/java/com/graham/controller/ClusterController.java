@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.ResourceAccessException;
 
+import com.graham.model.Alert;
 import com.graham.model.Cluster;
 import com.graham.model.Rule;
 import com.graham.model.dbaccess.ClusterService;
@@ -160,6 +161,15 @@ public class ClusterController {
 		Cluster cluster = clusterService.getCluster(id);		
 		
 		return new ResponseEntity<>(cluster.getRules(), HttpStatus.OK);
+	}
+	
+	/// 
+	
+	@RequestMapping(value = "/alerts/{id}") 
+	public @ResponseBody ResponseEntity<ArrayList<Alert>> getAlertsForCluster(@PathVariable("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);		
+		
+		return new ResponseEntity<>(cluster.getAlerts(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/{id}/balance") 

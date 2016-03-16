@@ -38,6 +38,11 @@ app.config(function ($routeProvider) {
         	templateUrl: 'resources/pages/rules.html',
             controller: 'RulesCtrl'
         }).
+        when('/alerts/:id',
+        {
+            templateUrl: 'resources/pages/alerts.html',
+            controller: 'AlertsCtrl'
+        }).
         when('/configure/:id',
         {
         	templateUrl: 'resources/pages/configure.html',

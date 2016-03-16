@@ -2,18 +2,21 @@
 var stompClient = null;
 
 //Setup Websocket
-function connect(clientId, successCallback, errorCallback) {
+function connect(clientId, metricsSuccessCallback, errorCallback) {
+	console.log("Connecting");
 	var socket = new SockJS('/HadoopMon/realtime');
 	stompClient = Stomp.over(socket);
 
 	//Disable debug output
 	stompClient.debug = null;
 	
-	stompClient.connect('', '', function(frame) {		        	 
+	stompClient.connect('', '', function(frame) {				
 		stompClient.subscribe("/data/" + clientId, function(message){
 			var msg = JSON.parse(message.body);
-			successCallback(msg);
+			console.log("sub 1");
+			metricsSuccessCallback(msg);
 		}, errorCallback);
+	
 	});
 }
 

@@ -1,0 +1,101 @@
+<sidebar></sidebar>
+
+<!-- Demo of Overview page with metrics -->
+<div class="main container-fluid">
+	<h1>Alerts</h1>
+	<!-- Top row -->
+	
+	<div class="row">
+		
+		<div class="col-md-12">		
+			<div class="panel panel-default">
+				<table class="table table-repsonsive">
+						<thead>
+							<tr>
+								<th>Key</th>								
+								<th>Value</th>
+								<th>Timestamp</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="rule" ng-repeat="alert in alerts">
+								<td>{{alert.key}}</td>								
+								<td>{{alert.value}}</td>
+								<td>{{alert.timestamp | date:'HH:mm:ss EEE dd MMM yyyy' }}</td>								
+							</tr>
+							
+						</tbody>
+
+					</table>
+			</div>
+		</div>
+	
+	</div>
+
+
+</div>
+<!-- row -->
+
+
+<style>
+.metrics-area {
+	margin-bottom: 10px;
+}
+
+.dropArea {
+	display: inline;
+	border: 1px solid black;
+	width: 100px;
+}
+
+.createArea {
+	text-align: center;
+}
+
+.createArea p, select {
+	display: inline !important;
+}
+
+.createArea select {
+	width: 130px;
+}
+
+.metric, .value {	
+	width: 180px;
+	margin: 5px;
+	display: inline-block !important;
+}
+
+.metric-item {
+	margin: 3px;
+}
+</style>
+
+<script>
+	
+	function allowDrop(ev) {
+		ev.preventDefault();
+	}
+	
+	function drag(ev) {
+				
+		var elem = $(ev.target);
+		console.log(elem.text());
+		//Send over metric
+		ev.dataTransfer.setData("element", elem.text());		
+	}
+	
+	function drop(ev) {
+		ev.preventDefault();
+		console.log("Dropping");		
+		// Grab metric
+		var data = ev.dataTransfer.getData("element");
+				
+		$(ev.target).val(data);
+		
+		// update for angular
+		$(ev.target).trigger('input');
+		console.log(data);
+	}
+
+</script>

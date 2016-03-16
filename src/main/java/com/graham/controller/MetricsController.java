@@ -1,15 +1,20 @@
 package com.graham.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.ResourceAccessException;
 
+import com.graham.model.Alert;
 import com.graham.model.Cluster;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Metrics;
@@ -31,7 +36,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	
 	// Publishes cluster metrics every set interval
 	@Scheduled(fixedDelay = DELAY)
-	public void sendDataUpdates() throws IllegalArgumentException, IllegalAccessException {
+	public void sendDataUpdates() throws IllegalArgumentException, IllegalAccessException, InterruptedException {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
 
@@ -41,15 +46,24 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());
 				
 				// Parse for rules
-				try {
-					RulesParser.parseRules(metrics, cluster.getRules());
-				} catch (Exception e) {
-					throw e;
-				}
 				
+				List<Alert> alerts = RulesParser.parseRules(metrics, cluster.getRules());
+				
+				// If alerts are not null send out websocket
+				if(alerts != null) {
+					Log.info("Sending alerts " + alerts);
+					
+					//Save alerts to cluster
+					for(Alert alert : alerts) {
+						cluster.getAlerts().add(alert);
+					}
+					clusterService.updateCluster(cluster);
+					//this.alertTemplate.convertAndSend("/alerts/" + cluster.getId(), alerts);
+				}
 				
 				//Applications apps = http.downloadClusterApps(cluster.getIpAddress());
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
+				Thread.sleep(10000);
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
 				//e.printStackTrace();

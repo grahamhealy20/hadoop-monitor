@@ -46,6 +46,10 @@ angular.module('admin').service('MonitorService', function($http) {
 		$http.get(BASE_URL + "/cluster/" + id + "/balance").then(successCallback, errorCallback);
 	}
 	
+	this.getAlerts = function(id, successCallback, errorCallback) {
+		$http.get(BASE_URL + "/cluster/alerts/" + id).then(successCallback, errorCallback);
+	}
+	
 	
 
 	///////// JOBS /////////

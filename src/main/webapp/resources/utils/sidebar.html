@@ -18,6 +18,9 @@
 		<li ng-class="{ active: isCurrentPath('/rules/' + cluster.id) }"><a
 			ng-href="#/rules/{{cluster.id}}"><i class="fa fa-tags"></i> <span>Rules</span></a>
 		</li>
+		<li ng-class="{ active: isCurrentPath('/alerts/' + cluster.id) }"><a
+			ng-href="#/alerts/{{cluster.id}}"><i class="fa fa-exclamation-triangle"></i> <span>Alerts</span></a>
+		</li>
 		<li ng-class="{ active: isCurrentPath('/configure/' + cluster.id) }">
 			<a ng-href="#/configure/{{cluster.id}}"><i class="fa fa-cogs"></i>
 				<span>Configure</span></a>

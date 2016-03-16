@@ -77,6 +77,7 @@
 	<script src="resources/js/controllers/dfsioCtrl.js"></script>
 	<script src="resources/js/controllers/mrBenchCtrl.js"></script>
 	<script src="resources/js/controllers/rulesCtrl.js"></script>
+	<script src="resources/js/controllers/alertsCtrl.js"></script>
 	<script src="resources/js/controllers/configureCtrl.js"></script>
 	<script src="resources/js/controllers/navbarCtrl.js"></script>
 	<script src="resources/js/controllers/sidebarCtrl.js"></script>

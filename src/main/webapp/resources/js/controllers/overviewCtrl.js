@@ -36,6 +36,7 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
 
 		}, handleError);
+	
 
 	},
 	handleError );

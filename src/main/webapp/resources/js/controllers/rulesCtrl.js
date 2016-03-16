@@ -13,12 +13,16 @@ angular.module('admin').controller('RulesCtrl', function(MonitorService, $scope,
 	                	  name: "CPU"
 	                  },
 	                  {
-	                	  id: 1,
+	                	  id: 2,
 	                	  name: "Heap Used"
 	                  },
 	                  {
-	                	  id: 1,
+	                	  id: 3,
 	                	  name: "Open Connections"
+	                  },
+	                  {
+	                	id: 4,
+	                	name: "MemMaxM"
 	                  }];
 	
 	$scope.rule = {

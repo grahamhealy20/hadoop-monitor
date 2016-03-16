@@ -2,6 +2,8 @@ package com.graham.model.utils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -12,12 +14,17 @@ import java.util.Set;
 
 import org.mortbay.log.Log;
 
+import com.graham.model.Alert;
 import com.graham.model.Rule;
 
 public class RulesParser {
 
 	// Use reflection to parse through an object and compare with rules
-	public static void parseRules(Object o, List<Rule> rules) throws IllegalArgumentException, IllegalAccessException {
+	public static List<Alert> parseRules(Object o, List<Rule> rules) throws IllegalArgumentException, IllegalAccessException {
+		
+		// Init alert list
+		List<Alert> alerts = new ArrayList<Alert>();
+		
 		Log.info("Parsing METRICS");
 		Class c = o.getClass();
 		Field[] fields = c.getDeclaredFields();
@@ -53,23 +60,38 @@ public class RulesParser {
 						
 						if(r != null) {
 							
+							double ruleValue = r.getValue();
+							double pairValue = Double.parseDouble(pair.getValue().toString());
+												
+							Date date = new Date();
+							long dateToStore = date.getTime();
+							
 							// Check operator
 							switch (r.getOperator()) {
 							case "Equals to":
-								Log.info("Rule value: " + r.getValue());
-								Log.info("Pair value: " + pair.getValue().toString());
 								// Do comparison
-								if(pair.getValue().toString().equals(Integer.toString(r.getValue()))) {
-									Log.warn("ALERT ALERT ALERT");
-								} else {
-									Log.info("No match");
+								if(ruleValue == pairValue) {									
+									Log.warn("EQUALS ALERT ALERT ALERT " + pair.getKey() );
+									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
 								}														
 								break;
 							case "Greater than":
+								if(pairValue > ruleValue) {
+									Log.warn("GT ALERT ALERT ALERT " + pair.getKey());
+									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+								}
 								break;
 							case "Less than":
+								if(pairValue < ruleValue) {
+									Log.warn("LT ALERT ALERT ALERT " + pair.getKey());
+									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+								}
 								break;
 							case "Not Equals":
+								if(pairValue != ruleValue) {
+									Log.warn("NEQ ALERT ALERT ALERT " + pair.getKey());
+									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+								}
 								break;
 							default:
 								Log.info("No operator");
@@ -84,13 +106,18 @@ public class RulesParser {
 				Log.info("Not an array");
 			}
 		}
+		
+		if(alerts.size() > 0 ) {
+			return alerts;
+		} else {
+			return null;
+		}
 	}
 	
 	// Extract a rule given a metric key
 	private static Rule extractRule(String key, List<Rule> rules) {
 		for(Rule rule : rules) {
-			if(rule.getMetric().equals(key)) {
-				Log.info("Success, rule found matching key " + key);
+			if(rule.getMetric().equals(key)) {				
 				return rule;
 			}
 		}
