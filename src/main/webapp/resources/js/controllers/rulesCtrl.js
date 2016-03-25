@@ -23,6 +23,10 @@ angular.module('admin').controller('RulesCtrl', function(MonitorService, $scope,
 	                  {
 	                	id: 4,
 	                	name: "MemMaxM"
+	                  },
+	                  {
+	                	  id: 5,
+	                	  name: "MemHeapUsedM"
 	                  }];
 	
 	$scope.rule = {
