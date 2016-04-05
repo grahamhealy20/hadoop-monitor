@@ -24,8 +24,7 @@ public class RulesParser {
 		
 		// Init alert list
 		List<Alert> alerts = new ArrayList<Alert>();
-		
-		Log.info("Parsing METRICS");
+			
 		Class c = o.getClass();
 		Field[] fields = c.getDeclaredFields();
 		//Log.info("FIELDS LENGTH " + fields.length);
@@ -71,25 +70,25 @@ public class RulesParser {
 							case "Equals to":
 								// Do comparison
 								if(ruleValue == pairValue) {									
-									Log.warn("EQUALS ALERT ALERT ALERT " + pair.getKey() );
+									//Log.warn("EQUALS ALERT ALERT ALERT " + pair.getKey() );
 									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
 								}														
 								break;
 							case "Greater than":
 								if(pairValue > ruleValue) {
-									Log.warn("GT ALERT ALERT ALERT " + pair.getKey());
+									//Log.warn("GT ALERT ALERT ALERT " + pair.getKey());
 									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
 								}
 								break;
 							case "Less than":
 								if(pairValue < ruleValue) {
-									Log.warn("LT ALERT ALERT ALERT " + pair.getKey());
+									//Log.warn("LT ALERT ALERT ALERT " + pair.getKey());
 									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
 								}
 								break;
 							case "Not Equals":
 								if(pairValue != ruleValue) {
-									Log.warn("NEQ ALERT ALERT ALERT " + pair.getKey());
+									//Log.warn("NEQ ALERT ALERT ALERT " + pair.getKey());
 									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
 								}
 								break;

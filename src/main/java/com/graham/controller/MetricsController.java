@@ -7,11 +7,10 @@ import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Alert;
@@ -22,9 +21,8 @@ import com.graham.model.utils.HttpHelper;
 import com.graham.model.utils.RulesParser;
 
 // Controller to handle metrics
-@Controller
+@Service
 public class MetricsController implements ApplicationListener<BrokerAvailabilityEvent>{
-	private final int DELAY = 1000;
 	
 	@Autowired
 	private ClusterService clusterService;
@@ -34,8 +32,10 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 
 	private HttpHelper http = new HttpHelper();
 	
+	private ArrayList<Alert> alertHistory = new ArrayList<Alert>();
+	
 	// Publishes cluster metrics every set interval
-	@Scheduled(fixedDelay = DELAY)
+	@Scheduled(fixedDelay = 1000)
 	public void sendDataUpdates() throws IllegalArgumentException, IllegalAccessException, InterruptedException {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
@@ -43,32 +43,58 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 		for (Cluster cluster : clusters) {
 			try {
 				// Get metrics
-				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());
-				
-				// Parse for rules
-				
+				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());				
+			
+				// Parse for rule alerts
 				List<Alert> alerts = RulesParser.parseRules(metrics, cluster.getRules());
 				
 				// If alerts are not null send out websocket
-				if(alerts != null) {
-					Log.info("Sending alerts " + alerts);
-					
-					//Save alerts to cluster
+				if(alerts != null) {													
+					// If alert is not recent
 					for(Alert alert : alerts) {
-						cluster.getAlerts().add(alert);
-					}
-					clusterService.updateCluster(cluster);
-					//this.alertTemplate.convertAndSend("/alerts/" + cluster.getId(), alerts);
+						if(hasRecentAlert(alert, 20000) == false) {
+							Log.info("Adding new hist");
+							//Remove current hist alert and pop in new one							
+							alertHistory.add(alert);
+							cluster.getAlerts().add(alert);				
+							clusterService.updateCluster(cluster);
+						}
+					}														
 				}
 				
-				//Applications apps = http.downloadClusterApps(cluster.getIpAddress());
-				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);
-				Thread.sleep(10000);
+				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);			
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
 				//e.printStackTrace();
 			}
 		}
+	}
+	
+	private boolean hasRecentAlert(Alert alert, long recent) {
+		
+		for(int i = 0; i < alertHistory.size(); i++ ){
+			Alert previous = alertHistory.get(i);
+			
+			// Check for matching alert in the history
+			if(previous.getKey() == alert.getKey()) {
+				Log.info("" + System.currentTimeMillis());
+				long currentAlertTime = alert.getTimestamp();
+				long previousAlertTime = previous.getTimestamp();			
+				long timeGap = currentAlertTime - previousAlertTime;			
+				//Log.info("Key: " + alert.getKey()+ " GAP Time: " + timeGap);
+				
+				//Check if recent
+				if(timeGap < recent) {					
+					// Has a recent alert, no alert will be added
+					return true;
+				} else {
+					Log.info("Not recent, updating new history");
+					alertHistory.remove(i);
+					return false;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

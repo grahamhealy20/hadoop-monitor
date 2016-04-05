@@ -17,7 +17,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		rootContext.register(MvcConfig.class);
 
 		// Manage the lifecycle of the root application context
-		container.addListener(new ContextLoaderListener(rootContext));
+		//container.addListener(new ContextLoaderListener(rootContext));
 
 		// Create the dispatcher servlet's Spring application context
 		AnnotationConfigWebApplicationContext dispatcherContext =
