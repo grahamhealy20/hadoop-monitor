@@ -94,7 +94,19 @@
         
         ////////// Error Handler //////////
         function handleError(response) {
+        	console.log(response);
             $('.error-content').text(response.data.message);
+        	$('.alert-danger').slideDown(250);
+        	
+        	//Close alert box after 2 seconds
+        	setTimeout(function() {
+        		$('.alert-danger').slideUp(250);
+        	}, 5000);
+        }
+        
+        function handleAlert(response) {
+        	console.log(response);
+            $('.error-content').text("Alert! " + response.name + " Value: " + response.value);
         	$('.alert-danger').slideDown(250);
         	
         	//Close alert box after 2 seconds

@@ -60,6 +60,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 							cluster.getAlerts().add(alert);	
 							alert.setId(UUID.randomUUID().toString());
 							clusterService.updateCluster(cluster);
+							this.messagingTemplate.convertAndSend("/alerts/", alert);
 							
 							// Perform action
 							if(alert.getAction().toLowerCase().equals("email")) {
