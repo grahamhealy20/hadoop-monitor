@@ -20,13 +20,13 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr class="rule" ng-repeat="alert in alerts">
+							<tr class="rule" ng-repeat="alert in alerts | orderBy:'date':reverse ">
 								<td>{{alert.key}}</td>
 								<td>{{alert.name}}</td>								
 								<td>{{alert.value}}</td>
 								<td>{{alert.timestamp | date:'HH:mm:ss EEE dd MMM yyyy' }}</td>
 								<td>{{alert.action}}</td>
-								<td><a class="btn btn-danger btn-xs pull-right" ng-href="" ng-click="deleteAlert($index, alert)">Delete Alert <i class="fa fa-trash"> </i></a></td>								
+								<td><a class="btn btn-danger btn-xs pull-right" ng-href="" ng-click="deleteAlert(alert)">Delete Alert <i class="fa fa-trash"> </i></a></td>								
 							</tr>						
 						</tbody>
 

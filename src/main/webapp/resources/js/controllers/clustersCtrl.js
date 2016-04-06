@@ -15,10 +15,10 @@ angular.module('admin').controller('ClustersCtrl', function (MonitorService, $sc
 	}           
 
 	// Code to remove a cluster
-	$scope.deleteCluster = function (index, cluster) {
-		MonitorService.deleteCluster(cluster, function (data) {
-			console.log("Deleting index: " + index);
+	$scope.deleteCluster = function (cluster) {
+		MonitorService.deleteCluster(cluster, function (data) {			
 			if(data.status == 200) {
+				var index = $scope.clusters.indexOf(cluster);
 				$scope.clusters.splice(index, 1);
 				handleSuccess("Cluster successfully deleted");
 			}

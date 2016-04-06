@@ -23,6 +23,7 @@ angular.module('admin').service('MonitorService', function($http) {
 	};
 
 	this.deleteCluster = function (cluster, successCallback, errorCallback) {
+		console.log("Deleting cluster");
 		$http.post(BASE_URL + "/cluster/delete", cluster).then(successCallback, errorCallback);
 	};
 

@@ -27,8 +27,9 @@ angular.module('admin').controller('RulesCtrl', function(MonitorService, $scope,
 		}, handleError);
 	}
 	
-	$scope.deleteRule = function(index, rule) {
+	$scope.deleteRule = function(rule) {
 		MonitorService.deleteRule($scope.cluster.id, rule, function(data) {
+			var index = $scope.rules.indexOf(rule);
 			$scope.rules.splice(index, 1);
 			handleSuccess("Rule successfully deleted");
 		}, handleError);

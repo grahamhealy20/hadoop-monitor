@@ -23,8 +23,9 @@ angular.module('admin').controller('DfsioCtrl', function (MonitorService, $scope
 	}, handleError);
 
 
-	$scope.deleteBenchmark = function (index, result) {
+	$scope.deleteBenchmark = function (result) {
 		MonitorService.deleteDFSIOBenchmark(result, function(data) {
+			var index = $scope.results.indexOf(result);
 			$scope.results.splice(index, 1);
 		}, handleError);
 	}

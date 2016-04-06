@@ -1,5 +1,8 @@
 angular.module('admin').controller('AlertsCtrl', function(MonitorService, $scope, $routeParams) {
 	
+	$scope.reverse = true;
+	
+	
 	MonitorService.getCluster($routeParams.id, function(data) {
 		$scope.cluster = data.data;		
 	}, handleError);
@@ -8,8 +11,9 @@ angular.module('admin').controller('AlertsCtrl', function(MonitorService, $scope
 		$scope.alerts = data.data;
 	}, handleError);
 	
-	$scope.deleteAlert = function(index, alert) {
+	$scope.deleteAlert = function(alert) {
 		MonitorService.deleteAlert($scope.cluster.id, alert, function(data) {
+			var index = $scope.alerts.indexOf(alert);
 			$scope.alerts.splice(index, 1);
 			handleSuccess("Alert successfully deleted");
 		}, handleError);

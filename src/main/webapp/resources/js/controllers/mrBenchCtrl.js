@@ -12,8 +12,9 @@ angular.module('admin').controller('MRBenchCtrl', function (MonitorService, $sco
 	}, handleError);
 
 
-	$scope.deleteBenchmark = function (index, result) {
+	$scope.deleteBenchmark = function (result) {
 		MonitorService.deleteMRBenchBenchmark(result, function(data) {
+			var index = $scope.results.indexOf(result);
 			$scope.results.splice(index, 1);
 		}, handleError);            	
 	}
