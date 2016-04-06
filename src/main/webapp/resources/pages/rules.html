@@ -29,7 +29,7 @@
 						<div class="col-md-12">
 
 							<div class="metrics-area">
-								<span ng-repeat="metric in metrics" class="badge metric-item" draggable="true" ondragstart="drag(event)">{{metric.name}}</span>								
+								<span ng-repeat="metric in metrics" data-key="{{metric.key}}" class="badge metric-item" draggable="true" ondragstart="drag(event)">{{metric.name}}</span>								
 							</div>
 							
 							<hr/>
@@ -40,20 +40,30 @@
 
 								<input type="text" class="form-control metric"
 									ondrop="drop(event)" ondragover="allowDrop(event)"
-									placeholder="drop metric here" ng-model="rule.metric" disabled>
+									placeholder="drop metric here" ng-model="rule.name" disabled>
+									
+								<input type="text" class="metrics-key" ng-model="rule.metric"">	
 
 								<p>is</p>
 
 								<select class="form-control" ng-model="rule.operator">
-									<option selected="selected">Equals to</option>
+									<option selected>Equals to</option>
 									<option>Greater than</option>
 									<option>Less than</option>
 									<option>Not Equals</option>
 								</select>
 								
 								<p>value</p>
-								<input type="number" class="form-control value" ng-model="rule.value" placeholder="5">
-								<a href="" ng-click="addRule(rule)">Add</a>
+								<input type="number" class="form-control value" ng-model="rule.value">								
+								
+								<p>then</p>
+								
+								<select class="form-control" ng-model="rule.action">
+									<option>Email</option>
+									<option selected>No Action</option>									
+								</select>
+								
+								<a href="" ng-click="addRule(rule)">Add Rule</a>
 							</div>
 						
 						</div>
@@ -74,16 +84,20 @@
 						<thead>
 							<tr>
 								<th>Metric</th>
+								<th>Name</th>
 								<th>Operator</th>
 								<th>Value</th>
+								<th>Action</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="rule" ng-repeat="rule in rules">
 								<td>{{rule.metric}}</td>
+								<td>{{rule.name}}</td>
 								<td>{{rule.operator}}</td>
 								<td>{{rule.value}}</td>								
-
+								<td>{{rule.action}}</td>
+								<td><a class="btn btn-danger btn-xs pull-right" ng-href="" ng-click="deleteRule($index, rule)">Delete Rule <i class="fa fa-trash"> </i></a></td>
 							</tr>
 							
 						</tbody>
@@ -131,6 +145,12 @@
 .metric-item {
 	margin: 3px;
 }
+
+.metrics-key {
+	display: none;
+}
+
+
 </style>
 
 <script>
@@ -140,11 +160,13 @@
 	}
 	
 	function drag(ev) {
-				
+		console.log("Dragging");
 		var elem = $(ev.target);
-		console.log(elem.text());
+		var key = elem.data("key");
+	
 		//Send over metric
-		ev.dataTransfer.setData("element", elem.text());		
+		ev.dataTransfer.setData("element", elem.text());
+		ev.dataTransfer.setData("key", key);
 	}
 	
 	function drop(ev) {
@@ -152,11 +174,15 @@
 		console.log("Dropping");		
 		// Grab metric
 		var data = ev.dataTransfer.getData("element");
-				
+		var key = ev.dataTransfer.getData("key");
+		console.log("KEY DROP: " + key);
+		
 		$(ev.target).val(data);
+		$('.metrics-key').val(key);
 		
 		// update for angular
 		$(ev.target).trigger('input');
+		$('.metrics-key').trigger('input');
 		console.log(data);
 	}
 

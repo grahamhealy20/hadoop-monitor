@@ -71,25 +71,25 @@ public class RulesParser {
 								// Do comparison
 								if(ruleValue == pairValue) {									
 									//Log.warn("EQUALS ALERT ALERT ALERT " + pair.getKey() );
-									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+									alerts.add(new Alert(pair.getKey(), r.getName(), Double.toString(pairValue), dateToStore, r.getAction()));
 								}														
 								break;
 							case "Greater than":
 								if(pairValue > ruleValue) {
 									//Log.warn("GT ALERT ALERT ALERT " + pair.getKey());
-									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+									alerts.add(new Alert(pair.getKey(), r.getName(), Double.toString(pairValue), dateToStore, r.getAction()));
 								}
 								break;
 							case "Less than":
 								if(pairValue < ruleValue) {
 									//Log.warn("LT ALERT ALERT ALERT " + pair.getKey());
-									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+									alerts.add(new Alert(pair.getKey(), r.getName(), Double.toString(pairValue), dateToStore, r.getAction()));
 								}
 								break;
 							case "Not Equals":
 								if(pairValue != ruleValue) {
 									//Log.warn("NEQ ALERT ALERT ALERT " + pair.getKey());
-									alerts.add(new Alert(pair.getKey(), Double.toString(pairValue), dateToStore));
+									alerts.add(new Alert(pair.getKey(), r.getName(), Double.toString(pairValue), dateToStore, r.getAction()));
 								}
 								break;
 							default:

@@ -2,6 +2,7 @@ package com.graham.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +51,23 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				
 				// If alerts are not null send out websocket
 				if(alerts != null) {													
-					// If alert is not recent
+					// If alert is not recent, do action
 					for(Alert alert : alerts) {
-						if(hasRecentAlert(alert, 20000) == false) {
+						if(hasRecentAlert(alert, 60000) == false) {
 							Log.info("Adding new hist");
 							//Remove current hist alert and pop in new one							
 							alertHistory.add(alert);
-							cluster.getAlerts().add(alert);				
+							cluster.getAlerts().add(alert);	
+							alert.setId(UUID.randomUUID().toString());
 							clusterService.updateCluster(cluster);
+							
+							// Perform action
+							if(alert.getAction().toLowerCase().equals("email")) {
+								// Send email
+								Log.info("EMAIL EMAIL EMAIL");
+							} else if (alert.getAction() == "rebalance") {
+								// Rebalance cluster
+							}
 						}
 					}														
 				}

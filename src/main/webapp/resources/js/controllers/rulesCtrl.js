@@ -8,37 +8,29 @@ angular.module('admin').controller('RulesCtrl', function(MonitorService, $scope,
 		$scope.rules = data.data;
 	}, handleError);
 	
-	$scope.metrics = [{
-	                	  id: 1,
-	                	  name: "CPU"
-	                  },
-	                  {
-	                	  id: 2,
-	                	  name: "Heap Used"
-	                  },
-	                  {
-	                	  id: 3,
-	                	  name: "Open Connections"
-	                  },
-	                  {
-	                	id: 4,
-	                	name: "MemMaxM"
-	                  },
-	                  {
-	                	  id: 5,
-	                	  name: "MemHeapUsedM"
-	                  }];
+	MonitorService.getMetrics(function(data) {
+		$scope.metrics = data.data;
+	}, handleError);
+	
+	
 	
 	$scope.rule = {
 			metric: ''
 	};
 	
 	$scope.addRule = function(rule) {
-			
+		console.log(rule);
 		MonitorService.addRule($scope.cluster.id, rule, function(response) {
 			$scope.rules.push(response.data);
 			console.log(response.data);
 			handleSuccess("Rule successfully added");
+		}, handleError);
+	}
+	
+	$scope.deleteRule = function(index, rule) {
+		MonitorService.deleteRule($scope.cluster.id, rule, function(data) {
+			$scope.rules.splice(index, 1);
+			handleSuccess("Rule successfully deleted");
 		}, handleError);
 	}
 	

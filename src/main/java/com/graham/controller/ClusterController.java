@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.IOUtils;
@@ -149,7 +150,7 @@ public class ClusterController {
 	@RequestMapping(value = "/rules/{id}", method = RequestMethod.POST) 
 	public @ResponseBody ResponseEntity<Rule> addClusterRule(@PathVariable("id") String id, @RequestBody Rule rule) {
 		Cluster cluster = clusterService.getCluster(id);
-		
+		rule.setId(UUID.randomUUID().toString());
 		cluster.getRules().add(rule);
 		clusterService.updateCluster(cluster);
 		
@@ -162,15 +163,61 @@ public class ClusterController {
 		
 		return new ResponseEntity<>(cluster.getRules(), HttpStatus.OK);
 	}
+
+	
+	@RequestMapping(value = "/rules/{id}/delete") 
+	public @ResponseBody ResponseEntity<String> deleteRule(@PathVariable("id") String id, @RequestBody Rule rule) {
+		Cluster cluster = clusterService.getCluster(id);		
+		for(int i = 0; i < cluster.getRules().size(); i++) {
+			if(cluster.getRules().get(i).getId().equals(rule.getId())) {
+				cluster.getRules().remove(i);
+				clusterService.updateCluster(cluster);
+			}
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	
 	/// 
 	
 	@RequestMapping(value = "/alerts/{id}") 
 	public @ResponseBody ResponseEntity<ArrayList<Alert>> getAlertsForCluster(@PathVariable("id") String id) {
-		Cluster cluster = clusterService.getCluster(id);		
-		
+		Cluster cluster = clusterService.getCluster(id);				
 		return new ResponseEntity<>(cluster.getAlerts(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/alerts/{id}/delete") 
+	public @ResponseBody ResponseEntity<String> deleteAlert(@PathVariable("id") String id, @RequestBody Alert alert) {
+		Cluster cluster = clusterService.getCluster(id);		
+		for(int i = 0; i < cluster.getAlerts().size(); i++) {
+			if(cluster.getAlerts().get(i).getId().equals(alert.getId())) {
+				cluster.getAlerts().remove(i);
+				clusterService.updateCluster(cluster);
+			}
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/alerts/{id}/delete/all") 
+	public @ResponseBody ResponseEntity<String> deleteAllAlerts(@PathVariable("id") String id) {
+		Cluster cluster = clusterService.getCluster(id);		
+		cluster.setAlerts(new ArrayList<Alert>());
+		clusterService.updateCluster(cluster);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	
+//	
+//	@RequestMapping(value = "/alerts/{id}/delete/{alertId}") 
+//	public @ResponseBody ResponseEntity<String> deleteAlert(@PathVariable("id") String id, @PathVariable("alertId") String alertId) {
+//		Cluster cluster = clusterService.getCluster(id);		
+//		for(int i = 0; i < cluster.getAlerts().size(); i++) {
+//			if(cluster.getAlerts().get(i).getId().equals(alertId)) {
+//				cluster.getAlerts().remove(i);
+//				clusterService.updateCluster(cluster);
+//			}
+//		}
+//		return new ResponseEntity<>(HttpStatus.OK);
+//	}
 	
 	@RequestMapping(value = "/{id}/balance") 
 	public @ResponseBody ResponseEntity<String> balanceCluster(@PathVariable("id") String id) {
@@ -178,9 +225,6 @@ public class ClusterController {
 		cluster.balanceCluster();	
 		return new ResponseEntity<>("Success", HttpStatus.OK);
 	}
-	
-	
-	
 	
 	
 	///////// EXCEPTION HANDLERS //////////

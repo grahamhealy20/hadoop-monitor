@@ -42,12 +42,20 @@ angular.module('admin').service('MonitorService', function($http) {
 		$http.post(BASE_URL + "/cluster/rules/" + id, rule).then(successCallback, errorCallback);
 	}
 	
+	this.deleteRule = function(id, rule, successCallback, errorCallback) {		
+		$http.post(BASE_URL + "/cluster/rules/" + id + "/delete", rule).then(successCallback, errorCallback);
+	}
+	
 	this.balanceCluster = function(id, successCallback, errorCallback) {
 		$http.get(BASE_URL + "/cluster/" + id + "/balance").then(successCallback, errorCallback);
 	}
 	
 	this.getAlerts = function(id, successCallback, errorCallback) {
 		$http.get(BASE_URL + "/cluster/alerts/" + id).then(successCallback, errorCallback);
+	}
+	
+	this.deleteAlert = function(id, alert, successCallback, errorCallback) {
+		$http.post(BASE_URL + "/cluster/alerts/" + id + "/delete", alert).then(successCallback, errorCallback);
 	}
 	
 	
@@ -97,4 +105,18 @@ angular.module('admin').service('MonitorService', function($http) {
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 		}).then(successCallback, errorCallback);
 	};
+	
+	////////// SETTINGS /////////
+	
+	this.addMetric = function(data, successCallback, errorCallback) {		
+		$http.post(BASE_URL + "/settings/metric", data).then(successCallback, errorCallback);
+	}
+	
+	this.getMetrics = function(successCallback, errorCallback) {
+		$http.get(BASE_URL + "/settings/metrics").then(successCallback, errorCallback);
+	}
+	
+	this.deleteMetric = function(data, successCallback, errorCallback) {
+		$http.post(BASE_URL + "/settings/metric/delete", data).then(successCallback, errorCallback);
+	}
 });

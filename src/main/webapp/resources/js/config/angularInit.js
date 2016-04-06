@@ -18,6 +18,11 @@ app.config(function ($routeProvider) {
         	templateUrl: 'resources/pages/overview.html',
             controller: 'OverviewCtrl'
         }).
+        when('/settings/',
+        {
+        	templateUrl: 'resources/pages/settings.html',
+            controller: 'SettingsCtrl'
+        }).
         when('/jobs/:id',
         {
         	templateUrl: 'resources/pages/jobs.html',

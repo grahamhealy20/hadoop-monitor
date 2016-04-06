@@ -1,0 +1,76 @@
+<!-- Settings page -->
+<div class="container">
+	<h1>Settings <small><i class="fa fa-cloud"></i></small></h1>
+	<!-- Top row -->
+	<div class="row">
+		<div class="col-md-12">
+			<h2>Rule Metrics</h2>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div ng-form name="settingsForm" class="form-inline">
+						<div class="form-group">
+							<label for="key"> Key</label>
+							 <input type="text" class="form-control" id="key" placeholder="" ng-model="metric.key" required>
+						</div>
+
+						<div class="form-group">
+							<label for="name"> Name</label>
+							 <input type="text" class="form-control" id="name" placeholder="CPU" ng-model="metric.name" required>
+						</div>
+
+						<a ng-click="addMetric(metric)" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  Add Metric</a>
+					</div>
+				</div>
+				<!-- panel-body -->
+			</div>
+			<!-- panel-default -->
+
+		</div>
+		<!-- col-md-12 -->
+
+	</div>
+	<!-- top row -->
+	
+		<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+				
+					<!-- Search -->
+					<div class="search-box col-md-4">
+						<div class="form-group">
+							<label for="name">Search <i class="fa fa-search"></i></label>
+							<input type="text" class="form-control" id="query" placeholder="Search.." ng-model="query">
+						</div>
+					</div>
+					
+					<table class="table table-repsonsive">
+						<thead>
+							<tr>
+								<th>Key</th>
+								<th>Name</th>				
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="metric" ng-repeat="metric in metrics | filter:query | orderBy: 'name' ">
+								<td>{{metric.key}}</td>
+								<td>{{metric.name}}</td>
+								<!-- Option Links-->
+								<td>
+									<a class="btn btn-danger btn-sm pull-right" ng-href="" ng-click="deleteMetric($index, metric)"><i class="fa fa-trash"> </i> Delete</a>									 
+								</td>
+							</tr>
+							
+						</tbody>
+
+					</table>
+					<p class="centre" ng-show="!metrics.length">No metrics to display</p>
+				</div>
+				<!--panel-body-->
+			</div>
+			<!--panel-->
+		</div>
+		<!--col-md-12-->
+
+	</div>
+</div>

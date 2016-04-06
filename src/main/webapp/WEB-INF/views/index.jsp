@@ -72,6 +72,7 @@
 	<script src="resources/js/services/monitorService.js"></script>
 	
 	<script src="resources/js/controllers/clustersCtrl.js"></script>
+	<script src="resources/js/controllers/settingsCtrl.js"></script>
 	<script src="resources/js/controllers/overviewCtrl.js"></script>
 	<script src="resources/js/controllers/jobsCtrl.js"></script>
 	<script src="resources/js/controllers/dfsioCtrl.js"></script>

@@ -12,16 +12,21 @@
 				<table class="table table-repsonsive">
 						<thead>
 							<tr>
-								<th>Key</th>								
+								<th>Key</th>	
+								<th>Name</th>								
 								<th>Value</th>
 								<th>Timestamp</th>
+								<th>Action</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="rule" ng-repeat="alert in alerts">
-								<td>{{alert.key}}</td>								
+								<td>{{alert.key}}</td>
+								<td>{{alert.name}}</td>								
 								<td>{{alert.value}}</td>
-								<td>{{alert.timestamp | date:'HH:mm:ss EEE dd MMM yyyy' }}</td>								
+								<td>{{alert.timestamp | date:'HH:mm:ss EEE dd MMM yyyy' }}</td>
+								<td>{{alert.action}}</td>
+								<td><a class="btn btn-danger btn-xs pull-right" ng-href="" ng-click="deleteAlert($index, alert)">Delete Alert <i class="fa fa-trash"> </i></a></td>								
 							</tr>						
 						</tbody>
 
