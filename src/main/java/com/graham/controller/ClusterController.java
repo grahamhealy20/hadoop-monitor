@@ -147,6 +147,8 @@ public class ClusterController {
 		return new ResponseEntity<>(apps, HttpStatus.OK);
 	}
 	
+	///////// GET RULES /////////
+	
 	@RequestMapping(value = "/rules/{id}", method = RequestMethod.POST) 
 	public @ResponseBody ResponseEntity<Rule> addClusterRule(@PathVariable("id") String id, @RequestBody Rule rule) {
 		Cluster cluster = clusterService.getCluster(id);
@@ -177,7 +179,7 @@ public class ClusterController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	/// 
+	///////// ALERTS ///////// 
 	
 	@RequestMapping(value = "/alerts/{id}") 
 	public @ResponseBody ResponseEntity<ArrayList<Alert>> getAlertsForCluster(@PathVariable("id") String id) {
@@ -206,18 +208,7 @@ public class ClusterController {
 	}
 	
 	
-//	
-//	@RequestMapping(value = "/alerts/{id}/delete/{alertId}") 
-//	public @ResponseBody ResponseEntity<String> deleteAlert(@PathVariable("id") String id, @PathVariable("alertId") String alertId) {
-//		Cluster cluster = clusterService.getCluster(id);		
-//		for(int i = 0; i < cluster.getAlerts().size(); i++) {
-//			if(cluster.getAlerts().get(i).getId().equals(alertId)) {
-//				cluster.getAlerts().remove(i);
-//				clusterService.updateCluster(cluster);
-//			}
-//		}
-//		return new ResponseEntity<>(HttpStatus.OK);
-//	}
+	///////// MISC /////////
 	
 	@RequestMapping(value = "/{id}/balance") 
 	public @ResponseBody ResponseEntity<String> balanceCluster(@PathVariable("id") String id) {

@@ -4,4 +4,10 @@ angular.module('admin').controller('NavbarCtrl', function ($scope, $interval) {
 	$interval(function () {
 		$scope.time = Date.now();
 	}, 10);
+	
+	//Setup alerts websocket
+	connectAlerts(function(data) {
+		console.log("Alert received");
+		handleAlert(data);
+	});
 });

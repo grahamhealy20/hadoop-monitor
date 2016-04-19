@@ -19,5 +19,12 @@ angular.module('admin').controller('AlertsCtrl', function(MonitorService, $scope
 		}, handleError);
 	}
 	
+	$scope.deleteAllAlerts = function() {
+		MonitorService.deleteAllAlerts($scope.cluster.id, function(data) {
+			$scope.alerts.length = 0;
+			handleSuccess("All alerts successfully deleted");
+		}, handleError)
+	}
+	
 	
 });

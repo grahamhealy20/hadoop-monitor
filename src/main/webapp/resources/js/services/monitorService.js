@@ -35,6 +35,8 @@ angular.module('admin').service('MonitorService', function($http) {
 		$http.get(BASE_URL + "/cluster/log/datanode/" + id + "/tail").then(successCallback, errorCallback);
 	};
 	
+	/////// RULES /////////
+	
 	this.getRules = function(id, successCallback, errorCallback) {
 		$http.get(BASE_URL + "/cluster/rules/" + id).then(successCallback, errorCallback);
 	}
@@ -51,12 +53,18 @@ angular.module('admin').service('MonitorService', function($http) {
 		$http.get(BASE_URL + "/cluster/" + id + "/balance").then(successCallback, errorCallback);
 	}
 	
+	/////// ALERTS /////////
+	
 	this.getAlerts = function(id, successCallback, errorCallback) {
 		$http.get(BASE_URL + "/cluster/alerts/" + id).then(successCallback, errorCallback);
 	}
 	
 	this.deleteAlert = function(id, alert, successCallback, errorCallback) {
 		$http.post(BASE_URL + "/cluster/alerts/" + id + "/delete", alert).then(successCallback, errorCallback);
+	}
+	
+	this.deleteAllAlerts = function(id, successCallback, errorCallback) {
+		$http.post(BASE_URL + "/cluster/alerts/" + id + "/delete/all").then(successCallback, errorCallback);
 	}
 	
 	

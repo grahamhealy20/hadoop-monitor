@@ -1,5 +1,5 @@
 // Base URL
-var BASE_URL = "/HadoopMon";
+var BASE_URL = "/HadoopMonitor";
 
 // App declaration
 var app = angular.module('admin', ['ngRoute', 'angular-loading-bar', 'ngAnimate', 'chart.js', 'ngDragDrop']);

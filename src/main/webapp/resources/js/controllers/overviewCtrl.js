@@ -35,9 +35,6 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			$scope.dataStorage = [capacityFree, capacityUsed];
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
 
-		}, function(data) {
-			console.log(data);
-			handleAlert(data);
 		}, handleError);
 	
 
