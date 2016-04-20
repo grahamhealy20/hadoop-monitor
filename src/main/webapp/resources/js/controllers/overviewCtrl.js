@@ -18,9 +18,17 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 
 		//Init websocket
 		connect($scope.cluster.id, function(data) {
-			console.log(data);
+			
+			//console.log(data);
 			$scope.prevMetrics = $scope.metrics;
 			$scope.metrics = data.beans;
+			
+			// Loop through array and check each key value 
+			for(var i = 0; i < $scope.metrics.length; i++) {
+				angular.forEach($scope.metrics[i], function(value, key) {
+					
+				});
+			}
 
 			$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
 			$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
@@ -36,6 +44,20 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
 
 		}, handleError);
+		
+		
+		//  Get metric via key
+		function getMetric(key) {
+			console.log("finding");
+			for(var i = 0; i < $scope.cluster.layout.rows; i++) {
+				for(var j = 0; j < $scope.cluster.layout.rows[i].cols.length; j++) {
+					if($scope.cluster.layout.rows[i].cols[j].metric.key == key) {
+						console.log("Found");
+						return $scope.cluster.layout.rows[i].cols[j];
+					}
+				}
+			}
+		}
 	
 
 	},

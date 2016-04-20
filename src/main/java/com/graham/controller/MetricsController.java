@@ -107,6 +107,11 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 		}
 		return false;
 	}
+	
+	@Scheduled(fixedDelay = 1000)
+	public void getMetrics() {
+		
+	}
 
 	@Override
 	public void onApplicationEvent(BrokerAvailabilityEvent arg0) {

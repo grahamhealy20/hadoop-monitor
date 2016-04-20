@@ -90,6 +90,7 @@
 
 	
 	                	</div>
+	                	
                 </div>
             </div>
 
@@ -97,6 +98,84 @@
 	
 		
     </div> <!-- row -->
+    
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+	    		<div class="panel-body">
+	    			<h2>Overview Layout</h2>
+	    			<div class="col-md-2">
+	    				<select class="form-control" ng-show="metrics.length" ng-options="metric as metric.name for metric in metrics" ng-model="selectedMetric"></select>
+	    			</div>
+					<div class="col-md-2">
+	    				<input type="number" placeholder="Max value" class="form-control" value="100" ng-model="limit">
+	    			</div>
+	    			<div class="col-md-12">
+	    				<div ng-repeat="row in cluster.layout.rows" class="layout-row">
+	    					<p>Row</p>
+	    					<div class="row">
+		    					<div class="layout-col col-xs-1" ng-repeat="col in row.cols">
+			    					<div class="panel panel-default">
+				    					<div class="panel-title">
+				    						<p>{{col.metric.name}}</p>
+				    					</div>
+			    								    						    						    			
+			    						<p>{{col.limit}}</p>
+			    						<a href="" ng-click="removeCol(row, col)">Remove</a>
+			    					</div>
+		    					</div>	    					
+	    					</div>
+
+							<a ng-href="" ng-click="addCol(row)" ng-show="getCount(row)" class="btn btn-primary">Add</a>
+	    					<a ng-href="" ng-click="removeRow(row)" class="btn btn-danger">Delete Row</a>
+	    				</div>
+	    				<div class="row">
+	    					<div class="col-md-3">
+	    						<a ng-href="" ng-click="addRow()" class="btn btn-primary">Add new row</a>
+	    					</div>
+	    					<div class="col-md-3 pull-right">
+	    						<div class="form-group">
+    								<a ng-click="updateCluster(cluster)" class="btn btn-primary"><i class="fa fa-save"></i>  Update Cluster</a>
+    							</div> 
+	    					</div>
+	    					
+	    				</div>
+	    			
+	    			</div>
+	    		</div>
+	    	</div>
+		</div>
+	</div>    
   
+  <style>
+  	.layout-row {
+  		background-color: lightgray !important;
+  		padding: 5px;
+  		margin-top: 10px;
+  		margin-bottom: 10px;
+  		border-radius: 3px;
+  		border: 3px dashed gray;
+  	}
+  
+  
+  	.layout-col {
+  		border-radius: 3px;
+  		height: 120px;
+  		width: 120px;
+  	}
+  	
+  	.layout-col .panel {
+  		padding: 5px;
+  		height: 100px !important;
+  		width: 100px !important;
+  	}
+  	
+  	 .layout-col a {
+  		position: absolute;
+  		bottom: 5px;
+  		left: 5px;
+  	}
+  
+  </style>
     
 </div>

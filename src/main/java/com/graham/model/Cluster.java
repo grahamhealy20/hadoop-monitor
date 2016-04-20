@@ -23,6 +23,8 @@ public class Cluster {
 	
 	private ArrayList<Rule> rules;
 	private ArrayList<Alert> alerts;
+	
+	private Layout layout;
 	 
 	public String getId() {
 		return id;
@@ -44,6 +46,7 @@ public class Cluster {
 		dfsioOptions = new DFSIOOptions();
 		rules = new ArrayList<Rule>();
 		alerts = new ArrayList<Alert>();
+		layout = new Layout();
 	}
 	
 	public Cluster(String name, String ipAddress, String username) {
@@ -98,6 +101,14 @@ public class Cluster {
 
 	public void setAlerts(ArrayList<Alert> alerts) {
 		this.alerts = alerts;
+	}
+
+	public Layout getLayout() {
+		return layout;
+	}
+
+	public void setLayout(Layout layout) {
+		this.layout = layout;
 	}
 
 	// Balance the cluster

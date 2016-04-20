@@ -5,9 +5,12 @@ angular.module('admin').controller('NavbarCtrl', function ($scope, $interval) {
 		$scope.time = Date.now();
 	}, 10);
 	
+	$scope.alerts = [];
+	
 	//Setup alerts websocket
 	connectAlerts(function(data) {
 		console.log("Alert received");
 		handleAlert(data);
+		$scope.alerts.push(data);
 	});
 });

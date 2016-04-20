@@ -4,6 +4,28 @@
 <div class="main container-fluid">
     <h1>Cluster Overview</h1>
 
+	<!--  Dynamic layout container -->
+		<div class="row" ng-repeat="row in cluster.layout.rows">
+			
+			
+			<div ng-repeat="col in row.cols" class="col-md-4">
+				<div class="panel panel-default">
+					<div class="meter" ng-style="{backgroundColor: getMetricColour((metrics[5].SystemLoadAverage * 100)), width: setWidth((metrics[5].SystemLoadAverage * 100), 100)}"></div>
+	                <div class="panel-body">
+	                    <div class="pull-left">
+	                    	<h3>{{col.metric.name}}</h3>
+		                    <h1>{{metrics[5].SystemLoadAverage * 100 | number:0}} %</h1>
+		                </div>
+		                <div class="pull-right">
+		                	<i ng-class="getCarat(metrics[5].SystemLoadAverage, prevMetrics[5].SystemLoadAverage)"></i>
+		                    <h3>{{(prevMetrics[5].SystemLoadAverage  * 100 | number:0 )}} %</h3>
+		                </div>
+	                </div>
+				</div>
+			</div>
+		</div>
+	
+	
     <!-- Top row -->
     <div class="row">
         <div class="col-md-4">
