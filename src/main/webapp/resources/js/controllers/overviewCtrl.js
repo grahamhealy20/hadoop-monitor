@@ -43,7 +43,20 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			$scope.dataStorage = [capacityFree, capacityUsed];
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
 
+		}, function(data) {
+			var metrics = data;
+			for(var i = 0; i < metrics.length; i++) {
+				
+			}
+			// Match up data to the layout
+			
+			
+			console.log(data);
 		}, handleError);
+		
+		function findPosition(metric) {
+			
+		}
 		
 		
 		//  Get metric via key
@@ -59,9 +72,8 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			}
 		}
 	
-
 	},
-	handleError );
+	handleError);
 
 
 	MonitorService.getNamenodeLogTail($routeParams.id, function(data) {

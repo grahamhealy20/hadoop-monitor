@@ -4,7 +4,7 @@ var wait = false;
 
 //Setup Websocket
 
-function connect(clientId, metricsSuccessCallback, errorCallback) {
+function connect(clientId, metricsSuccessCallback, layoutSuccessCallback, errorCallback) {
 	var socket = new SockJS( BASE_URL + '/realtime');
 	stompClient = Stomp.over(socket);
 	//Disable debug output
@@ -15,6 +15,16 @@ function connect(clientId, metricsSuccessCallback, errorCallback) {
 			var msg = JSON.parse(message.body);
 			metricsSuccessCallback(msg);
 		}, errorCallback);
+		
+		stompClient.subscribe("/data/layout/" + clientId, function(message){
+			var msg = JSON.parse(message.body);
+			console.log("Success");
+			console.log(message);
+		
+			layoutSuccessCallback(msg);			
+		}, function(error) {
+			console.log("error");
+		});
 	}
 	);
 }

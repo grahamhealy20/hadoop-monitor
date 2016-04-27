@@ -16,15 +16,17 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Alert;
 import com.graham.model.Cluster;
+import com.graham.model.LayoutMetric;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Metrics;
 import com.graham.model.utils.HttpHelper;
+import com.graham.model.utils.MetricsHelper;
 import com.graham.model.utils.RulesParser;
 
 // Controller to handle metrics
 @Service
 public class MetricsController implements ApplicationListener<BrokerAvailabilityEvent>{
-	
+
 	@Autowired
 	private ClusterService clusterService;
 
@@ -32,9 +34,9 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	private MessageSendingOperations<String> messagingTemplate;
 
 	private HttpHelper http = new HttpHelper();
-	
+
 	private ArrayList<Alert> alertHistory = new ArrayList<Alert>();
-	
+
 	// Publishes cluster metrics every set interval
 	@Scheduled(fixedDelay = 1000)
 	public void sendDataUpdates() throws IllegalArgumentException, IllegalAccessException, InterruptedException {
@@ -45,10 +47,10 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 			try {
 				// Get metrics
 				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());				
-			
+
 				// Parse for rule alerts
 				List<Alert> alerts = RulesParser.parseRules(metrics, cluster.getRules());
-				
+
 				// If alerts are not null send out websocket
 				if(alerts != null) {													
 					// If alert is not recent, do action
@@ -61,7 +63,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 							alert.setId(UUID.randomUUID().toString());
 							clusterService.updateCluster(cluster);
 							this.messagingTemplate.convertAndSend("/alerts/", alert);
-							
+
 							// Perform action
 							if(alert.getAction().toLowerCase().equals("email")) {
 								// Send email
@@ -72,7 +74,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 						}
 					}														
 				}
-				
+
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);			
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
@@ -80,12 +82,34 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 			}
 		}
 	}
-	
+
+	@Scheduled(fixedDelay = 2000)
+	public void getLayoutMetrics() throws IllegalAccessException {
+		// Grab clusters
+		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
+
+		for (Cluster cluster : clusters) {
+			try {
+				// Get metrics
+				Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());				
+				
+				// Process into small list of metrics
+				List<LayoutMetric> metricList = MetricsHelper.parseMetrics(metrics, cluster.getLayout());
+				if(metricList.size() > 0) {
+					this.messagingTemplate.convertAndSend("/data/layout/" + cluster.getId(), metricList);
+				}										
+			} catch (ResourceAccessException e) {
+				// TODO: handle exception
+				//e.printStackTrace();
+			}
+		}
+	}
+
 	private boolean hasRecentAlert(Alert alert, long recent) {
-		
+
 		for(int i = 0; i < alertHistory.size(); i++ ){
 			Alert previous = alertHistory.get(i);
-			
+
 			// Check for matching alert in the history
 			if(previous.getKey() == alert.getKey()) {
 				Log.info("" + System.currentTimeMillis());
@@ -93,7 +117,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				long previousAlertTime = previous.getTimestamp();			
 				long timeGap = currentAlertTime - previousAlertTime;			
 				//Log.info("Key: " + alert.getKey()+ " GAP Time: " + timeGap);
-				
+
 				//Check if recent
 				if(timeGap < recent) {					
 					// Has a recent alert, no alert will be added
@@ -107,10 +131,10 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 		}
 		return false;
 	}
-	
+
 	@Scheduled(fixedDelay = 1000)
 	public void getMetrics() {
-		
+
 	}
 
 	@Override
