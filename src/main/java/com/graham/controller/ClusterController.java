@@ -29,6 +29,7 @@ import com.graham.model.Rule;
 import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.metrics.Apps;
 import com.graham.model.utils.HttpHelper;
+import com.graham.model.utils.ValidationHelper;
 
 @Controller
 @RequestMapping("cluster")
@@ -56,12 +57,17 @@ public class ClusterController {
 	}
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public ResponseEntity<Cluster> addClusterRest(@RequestBody Cluster cluster) {		
-		Cluster c = clusterService.addCluster(cluster); 
-		if(c.getId() != null) {
-			return new ResponseEntity<Cluster>(cluster, HttpStatus.CREATED);
-		}
-		else {
+	public ResponseEntity<Cluster> addClusterRest(@RequestBody Cluster cluster) {
+		//Check validation
+		if(isClusterValid(cluster)) {
+			Cluster c = clusterService.addCluster(cluster); 
+			if(c.getId() != null) {
+				return new ResponseEntity<Cluster>(cluster, HttpStatus.CREATED);
+			}
+			else {
+				return new ResponseEntity<Cluster>(cluster, HttpStatus.BAD_REQUEST);
+			}
+		} else {
 			return new ResponseEntity<Cluster>(cluster, HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -74,9 +80,13 @@ public class ClusterController {
 	}
 	
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public ResponseEntity<Cluster> editCluster(@RequestBody Cluster cluster) {		
-		clusterService.updateCluster(cluster);
-		return new ResponseEntity<Cluster>(cluster, HttpStatus.OK);
+	public ResponseEntity<Cluster> editCluster(@RequestBody Cluster cluster) {
+		if(isClusterValid(cluster)) {
+			clusterService.updateCluster(cluster);
+			return new ResponseEntity<Cluster>(cluster, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Cluster>(cluster, HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	////////// FULL LOGS //////////
@@ -151,13 +161,20 @@ public class ClusterController {
 	
 	@RequestMapping(value = "/rules/{id}", method = RequestMethod.POST) 
 	public @ResponseBody ResponseEntity<Rule> addClusterRule(@PathVariable("id") String id, @RequestBody Rule rule) {
-		Cluster cluster = clusterService.getCluster(id);
-		rule.setId(UUID.randomUUID().toString());
-		cluster.getRules().add(rule);
-		clusterService.updateCluster(cluster);
 		
-		return new ResponseEntity<>(rule, HttpStatus.CREATED);
+		// Validate parameters
+		if(isValidRule(rule)) {
+			
+			Cluster cluster = clusterService.getCluster(id);
+			rule.setId(UUID.randomUUID().toString());
+			cluster.getRules().add(rule);
+			clusterService.updateCluster(cluster);
+			return new ResponseEntity<>(rule, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(rule, HttpStatus.BAD_REQUEST);
+		}
 	}
+	
 	
 	@RequestMapping(value = "/rules/{id}") 
 	public @ResponseBody ResponseEntity<ArrayList<Rule>> getRulesForCluster(@PathVariable("id") String id) {
@@ -217,7 +234,7 @@ public class ClusterController {
 		return new ResponseEntity<>("Success", HttpStatus.OK);
 	}
 	
-	
+
 	///////// EXCEPTION HANDLERS //////////
 	
 	@ExceptionHandler({ResourceAccessException.class, ConnectException.class})
@@ -227,6 +244,25 @@ public class ClusterController {
 	}
 	
 	////////// PRIVATE METHODS //////////
+	//Checks cluster validation
+	private boolean isClusterValid(Cluster c) {
+		if(ValidationHelper.validateIpAddress(c.getIpAddress()) == true && ValidationHelper.required(c.getName()) == true && ValidationHelper.required(c.getUsername()) == true) {			
+			return true;
+		} else { 
+			return false;
+		}
+	}
+	
+	
+	private boolean isValidRule(Rule r) {
+		if(ValidationHelper.required(r.getName()) && ValidationHelper.required(r.getMetric()) && ValidationHelper.required(r.getOperator()) && ValidationHelper.required(r.getMetric()) 
+		&& ValidationHelper.required(r.getAction())		
+		) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	// Returns the last n lines of a given string
 	private String getLastLines(String text, int lines) throws IOException {

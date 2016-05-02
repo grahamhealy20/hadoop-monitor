@@ -2,6 +2,8 @@ package com.graham.model;
 
 import java.util.UUID;
 
+import com.graham.model.utils.ValidationHelper;
+
 // Represents a rule in a cluster
 public class Rule {
 	private String id;
@@ -11,17 +13,15 @@ public class Rule {
 	private int value;
 	private String action;
 	
-	public Rule() {
-		
-	}
+	public Rule() {}
 	
 	public Rule(String metric, String name, String operator, int value, String action) {
-		this.id = UUID.randomUUID().toString();
-		this.metric = metric;
-		this.name = name;
-		this.operator = operator;
-		this.value = value;
-		this.action = action;
+		this.setId(UUID.randomUUID().toString());
+		this.setMetric(metric);
+		this.setName(name);
+		this.setOperator(operator);
+		this.setValue(value);
+		this.setAction(action);
 	}
 	
 
@@ -30,7 +30,10 @@ public class Rule {
 	}
 	
 	public void setId(String id) {
-		this.id = id;
+		if(ValidationHelper.required(id) == true)
+			this.id = id;
+		else
+			throw new IllegalArgumentException("ID is required");
 	}
 
 	public String getMetric() {
@@ -38,7 +41,10 @@ public class Rule {
 	}
 
 	public void setMetric(String metric) {
-		this.metric = metric;
+		if(ValidationHelper.required(metric))
+			this.metric = metric;
+		else
+			throw new IllegalArgumentException("Metric is required");
 	}
 
 	public String getName() {
@@ -46,7 +52,10 @@ public class Rule {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		if(ValidationHelper.required(name))
+			this.name = name;
+		else
+			throw new IllegalArgumentException("Name is required");
 	}
 
 	public String getOperator() {
@@ -54,7 +63,10 @@ public class Rule {
 	}
 
 	public void setOperator(String operator) {
-		this.operator = operator;
+		if(ValidationHelper.required(operator))
+			this.operator = operator;
+		else
+			throw new IllegalArgumentException("Operator is required");
 	}
 
 	public int getValue() {
@@ -62,7 +74,10 @@ public class Rule {
 	}
 
 	public void setValue(int value) {
-		this.value = value;
+		if(ValidationHelper.required(Integer.toString(value)))
+			this.value = value;
+		else
+			throw new IllegalArgumentException("Value is required");
 	}
 
 	public String getAction() {
@@ -70,7 +85,10 @@ public class Rule {
 	}
 
 	public void setAction(String action) {
-		this.action = action;
+		if(ValidationHelper.required(action))
+			this.action = action;
+		else
+			throw new IllegalArgumentException("Action is required");
 	}
 	
 }

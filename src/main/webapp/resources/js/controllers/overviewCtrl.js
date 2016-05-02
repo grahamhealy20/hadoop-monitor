@@ -15,10 +15,10 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 
 		//Set cluster object
 		$scope.cluster = data.data;
-
+		console.log("initing");
 		//Init websocket
 		connect($scope.cluster.id, function(data) {
-			
+			console.log("data");
 			//console.log(data);
 			$scope.prevMetrics = $scope.metrics;
 			$scope.metrics = data.beans;
@@ -46,7 +46,7 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 		}, function(data) {
 			var metrics = data;
 			for(var i = 0; i < metrics.length; i++) {
-				
+				findPosition(metrics[i].metric.key);
 			}
 			// Match up data to the layout
 			
@@ -54,23 +54,18 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			console.log(data);
 		}, handleError);
 		
+		
+		// Update a metric in the layout
 		function findPosition(metric) {
-			
-		}
-		
-		
-		//  Get metric via key
-		function getMetric(key) {
-			console.log("finding");
-			for(var i = 0; i < $scope.cluster.layout.rows; i++) {
+			for(var i = 0; i < $scope.cluster.layout.rows; j++) {
 				for(var j = 0; j < $scope.cluster.layout.rows[i].cols.length; j++) {
-					if($scope.cluster.layout.rows[i].cols[j].metric.key == key) {
-						console.log("Found");
-						return $scope.cluster.layout.rows[i].cols[j];
+					if($scope.cluster.layout.rows[i].cols[j].metric.key == metric) {
+						console.log("metric found on layout");
 					}
 				}
 			}
 		}
+
 	
 	},
 	handleError);

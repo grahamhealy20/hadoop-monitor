@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.graham.model.benchmarks.BenchmarkResult;
 import com.graham.model.benchmarks.MRBenchmarkResult;
+import com.graham.model.utils.ValidationHelper;
 
 @Document
 public class Cluster {
@@ -39,7 +40,12 @@ public class Cluster {
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		if(ValidationHelper.required(username)) {
+			this.username = username;	
+		} else {
+			throw new IllegalArgumentException("Username is required");
+		}
+		
 	}
 
 	public Cluster() {
@@ -50,9 +56,9 @@ public class Cluster {
 	}
 	
 	public Cluster(String name, String ipAddress, String username) {
-		this.name = name;
-		this.ipAddress = ipAddress;
-		this.username = username;
+		setName(name);
+		setIpAddress(ipAddress);
+		setUsername(username);
 	}
 	
 	public Cluster(String name, String ipAddress) {
@@ -67,7 +73,11 @@ public class Cluster {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		if(ValidationHelper.required(name) == true) {
+			this.name = name;
+		} else {
+			throw new IllegalArgumentException("Name is required");
+		}
 	}
 
 	public String getIpAddress() {
@@ -75,7 +85,12 @@ public class Cluster {
 	}
 
 	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
+		if(ValidationHelper.validateIpAddress(ipAddress) == true ) {
+			this.ipAddress = ipAddress;
+		} else {
+			throw new IllegalArgumentException("Invalid IP Address");
+		}
+		
 	}
 	
 	public DFSIOOptions getDfsioOptions() {
@@ -120,14 +135,25 @@ public class Cluster {
 	}
 
 	public BenchmarkResult runDFSIOBenchmark(int numFiles, int fileSize) throws IOException, ConnectTimeoutException {
-		Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
-		DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
-		return dfsio.runBenchmark();
+		
+		// Validate inputs
+		if(numFiles > 0 && fileSize > 0) {
+			Log.warn("\nRunning DFSIO Benchmark! On Cluster:\nCluster Name: " + getName() + "\nIP Address: " + getIpAddress() + "\n");
+			DFSIOBenchmarkThread dfsio = new DFSIOBenchmarkThread(ipAddress, username, numFiles, fileSize);
+			return dfsio.runBenchmark();
+		} else {
+			throw new IllegalArgumentException("Invalid parameters");
+		}
 	}
 	
 	public MRBenchmarkResult runMRBenchmarkAsync(int numRuns) throws Exception {
-		MRBenchThread mrbench = new MRBenchThread(ipAddress, username, numRuns);
-		return mrbench.run();
+		// Validate input
+		if(numRuns > 0) {
+			MRBenchThread mrbench = new MRBenchThread(ipAddress, username, numRuns);
+			return mrbench.run();
+		} else {
+			throw new IllegalArgumentException("Invalid parameters");
+		}
 	}
 	
 	

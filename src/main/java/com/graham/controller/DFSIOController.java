@@ -35,20 +35,27 @@ public class DFSIOController {
 	// GET /test/
 	@RequestMapping(value = "/dfsio", method = RequestMethod.POST)
 	public @ResponseBody Callable<BenchmarkResult> dfsioAsync(String id, int numFiles, int fileSize) throws Exception {
-		// Run benchmark and store it
-		BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
-		benchmarkResultService.addBenchmarkResult(result);
+		
+		// Validate input
+		if(dfsioRequestIsValid(id, numFiles, fileSize)) {
+			// Run benchmark and store it
+			BenchmarkResult result = benchmarkDFSIOAsync(id, numFiles, fileSize);
+			benchmarkResultService.addBenchmarkResult(result);
 
-		return new Callable<BenchmarkResult>() {
+			return new Callable<BenchmarkResult>() {
 
-			@Override
-			public BenchmarkResult call() throws Exception {
-				// TODO Auto-generated method stub
-				return result;
-			}
-		};
+				@Override
+				public BenchmarkResult call() throws Exception {
+					// TODO Auto-generated method stub
+					return result;
+				}
+			};
+			
+		} else {
+			throw new IllegalArgumentException("");
+		}
 	}
-	
+
 	// REST GET /benchmarks/
 	@RequestMapping("/benchmarks/{id}")
 	public ResponseEntity<ArrayList<BenchmarkResult>> getBenchmarks(@PathVariable("id") String id) {
@@ -96,6 +103,14 @@ public class DFSIOController {
 		return result;
 	}
 	
+	private boolean dfsioRequestIsValid(String id, int numFiles, int fileSize) {
+		if(id != null && id.length() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	/// === ERROR HANDLING === ///
 
@@ -118,6 +133,6 @@ public class DFSIOController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentError(IllegalArgumentException ex) {
 		ex.printStackTrace();
-		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Bad IP Address\"" + "}", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("{" + "\"message\"" + ":" + "\"Bad Request\"" + "}", HttpStatus.BAD_REQUEST);
 	}
 }

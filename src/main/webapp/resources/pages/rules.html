@@ -46,7 +46,7 @@
 
 								<p>is</p>
 
-								<select class="form-control" ng-model="rule.operator">
+								<select class="form-control" ng-model="rule.operator" required>
 									<option selected>Equals to</option>
 									<option>Greater than</option>
 									<option>Less than</option>
@@ -54,11 +54,11 @@
 								</select>
 								
 								<p>value</p>
-								<input type="number" class="form-control value" ng-model="rule.value">								
+								<input type="number" class="form-control value" ng-model="rule.value" required>								
 								
 								<p>then</p>
 								
-								<select class="form-control" ng-model="rule.action">
+								<select class="form-control" ng-model="rule.action" required>
 									<option>Email</option>
 									<option selected>No Action</option>									
 								</select>

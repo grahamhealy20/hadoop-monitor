@@ -35,20 +35,24 @@ public class MRBenchController {
 	// POST /mrbench/
 	@RequestMapping("/mrbench")
 	public @ResponseBody Callable<MRBenchmarkResult> mrBenchAsync(String id, int numRuns) throws Exception {
-		System.out.println("in controller");
+		
+		// Validate inputs
+		if(mrRequestIsValid(id, numRuns) == true) {
+			MRBenchmarkResult result = benchmarkMRBenchAsync(id, numRuns);
+			benchmarkResultService.addBenchmarkResult(result);
 
-		MRBenchmarkResult result = benchmarkMRBenchAsync(id, numRuns);
-		benchmarkResultService.addBenchmarkResult(result);
+			return new Callable<MRBenchmarkResult>() {
 
-		return new Callable<MRBenchmarkResult>() {
+				@Override
+				public MRBenchmarkResult call() throws Exception {
+					// TODO Auto-generated method stub
+					return result;
+				}
 
-			@Override
-			public MRBenchmarkResult call() throws Exception {
-				// TODO Auto-generated method stub
-				return result;
-			}
-
-		};
+			};
+		} else {
+			throw new IllegalArgumentException("Invalid request");
+		}
 	}
 	
 	// GET /benchmarks/{id}
@@ -95,6 +99,14 @@ public class MRBenchController {
 		result.setClusterName(cluster.getName());
 		result.setClusterId(cluster.getId());
 		return result;
+	}
+	
+	private boolean mrRequestIsValid(String id, int numRuns) {
+		if(id != null && id.length() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	// === EXCEPTION HANDLING === //
