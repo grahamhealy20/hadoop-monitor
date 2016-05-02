@@ -113,13 +113,6 @@
 		    <artifactId>spring-security-taglibs</artifactId>
 			<version>4.0.3.RELEASE</version>
 		</dependency>
-		
-		<!-- Spring Test -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>4.2.3.RELEASE</version>
-		</dependency>
 
 		<!-- Jackson JSON Mapper -->
 		<!--  <dependency>

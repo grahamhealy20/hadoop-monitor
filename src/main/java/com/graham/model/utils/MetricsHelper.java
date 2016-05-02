@@ -15,12 +15,14 @@ import org.mortbay.log.Log;
 import com.graham.model.Alert;
 import com.graham.model.Column;
 import com.graham.model.Layout;
+import com.graham.model.LayoutLocation;
 import com.graham.model.LayoutMetric;
 import com.graham.model.Metric;
 import com.graham.model.Row;
 import com.graham.model.Rule;
 
 public class MetricsHelper {
+	
 	// Use reflection to parse through an object and extract metrics from given rules
 	public static List<LayoutMetric> parseMetrics(Object o, Layout layout) throws IllegalAccessException {
 		List<LayoutMetric> layoutMetrics = new ArrayList<LayoutMetric>();
@@ -48,8 +50,10 @@ public class MetricsHelper {
 
 						//Check if layout exists, if not null add to list to be returned
 						Metric m = isInLayout(pair.getKey(), layout);
-						if(m != null) {
-							layoutMetrics.add(new LayoutMetric(m, pair.getValue().toString()));
+						//Get layout location
+						LayoutLocation ll = getLocation(pair.getKey(), layout);
+						if(m != null && ll != null) {
+							layoutMetrics.add(new LayoutMetric(m, pair.getValue().toString(), ll.getRow(), ll.getCol()));
 						}
 					}
 				}
@@ -72,4 +76,17 @@ public class MetricsHelper {
 		}
 		return null;
 	}
+	
+	private static LayoutLocation getLocation(String key, Layout layout) {
+		
+		for(int i = 0; i < layout.getRows().size(); i++) {
+			for(int j = 0; j < layout.getRows().get(i).getCols().size(); j++) {
+				if(layout.getRows().get(i).getCols().get(j).getMetric().getKey().equals(key)) {
+					return new LayoutLocation(i, j);
+			}
+		}
+	}
+		return null;
 }
+}
+

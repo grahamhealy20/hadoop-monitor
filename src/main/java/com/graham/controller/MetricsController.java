@@ -78,16 +78,16 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);			
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}
 
-	@Scheduled(fixedDelay = 2000)
+	@Scheduled(fixedDelay = 5000)
 	public void getLayoutMetrics() throws IllegalAccessException {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();
-
+		
 		for (Cluster cluster : clusters) {
 			try {
 				// Get metrics
@@ -96,11 +96,12 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				// Process into small list of metrics
 				List<LayoutMetric> metricList = MetricsHelper.parseMetrics(metrics, cluster.getLayout());
 				if(metricList.size() > 0) {
+					Log.info("ROW: " + metricList.get(0).getRow());
 					this.messagingTemplate.convertAndSend("/data/layout/" + cluster.getId(), metricList);
 				}										
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}

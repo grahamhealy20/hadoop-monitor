@@ -8,8 +8,7 @@ import org.apache.hadoop.net.ConnectTimeoutException;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
 
 import com.graham.config.MvcConfig;
 import com.graham.model.Cluster;

@@ -17,6 +17,16 @@
 							<label for="name"> Name</label>
 							 <input type="text" class="form-control" id="name" placeholder="CPU" ng-model="metric.name" required>
 						</div>
+						
+						<div class="form-group">
+							<label for="unit"> Unit</label>
+							<input type="text" class="form-control" id="unit" placeholder="Mb" ng-model="metric.unit" required>
+						</div>
+						
+						<div class="form-group">
+							<label for="maxValue"> Max Value</label>
+							<input type="text" class="form-control" id="maxValue" placeholder="Mb" ng-model="metric.maxValue" required>
+						</div>
 
 						<a ng-click="addMetric(metric)" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  Add Metric</a>
 					</div>
@@ -55,6 +65,8 @@
 							<tr class="metric" ng-repeat="metric in metrics | filter:query | orderBy: 'name' ">
 								<td>{{metric.key}}</td>
 								<td>{{metric.name}}</td>
+								<td>{{metric.unit}}</td>
+								<td>{{metric.maxValue}}</td>
 								<!-- Option Links-->
 								<td>
 									<a class="btn btn-danger btn-sm pull-right" ng-href="" ng-click="deleteMetric($index, metric)"><i class="fa fa-trash"> </i> Delete</a>									 

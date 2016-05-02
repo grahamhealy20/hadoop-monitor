@@ -107,9 +107,6 @@
 	    			<div class="col-md-2">
 	    				<select class="form-control" ng-show="metrics.length" ng-options="metric as metric.name for metric in metrics" ng-model="selectedMetric"></select>
 	    			</div>
-					<div class="col-md-2">
-	    				<input type="number" placeholder="Max value" class="form-control" value="100" ng-model="limit">
-	    			</div>
 	    			<div class="col-md-12">
 	    				<div ng-repeat="row in cluster.layout.rows" class="layout-row">
 	    					<h4>Row</h4>

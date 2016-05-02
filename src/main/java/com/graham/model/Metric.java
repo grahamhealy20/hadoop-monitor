@@ -4,14 +4,18 @@ public class Metric {
 	private String id;
 	private String key;
 	private String name;
+	private String unit;
+	private String maxValue;
 	
 	public Metric() {
 		
 	}
 	
-	public Metric(String key, String name) {
+	public Metric(String key, String name, String unit, String maxValue) {
 		this.key = key;
 		this.name = name;
+		this.unit = unit;
+		this.maxValue = maxValue;
 	}
 
 	public String getId() {
@@ -29,4 +33,14 @@ public class Metric {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public String getMaxValue() {
+		return maxValue;
+	}
+	
+	
 }

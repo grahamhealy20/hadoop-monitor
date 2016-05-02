@@ -16,10 +16,11 @@ angular.module('admin').controller('SettingsCtrl', function (MonitorService, $sc
 	}           
 
 	// Code to remove a cluster
-	$scope.deleteMetric = function (index, metric) {
+	$scope.deleteMetric = function (metric) {
 		MonitorService.deleteMetric(metric, function (data) {
 			console.log("Deleting index: " + index);
 			if(data.status == 200) {
+				var index = $scope.metrics.indexOf(metric);
 				$scope.metrics.splice(index, 1);
 				handleSuccess("Metric successfully deleted");
 			}

@@ -4,6 +4,8 @@ package com.graham.model;
 public class LayoutMetric {
 	Metric metric;
 	String currentValue;
+	int row;
+	int col;
 		
 	public Metric getMetric() {
 		return metric;
@@ -20,8 +22,22 @@ public class LayoutMetric {
 		this.currentValue = currentValue;
 	}
 
-	public LayoutMetric(Metric metric, String value) {
+	public int getRow() {
+		return row;
+	}
+	public void setRow(int row) {
+		this.row = row;
+	}
+	public int getCol() {
+		return col;
+	}
+	public void setCol(int col) {
+		this.col = col;
+	}
+	public LayoutMetric(Metric metric, String value, int row, int col) {
 		this.metric = metric;
 		this.currentValue  = value;
+		this.col = col;
+		this.row = row;
 	}
 }

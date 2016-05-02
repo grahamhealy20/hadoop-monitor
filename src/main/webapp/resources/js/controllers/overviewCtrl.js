@@ -18,54 +18,37 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 		console.log("initing");
 		//Init websocket
 		connect($scope.cluster.id, function(data) {
-			console.log("data");
 			//console.log(data);
-			$scope.prevMetrics = $scope.metrics;
-			$scope.metrics = data.beans;
-			
-			// Loop through array and check each key value 
-			for(var i = 0; i < $scope.metrics.length; i++) {
-				angular.forEach($scope.metrics[i], function(value, key) {
-					
-				});
-			}
-
-			$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
-			$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
-
-			var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-			var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-
-			var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
-			var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
-
-			//Set chart data
-			$scope.dataStorage = [capacityFree, capacityUsed];
+//			$scope.prevMetrics = $scope.metrics;
+//			$scope.metrics = data.beans;
+//		
+//			$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
+//			$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
+//
+//			var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+//			var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+//
+//			var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
+//			var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
+//
+//			//Set chart data
+//			$scope.dataStorage = [capacityFree, capacityUsed];
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
 
 		}, function(data) {
 			var metrics = data;
-			for(var i = 0; i < metrics.length; i++) {
-				findPosition(metrics[i].metric.key);
+			// Update data
+			for(var i = 0; i < data.length; i++) {
+				var update = data[i];
+				console.log(update);
+				console.log($scope.cluster.layout.rows[update.row].cols[update.col]);
+				$scope.cluster.layout.rows[update.row].cols[update.col].previousValue = $scope.cluster.layout.rows[update.row].cols[update.col].currentValue;
+				$scope.cluster.layout.rows[update.row].cols[update.col].currentValue = update.currentValue;
 			}
-			// Match up data to the layout
 			
 			
-			console.log(data);
+			
 		}, handleError);
-		
-		
-		// Update a metric in the layout
-		function findPosition(metric) {
-			for(var i = 0; i < $scope.cluster.layout.rows; j++) {
-				for(var j = 0; j < $scope.cluster.layout.rows[i].cols.length; j++) {
-					if($scope.cluster.layout.rows[i].cols[j].metric.key == metric) {
-						console.log("metric found on layout");
-					}
-				}
-			}
-		}
-
 	
 	},
 	handleError);
@@ -117,6 +100,19 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			return "lightcoral";
 		} else {
 			return "lightblue";
+		}
+	}
+	
+	// Parse the value if it is a percentage
+	$scope.processMetric = function(metric, value) {
+		if(value == null) {
+			return;
+		} else {
+			if(metric.unit == "%") {
+				return value * 100;
+			} else {
+				return value;
+			}
 		}
 	}
 

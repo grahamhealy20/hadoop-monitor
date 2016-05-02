@@ -7,18 +7,17 @@
 	<!--  Dynamic layout container -->
 		<div class="row" ng-repeat="row in cluster.layout.rows">
 			
-			
 			<div ng-repeat="col in row.cols" class="col-md-4">
 				<div class="panel panel-default">
-					<div class="meter" ng-style="{backgroundColor: getMetricColour((metrics[5].SystemLoadAverage * 100)), width: setWidth((metrics[5].SystemLoadAverage * 100), 100)}"></div>
+					<div class="meter" ng-style="{backgroundColor: getMetricColour(processMetric(col.metric, col.currentValue)), width: setWidth(processMetric(col.metric, col.currentValue), col.metric.maxValue)}"></div>
 	                <div class="panel-body">
 	                    <div class="pull-left">
 	                    	<h3>{{col.metric.name}}</h3>
-		                    <h1>{{metrics[5].SystemLoadAverage * 100 | number:0}} %</h1>
+		                    <h1>{{ processMetric(col.metric, col.currentValue) | number:0 }} {{col.metric.unit}}</h1>
 		                </div>
 		                <div class="pull-right">
-		                	<i ng-class="getCarat(metrics[5].SystemLoadAverage, prevMetrics[5].SystemLoadAverage)"></i>
-		                    <h3>{{(prevMetrics[5].SystemLoadAverage  * 100 | number:0 )}} %</h3>
+		                	<i ng-class="getCarat(col.currentValue, col.previousValue)"></i>
+		                    <h3>{{ processMetric(col.metric, col.previousValue) | number:0 }} {{col.metric.unit}}</h3>
 		                </div>
 	                </div>
 				</div>
