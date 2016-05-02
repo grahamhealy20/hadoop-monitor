@@ -20,7 +20,7 @@
 						
 						<div class="form-group">
 							<label for="unit"> Unit</label>
-							<input type="text" class="form-control" id="unit" placeholder="Mb" ng-model="metric.unit" required>
+							<input type="text" class="form-control" id="unit" placeholder="Mb" ng-model="metric.unit">
 						</div>
 						
 						<div class="form-group">
@@ -69,7 +69,7 @@
 								<td>{{metric.maxValue}}</td>
 								<!-- Option Links-->
 								<td>
-									<a class="btn btn-danger btn-sm pull-right" ng-href="" ng-click="deleteMetric($index, metric)"><i class="fa fa-trash"> </i> Delete</a>									 
+									<a class="btn btn-danger btn-sm pull-right" ng-href="" ng-click="deleteMetric(metric)"><i class="fa fa-trash"> </i> Delete</a>									 
 								</td>
 							</tr>
 							

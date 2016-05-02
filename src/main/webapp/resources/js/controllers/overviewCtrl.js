@@ -15,24 +15,23 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 
 		//Set cluster object
 		$scope.cluster = data.data;
-		console.log("initing");
 		//Init websocket
 		connect($scope.cluster.id, function(data) {
-			//console.log(data);
-//			$scope.prevMetrics = $scope.metrics;
-//			$scope.metrics = data.beans;
-//		
-//			$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
-//			$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
-//
-//			var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-//			var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-//
-//			var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
-//			var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
-//
-//			//Set chart data
-//			$scope.dataStorage = [capacityFree, capacityUsed];
+			console.log(data);
+			$scope.prevMetrics = $scope.metrics;
+			$scope.metrics = data.beans;
+		
+			$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
+			$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
+
+			var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+			var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+
+			var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
+			var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
+
+			//Set chart data
+			$scope.dataStorage = [capacityFree, capacityUsed];
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
 
 		}, function(data) {

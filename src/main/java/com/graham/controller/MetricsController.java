@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -83,7 +82,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 		}
 	}
 
-	@Scheduled(fixedDelay = 5000)
+	@Scheduled(fixedDelay = 1500)
 	public void getLayoutMetrics() throws IllegalAccessException {
 		// Grab clusters
 		ArrayList<Cluster> clusters = (ArrayList<Cluster>) clusterService.listClusters();

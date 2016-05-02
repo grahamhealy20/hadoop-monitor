@@ -4,13 +4,11 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.mortbay.log.Log;
 
@@ -25,13 +23,13 @@ public class RulesParser {
 		// Init alert list
 		List<Alert> alerts = new ArrayList<Alert>();
 			
-		Class c = o.getClass();
+		Class<?> c = o.getClass();
 		Field[] fields = c.getDeclaredFields();
 		//Log.info("FIELDS LENGTH " + fields.length);
 		// Loop through fields
 		for(Field field : fields) {
-			String name = field.getName();
-			String type = field.getType().toString();
+			//String name = field.getName();
+			//String type = field.getType().toString();
 			//Log.info("METRIC: " + name);
 			
 			// Check if an array

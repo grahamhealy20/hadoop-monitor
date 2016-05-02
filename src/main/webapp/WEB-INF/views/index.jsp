@@ -95,7 +95,7 @@
         ////////// Error Handler //////////
         function handleError(response) {
         	console.log(response);
-            $('.error-content').text(response.data.message);
+            $('.error-content').text(response.statusText);
         	$('.alert-danger').slideDown(250);
         	
         	//Close alert box after 2 seconds

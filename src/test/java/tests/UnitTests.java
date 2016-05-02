@@ -6,14 +6,10 @@ import java.io.IOException;
 
 import org.apache.hadoop.net.ConnectTimeoutException;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.springframework.beans.factory.annotation.Autowired;
 
-
-import com.graham.config.MvcConfig;
 import com.graham.model.Cluster;
+import com.graham.model.Metric;
 import com.graham.model.Rule;
-import com.graham.model.dbaccess.ClusterService;
 import com.graham.model.utils.ValidationHelper;
 
 public class UnitTests {
@@ -115,11 +111,23 @@ public class UnitTests {
 	@Test
 	public void testRuleCreation() {
 		Rule r = new Rule("MemMaxM", "MaxMemory", "Equals", 100, "Email");
+		assertEquals(true, r != null);
 	}
 	
 	// Test rule, invalid data
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidRuleCreation() {
 		Rule r = new Rule("", "", "", 0, "");
+	}
+	
+	@Test
+	public void testMetricValidation() {
+		Metric m = new Metric("TestMetric", "This is a test metric", "%", "100");
+		assertEquals(true, m != null);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidMetricValidation() {
+		Metric m = new Metric("", "", "%", "");
 	}
 }

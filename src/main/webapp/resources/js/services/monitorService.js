@@ -126,6 +126,7 @@ angular.module('admin').service('MonitorService', function($http) {
 	}
 	
 	this.deleteMetric = function(data, successCallback, errorCallback) {
+		console.log(data);
 		$http.post(BASE_URL + "/settings/metric/delete", data).then(successCallback, errorCallback);
 	}
 });

@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.graham.model.dbaccess.MetricsService;
 import com.graham.model.Metric;
+import com.graham.model.dbaccess.MetricsService;
+import com.graham.model.utils.ValidationHelper;
 
 /* 
  * Represents general settings for the application
@@ -36,11 +37,15 @@ public class SettingsController {
 	
 	@RequestMapping( value = "/metric", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<Metric> addMetric(@RequestBody Metric metric) {
-		Metric m = metricService.addMetric(metric); 
-		if(m.getId() != null) {
-			return new ResponseEntity<Metric>(metric, HttpStatus.CREATED);
-		}
-		else {
+		if(isValid(metric)) {
+			Metric m = metricService.addMetric(metric); 
+			if(m.getId() != null) {
+				return new ResponseEntity<Metric>(metric, HttpStatus.CREATED);
+			}
+			else {
+				return new ResponseEntity<Metric>(metric, HttpStatus.BAD_REQUEST);
+			}
+		} else {
 			return new ResponseEntity<Metric>(metric, HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -55,5 +60,15 @@ public class SettingsController {
 	public ResponseEntity<Metric> editMetric(@RequestBody Metric metric) {		
 		metricService.updateMetric(metric);
 		return new ResponseEntity<Metric>(metric, HttpStatus.OK);
+	}
+	
+	
+	// ===== PRIVATE METHODS ===== //
+	private boolean isValid(Metric m) {
+		if(ValidationHelper.required(m.getKey()) == true && ValidationHelper.required(m.getName()) == true && ValidationHelper.required(m.getMaxValue()) == true){
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

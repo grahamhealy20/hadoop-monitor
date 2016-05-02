@@ -39,7 +39,7 @@
                         	<c:url value="/login" var="loginUrl"/>
                             <form class="loginForm" action="${loginUrl}" method="post">
                             	<c:if test="${param.error != null}">
-									<p>
+									<p class="error" style="color:red; text-align: center">
 										Invalid username and password.
 									</p>
 								</c:if>
@@ -176,6 +176,10 @@
         
         label.error {
             color: red;
+        }
+        
+        p .error {
+        	color: red;
         }
         
         @-webkit-keyframes fadeDown {
