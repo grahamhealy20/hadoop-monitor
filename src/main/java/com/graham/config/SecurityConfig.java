@@ -14,7 +14,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void cofigureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth
-			.inMemoryAuthentication().withUser("user@ittd.ie").password("password").roles("USER");
+			.inMemoryAuthentication().withUser("grahamh220@gmail.com").password("password").roles("USER");
 	}
 	
 	// Web Application Security Configuration
