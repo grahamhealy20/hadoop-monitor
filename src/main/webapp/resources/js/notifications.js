@@ -10,7 +10,7 @@ function connect() {
 		stompClient.subscribe("/notification/notifications/userid", function(message){
 
 			var msg = JSON.parse(message.body);
-			console.log(msg);
+			//console.log(msg);
 
 			
 		});

@@ -33,14 +33,15 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			//Set chart data
 			$scope.dataStorage = [capacityFree, capacityUsed];
 			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
+			console.log($scope.blockData);
 
 		}, function(data) {
 			var metrics = data;
 			// Update data
 			for(var i = 0; i < data.length; i++) {
 				var update = data[i];
-				console.log(update);
-				console.log($scope.cluster.layout.rows[update.row].cols[update.col]);
+				//console.log(update);
+				//console.log($scope.cluster.layout.rows[update.row].cols[update.col]);
 				$scope.cluster.layout.rows[update.row].cols[update.col].previousValue = $scope.cluster.layout.rows[update.row].cols[update.col].currentValue;
 				$scope.cluster.layout.rows[update.row].cols[update.col].currentValue = update.currentValue;
 			}
@@ -160,5 +161,13 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			$scope.mrbenchLabels.push($filter('date')(value.date));
 		});            	
 	}, handleError);
+	
+	
+	
+	// Controller - destructor, on leave disconnect from websocket
+	$scope.$on("$destroy", function() {
+		disconnectMetricWebsocket();
+		
+	});
 
 });

@@ -18,8 +18,8 @@ function connect(clientId, metricsSuccessCallback, layoutSuccessCallback, errorC
 		
 		stompClient.subscribe("/data/layout/" + clientId, function(message){
 			var msg = JSON.parse(message.body);
-			console.log("Success");
-			console.log(message);
+			//console.log("Success");
+			//console.log(message);
 		
 			layoutSuccessCallback(msg);			
 		}, function(error) {
@@ -51,11 +51,9 @@ function connectAlerts(callback) {
 	}, 1000);
 }
 
-function disconnect() {
+function disconnectMetricWebsocket() {
 	if (stompClient != null) {
 		stompClient.disconnect();
-		connected = false;
 	}
-	setConnected(false);
 	console.log("Disconnected");
 }

@@ -9,7 +9,6 @@ angular.module('admin').controller('NavbarCtrl', function ($scope, $interval) {
 	
 	//Setup alerts websocket
 	connectAlerts(function(data) {
-		console.log("Alert received");
 		handleAlert(data);
 		$scope.alerts.push(data);
 	});
