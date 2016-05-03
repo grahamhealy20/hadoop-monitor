@@ -35,6 +35,12 @@ angular.module('admin').service('MonitorService', function($http) {
 		$http.get(BASE_URL + "/cluster/log/datanode/" + id + "/tail").then(successCallback, errorCallback);
 	};
 	
+	/////// GET METRIC ///////
+	
+	this.getMetricFromKey = function(id, key, successCallback, errorCallback) {
+		$http.get(BASE_URL + "/metrics/" + id + "/" + key).then(successCallback, errorCallback);
+	}
+	
 	/////// RULES /////////
 	
 	this.getRules = function(id, successCallback, errorCallback) {

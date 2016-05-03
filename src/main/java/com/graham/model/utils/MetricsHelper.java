@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.mortbay.log.Log;
+
 import com.graham.model.Column;
 import com.graham.model.Layout;
 import com.graham.model.LayoutLocation;
@@ -83,5 +85,43 @@ public class MetricsHelper {
 	}
 		return null;
 }
+
+	public static String getMetric(Object o, String key) throws IllegalArgumentException, IllegalAccessException {
+		String value = "";
+		Class<?> c = o.getClass();
+		Field[] fields = c.getDeclaredFields();
+
+		// Loop through fields
+		for(Field field : fields) {			
+
+			// Check if an array
+			if(field.getType().isArray()) {
+
+				// If the object is an array - loop
+				Object obj = field.get(o);
+				int length = Array.getLength(obj);
+				
+				for(int i = 0; i < length; i++) {
+					// Convert to hashmap
+					LinkedHashMap<String, Object> item = (LinkedHashMap<String, Object>) Array.get(obj, i);					
+
+					// Iterate over hashmap
+					Iterator<Entry<String, Object>> it = item.entrySet().iterator();
+					while(it.hasNext()) {
+						Map.Entry<String, Object> pair = (Map.Entry<String, Object>)it.next();
+						
+						// Check if metric matches key
+						if(pair.getKey().equals(key)) {
+							Log.info(pair.getKey());
+							Log.info(pair.getValue().toString());
+							value = pair.getValue().toString();
+							Log.info(value);
+						}
+					}
+				}
+			}
+		}
+		return value;
+	}
 }
 

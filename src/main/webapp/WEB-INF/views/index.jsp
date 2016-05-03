@@ -51,6 +51,7 @@
 	<script src="resources/js/jquery-2.2.0.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 	<script src="resources/js/Chart.min.js"></script>
+	<script src="resources/js/highcharts.js"></script>
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
@@ -125,6 +126,7 @@
         		$('.alert-success').slideUp(250);
         	}, 5000);
         }
+        
         
         // Close down alert
         $('.close').click(function(e) {

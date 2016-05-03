@@ -6,42 +6,74 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 	$scope.cpuLoadLabels = ['Time'];
 	$scope.storageLabels = ["Free GB", "Used GB"];
 	$scope.blockLabels = ["Replicated", "Unreplicated"];
-
+	$scope.setUp = false;
 	$scope.message = "This is a test message from angular backend";
 
 	$scope.format = 'M/d/yy h:mm:ss a';
 
+	
+	$scope.subId;
+	
 	MonitorService.getCluster($routeParams.id, function (data) { //Success handler
-
 		//Set cluster object
 		$scope.cluster = data.data;
-		//Init websocket
-		connect($scope.cluster.id, function(data) {
-			console.log(data);
-			$scope.prevMetrics = $scope.metrics;
-			$scope.metrics = data.beans;
 		
-			$scope.freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
-			$scope.usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
+		$scope.buildReplicationGraph();
+		$scope.buildStorageGraph();
+		$scope.buildHeapGraph();
+	
+		//Init websocket
+		connect($scope.cluster.id, function(data, sub) {
+		
+			$scope.metrics = data.beans;
+			console.log($scope.metrics);
+			
+			var freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
+			var usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
 
 			var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
 			var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-
+			
 			var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
 			var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
+			
+			$scope.unReplicated = $scope.metrics[30].UnderReplicatedBlocks;
+			$scope.replicatedBlocks = $scope.metrics[30].BlocksTotal - $scope.unReplicated;
 
-			//Set chart data
-			$scope.dataStorage = [capacityFree, capacityUsed];
-			$scope.blockData = [blocksReplicated, blocksUnderReplicated];
-			console.log($scope.blockData);
+			
+			
+			
+			$('.heapBreakdown').highcharts({
+				chart: {
+        			type: 'pie'
+        		},
+        		title: {
+        			text: ''
+        		},
+        		series: [
+        		         {
+        		        	 data: [["Used", usedHeap], ["Unused", freeHeap]],
+        		        	 innerSize: '50%'
+        		         }
+        		],
+        		plotOptions: {
+        			pie: {
+        				animation: false
+        			}
+        			
+        		},
+        		legend: {
+        			align: 'left',
+        			layout: 'vertical'
+        		}
+        	});
 
 		}, function(data) {
 			var metrics = data;
 			// Update data
 			for(var i = 0; i < data.length; i++) {
 				var update = data[i];
-				//console.log(update);
-				//console.log($scope.cluster.layout.rows[update.row].cols[update.col]);
+				
 				$scope.cluster.layout.rows[update.row].cols[update.col].previousValue = $scope.cluster.layout.rows[update.row].cols[update.col].currentValue;
 				$scope.cluster.layout.rows[update.row].cols[update.col].currentValue = update.currentValue;
 			}
@@ -166,8 +198,141 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 	
 	// Controller - destructor, on leave disconnect from websocket
 	$scope.$on("$destroy", function() {
-		disconnectMetricWebsocket();
+		unsubscribe($scope.subId);
+		//disconnectMetricWebsocket();
+		$scope.setUp = false;
 		
 	});
+	
+	
+	$scope.buildReplicationGraph = function() {	
+		var totalBlocks;
+		var underReplicatedBlocks;
+		
+		var replicatedBlocks;
+		
+		// Build graphs
+		MonitorService.getMetricFromKey($scope.cluster.id, "BlocksTotal", function(response) {
+			
+			totalBlocks = response.data;
+			MonitorService.getMetricFromKey($scope.cluster.id, "UnderReplicatedBlocks", function(response) {
+				underReplicatedBlocks = response.data;
+				var replicatedBlocks = parseFloat(totalBlocks) - parseFloat(underReplicatedBlocks);
+				
+				$('.blockReplicationChart').highcharts({
+		    		chart: {
+		    			type: 'pie'
+		    		},
+		    		title: {
+		    			text: ''
+		    		},
+		    		series: [
+		    		         {
+		    		        	 data: [["Unreplicated", underReplicatedBlocks], ["Replicated", replicatedBlocks]],
+		    		        	 innerSize: '50%'
+		    		         }
+		    		],
+		    		plotOptions: {
+		    			pie: {
+		    				animation: false
+		    			}
+		    			
+		    		},
+		    		legend: {
+		    			align: 'left',
+		    			layout: 'vertical'
+		    		}
+		    	});
+				
+				
+			}, handleError);
+			
+			
+		}, handleError);
+		
+	}
+	
+	$scope.buildStorageGraph = function() {	
+		var capacityFree;
+		var capacityUsed;
+		
+		// Build graphs
+		MonitorService.getMetricFromKey($scope.cluster.id, "CapacityRemainingGB", function(response) {
+			capacityFree = response.data;
+			MonitorService.getMetricFromKey($scope.cluster.id, "CapacityUsedGB", function(response) {
+				capacityUsed = response.data;
+				
+				$('.storageChart').highcharts({
+					chart: {
+	        			type: 'pie'
+	        		},
+	        		title: {
+	        			text: ''
+	        		},
+	        		series: [
+	        		         {
+	        		        	 data: [["Used", capacityUsed], ["Unused", capacityFree]],
+	        		        	 innerSize: '50%'
+	        		         }
+	        		],
+	        		plotOptions: {
+	        			pie: {
+	        				animation: false
+	        			}
+	        			
+	        		},
+	        		legend: {
+	        			align: 'left',
+	        			layout: 'vertical'
+	        		}
+	        	});	
+			}, handleError);
+			
+			
+		}, handleError);
+		
+	}
+	
+	$scope.buildHeapGraph = function() {	
+		var heapTotal
+		var heapUsed;
+		
+		// Build graphs
+		MonitorService.getMetricFromKey($scope.cluster.id, "MemMaxHeapM", function(response) {
+			heapTotal = response.data;
+			MonitorService.getMetricFromKey($scope.cluster.id, "MemHeapUsedM", function(response) {
+				heapUsed = response.data;
+				var freeHeap = heapTotal - heapUsed;
+				
+				$('.heapBreakdown').highcharts({
+					chart: {
+	        			type: 'pie'
+	        		},
+	        		title: {
+	        			text: ''
+	        		},
+	        		series: [
+	        		         {
+	        		        	 data: [["Used", heapUsed], ["Free", freeHeap]],
+	        		        	 innerSize: '50%'
+	        		         }
+	        		],
+	        		plotOptions: {
+	        			pie: {
+	        				animation: false
+	        			}
+	        			
+	        		},
+	        		legend: {
+	        			align: 'left',
+	        			layout: 'vertical'
+	        		}
+	        	});	
+			}, handleError);
+			
+			
+		}, handleError);
+		
+	}
 
 });

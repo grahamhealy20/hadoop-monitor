@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -15,7 +17,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.graham.model.Alert;
@@ -28,7 +34,7 @@ import com.graham.model.utils.MetricsHelper;
 import com.graham.model.utils.RulesParser;
 
 // Controller to handle metrics
-@Service
+@Controller
 public class MetricsController implements ApplicationListener<BrokerAvailabilityEvent>{
 
 	@Autowired
@@ -126,6 +132,25 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 			}
 		}
 	}
+	
+	
+	//Chart functions
+	// Get a metric value given a key
+	@RequestMapping("/metrics/{id}/{key}")
+	public @ResponseBody ResponseEntity<String> getMetric(@PathVariable("id") String id, @PathVariable("key") String key) throws IllegalArgumentException, IllegalAccessException {
+		Cluster cluster = clusterService.getCluster(id);
+		
+		// Get metrics
+		Metrics metrics = http.downloadJmxMetrics(cluster.getIpAddress());
+		
+		// Get metric from object
+		String value = MetricsHelper.getMetric(metrics, key);
+		if(value != null) {
+			return new ResponseEntity<>(value, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(key, HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	private boolean hasRecentAlert(Alert alert, long recent) {
 
@@ -163,4 +188,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	public void onApplicationEvent(BrokerAvailabilityEvent arg0) {
 		// TODO Auto-generated method stub
 	}
+	
+	
 }

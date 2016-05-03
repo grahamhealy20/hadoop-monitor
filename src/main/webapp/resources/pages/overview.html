@@ -81,32 +81,45 @@
 			</div>
 		</div>    
 		
+		
+	<!-- CHARTS -->	
     <div class="row">
+    
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Block Replication</h3>
                     <div>
-					<canvas id="doughnut" class="chart chart-doughnut" chart-data="blockData"
-					  	chart-labels="blockLabels">
-				</canvas> 
+                    	<div class="blockReplicationChart"></div>
                     </div>
                 </div>
             </div>
         </div> <!-- col-md-4 -->
         
-                <div class="col-md-4">
+        <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Storage</h3>
                     <div>
-			            <canvas id="doughnut" class="chart chart-doughnut"
-						  chart-data="dataStorage" chart-labels="storageLabels">
-						</canvas> 
+                    	<div class="storageChart"></div>
                     </div>
                 </div>
             </div>
         </div> <!-- col-md-4 --->
+        
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Storage</h3>
+                    <div>
+                    	<div class="heapBreakdown"></div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col-md-4 --->
+        
+        
+       
 
     </div> <!-- row -->
 
