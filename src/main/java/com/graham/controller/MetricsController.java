@@ -12,6 +12,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -73,9 +76,9 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 								// Send email
 								Log.info("EMAIL EMAIL EMAIL");
 								
-					
 								String from = "graham.y4.project@gmail.com";
 								String to = "grahamh220@gmail.com";
+								Log.info("Email: " + to );
 								String subject = "Hadoop - Alert";
 								String body = "Alert! " + alert.getName() + " is " + alert.getValue();
 								

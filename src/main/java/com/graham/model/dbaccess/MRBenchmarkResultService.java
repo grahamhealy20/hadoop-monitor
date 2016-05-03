@@ -58,7 +58,7 @@ public class MRBenchmarkResultService {
 	}
 	
 	public List<MRBenchmarkResult> listLastFiveClusterBenchmarkResult(String clusterId) {
-		Query q = new Query().with(new Sort(Sort.Direction.ASC, "date"));
+		Query q = new Query().with(new Sort(Sort.Direction.DESC, "date"));
 		q.limit(5);
 		q.addCriteria(Criteria.where("clusterId").is(clusterId));
 		return mongoTemplate.find(q, MRBenchmarkResult.class, COLLECTION_NAME);

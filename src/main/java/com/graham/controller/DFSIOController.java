@@ -52,8 +52,8 @@ public class DFSIOController {
 			};
 			
 		} else {
-			throw new IllegalArgumentException("");
 		}
+			throw new IllegalArgumentException("");
 	}
 
 	// REST GET /benchmarks/
