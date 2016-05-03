@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +34,9 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 	@Autowired
 	private MessageSendingOperations<String> messagingTemplate;
 
+	@Autowired
+	private MailSender mailSender;
+	
 	private HttpHelper http = new HttpHelper();
 
 	private ArrayList<Alert> alertHistory = new ArrayList<Alert>();
@@ -67,6 +72,20 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 							if(alert.getAction().toLowerCase().equals("email")) {
 								// Send email
 								Log.info("EMAIL EMAIL EMAIL");
+								
+					
+								String from = "graham.y4.project@gmail.com";
+								String to = "grahamh220@gmail.com";
+								String subject = "Hadoop - Alert";
+								String body = "Alert! " + alert.getName() + " is " + alert.getValue();
+								
+								SimpleMailMessage message = new SimpleMailMessage();
+								message.setFrom(from);
+								message.setTo(to);
+								message.setSubject(subject);
+								message.setText(body);
+								mailSender.send(message);
+								
 							} else if (alert.getAction() == "rebalance") {
 								// Rebalance cluster
 							}

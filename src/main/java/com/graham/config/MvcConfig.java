@@ -5,6 +5,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -62,5 +65,20 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 		return new MongoTemplate(mongo(), Properties.getString("MvcConfig.mongoDatabase"));
 	}
 	
+	public @Bean MailSender mailSender() {
+		JavaMailSenderImpl mail = new JavaMailSenderImpl();
+		mail.setHost("smtp.gmail.com");
+		mail.setPort(587);
+		mail.setUsername("graham.y4.project@gmail.com");
+		mail.setPassword("passMay2016");
+		
+		java.util.Properties p = new java.util.Properties();
+		p.setProperty("mail.smtp.auth", "true");
+		p.setProperty("mail.smtp.starttls.enable", "true");
+		
+		mail.setJavaMailProperties(p);
+		
+		return mail;
+	}
 
 }

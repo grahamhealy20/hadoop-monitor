@@ -95,7 +95,7 @@
         ////////// Error Handler //////////
         function handleError(response) {
         	console.log(response);
-            $('.error-content').text(response.statusText);
+            $('.error-content').text(response.statusTextT<p ng-show="clusterForm.cluster.name.$error.required">Error</p>EnsuName);
         	$('.alert-danger').slideDown(250);
         	
         	//Close alert box after 2 seconds
