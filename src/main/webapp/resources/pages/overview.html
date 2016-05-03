@@ -4,25 +4,7 @@
 <div class="main container-fluid">
     <h1>Cluster Overview</h1>
 
-	<!--  Dynamic layout container -->
-		<div class="row" ng-repeat="row in cluster.layout.rows">
-			
-			<div ng-repeat="col in row.cols" class="col-md-4">
-				<div class="panel panel-default">
-					<div class="meter" ng-style="{backgroundColor: getMetricColour(processMetric(col.metric, col.currentValue)), width: setWidth(processMetric(col.metric, col.currentValue), col.metric.maxValue)}"></div>
-	                <div class="panel-body">
-	                    <div class="pull-left">
-	                    	<h3>{{col.metric.name}}</h3>
-		                    <h1>{{ processMetric(col.metric, col.currentValue) | number:0 }} {{col.metric.unit}}</h1>
-		                </div>
-		                <div class="pull-right">
-		                	<i ng-class="getCarat(col.currentValue, col.previousValue)"></i>
-		                    <h3>{{ processMetric(col.metric, col.previousValue) | number:0 }} {{col.metric.unit}}</h3>
-		                </div>
-	                </div>
-				</div>
-			</div>
-		</div>
+
 	
 	
     <!-- Top row -->
@@ -78,60 +60,80 @@
 
         </div>
     </div> <!-- row -->
+    
+	<!--  Dynamic layout container -->
+		<div class="row" ng-repeat="row in cluster.layout.rows">
+			
+			<div ng-repeat="col in row.cols" class="col-md-3">
+				<div class="panel panel-default">
+					<div class="meter" ng-style="{backgroundColor: getMetricColour(processMetric(col.metric, col.currentValue)), width: setWidth(processMetric(col.metric, col.currentValue), col.metric.maxValue)}"></div>
+	                <div class="panel-body">
+	                    <div class="pull-left">
+	                    	<h3>{{col.metric.name}}</h3>
+		                    <h1>{{ processMetric(col.metric, col.currentValue) | number:0 }} {{col.metric.unit}}</h1>
+		                </div>
+		                <div class="pull-right">
+		                	<i ng-class="getCarat(col.currentValue, col.previousValue)"></i>
+		                    <h3>{{ processMetric(col.metric, col.previousValue) | number:0 }} {{col.metric.unit}}</h3>
+		                </div>
+	                </div>
+				</div>
+			</div>
+		</div>    
 
-    <h2>JVM Metrics</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
-				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics[0].MemHeapUsedMem), width: setWidth(metrics[0].MemHeapUsedM, metrics[0].MemHeapMaxM)}"></div>
-                <div class="panel-body">
-                    <div class="pull-left">
-                    	<h3>Heap Usage</h3>
-	                    <h1>{{metrics[0].MemHeapUsedM | number:2}} Mb</h1>
-	                </div>
-	                <div class="pull-right">
-	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i>
-	                    <h3>{{prevMetrics[0].MemHeapUsedM | number:2}} Mb</h3>
-	                </div>
-                </div>
-            </div>
-        </div>
+<!--     <h2>JVM Metrics</h2> -->
+<!--     <div class="row"> -->
+<!--         <div class="col-md-4"> -->
+<!--             <div class="panel panel-default"> -->
+<!-- 				<div class="meter" ng-style="{backgroundColor: getMetricColour(metrics[0].MemHeapUsedMem), width: setWidth(metrics[0].MemHeapUsedM, metrics[0].MemHeapMaxM)}"></div> -->
+<!--                 <div class="panel-body"> -->
+<!--                     <div class="pull-left"> -->
+<!--                     	<h3>Heap Usage</h3> -->
+<!-- 	                    <h1>{{metrics[0].MemHeapUsedM | number:2}} Mb</h1> -->
+<!-- 	                </div> -->
+<!-- 	                <div class="pull-right"> -->
+<!-- 	                	<i ng-class="getCarat(metrics[0].MemHeapUsedM, prevMetrics[0].MemHeapUsedM)"></i> -->
+<!-- 	                    <h3>{{prevMetrics[0].MemHeapUsedM | number:2}} Mb</h3> -->
+<!-- 	                </div> -->
+<!--                 </div> -->
+<!--             </div> -->
+<!--         </div> -->
 
-        <div class="col-md-4">
-            <div class="panel panel-default">
-            	<div class="meter" ng-style="{backgroundColor: getMetricColour((metrics[5].SystemLoadAverage * 100)), width: setWidth((metrics[5].SystemLoadAverage * 100), 100)}"></div>
-                <div class="panel-body">
-                    <div class="pull-left">
-                    	<h3>CPU Load</h3>
-	                    <h1>{{metrics[5].SystemLoadAverage * 100 | number:0}} %</h1>
-	                </div>
-	                <div class="pull-right">
-	                	<i ng-class="getCarat(metrics[5].SystemLoadAverage, prevMetrics[5].SystemLoadAverage)"></i>
-	                    <h3>{{(prevMetrics[5].SystemLoadAverage  * 100 | number:0 )}} %</h3>
-	                </div>
-                </div>
-            </div>
-        </div>
+<!--         <div class="col-md-4"> -->
+<!--             <div class="panel panel-default"> -->
+<!--             	<div class="meter" ng-style="{backgroundColor: getMetricColour((metrics[5].SystemLoadAverage * 100)), width: setWidth((metrics[5].SystemLoadAverage * 100), 100)}"></div> -->
+<!--                 <div class="panel-body"> -->
+<!--                     <div class="pull-left"> -->
+<!--                     	<h3>CPU Load</h3> -->
+<!-- 	                    <h1>{{metrics[5].SystemLoadAverage * 100 | number:0}} %</h1> -->
+<!-- 	                </div> -->
+<!-- 	                <div class="pull-right"> -->
+<!-- 	                	<i ng-class="getCarat(metrics[5].SystemLoadAverage, prevMetrics[5].SystemLoadAverage)"></i> -->
+<!-- 	                    <h3>{{(prevMetrics[5].SystemLoadAverage  * 100 | number:0 )}} %</h3> -->
+<!-- 	                </div> -->
+<!--                 </div> -->
+<!--             </div> -->
+<!--         </div> -->
 
-        <div class="col-md-4">
-            <div class="panel panel-default">
-            <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics[26].NumOpenConnections * 10), width: setWidth(metrics[26].NumOpenConnections, 10)}"></div>
-                <div class="panel-body">
-					<div class="pull-left">
-                    	<h3>Open Connections</h3>
-	                    <h1>{{metrics[26].NumOpenConnections}} </h1>
-	                </div>
-	                <div class="pull-right">
-	                	<i ng-class="getCarat(metrics[26].NumOpenConnections, prevMetrics[26].NumOpenConnections)"></i>
-	                    <h3>{{prevMetrics[26].NumOpenConnections}} </h3>
-	                </div>
-                </div>
+<!--         <div class="col-md-4"> -->
+<!--             <div class="panel panel-default"> -->
+<!--             <div class="meter" ng-style="{backgroundColor: getMetricColour(metrics[26].NumOpenConnections * 10), width: setWidth(metrics[26].NumOpenConnections, 10)}"></div> -->
+<!--                 <div class="panel-body"> -->
+<!-- 					<div class="pull-left"> -->
+<!--                     	<h3>Open Connections</h3> -->
+<!-- 	                    <h1>{{metrics[26].NumOpenConnections}} </h1> -->
+<!-- 	                </div> -->
+<!-- 	                <div class="pull-right"> -->
+<!-- 	                	<i ng-class="getCarat(metrics[26].NumOpenConnections, prevMetrics[26].NumOpenConnections)"></i> -->
+<!-- 	                    <h3>{{prevMetrics[26].NumOpenConnections}} </h3> -->
+<!-- 	                </div> -->
+<!--                 </div> -->
 
                 
-            </div>
-        </div>
+<!--             </div> -->
+<!--         </div> -->
 
-    </div> <!-- row -->
+<!--     </div> row -->
 
     <h2>Hadoop Metrics</h2>
     <div class="row">

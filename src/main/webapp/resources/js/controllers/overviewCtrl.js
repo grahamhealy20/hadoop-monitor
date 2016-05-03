@@ -108,7 +108,7 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			return;
 		} else {
 			if(metric.unit == "%") {
-				return value * 100;
+				return value * 10;
 			} else {
 				return value;
 			}
