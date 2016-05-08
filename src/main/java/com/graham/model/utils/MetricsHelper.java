@@ -112,10 +112,7 @@ public class MetricsHelper {
 						
 						// Check if metric matches key
 						if(pair.getKey().equals(key)) {
-							Log.info(pair.getKey());
-							Log.info(pair.getValue().toString());
 							value = pair.getValue().toString();
-							Log.info(value);
 						}
 					}
 				}

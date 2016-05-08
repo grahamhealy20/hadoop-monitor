@@ -13,7 +13,7 @@ function connect(clientId, metricsSuccessCallback, layoutSuccessCallback, errorC
 	stompClient.connect('', '', function(frame) {
 		//Subscribe to realtime metrics
 		var subscription = stompClient.subscribe("/data/" + clientId, function(message){
-			//console.log(message);
+			console.log(message);
 			var msg = JSON.parse(message.body);
 			metricsSuccessCallback(msg, subscription);
 		}, errorCallback);

@@ -69,7 +69,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 					// If alert is not recent, do action
 					for(Alert alert : alerts) {
 						if(hasRecentAlert(alert, 60000) == false) {
-							Log.info("Adding new hist");
 							//Remove current hist alert and pop in new one							
 							alertHistory.add(alert);
 							cluster.getAlerts().add(alert);	
@@ -80,11 +79,9 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 							// Perform action
 							if(alert.getAction().toLowerCase().equals("email")) {
 								// Send email
-								Log.info("EMAIL EMAIL EMAIL");
 								
 								String from = "graham.y4.project@gmail.com";
 								String to = "grahamh220@gmail.com";
-								Log.info("Email: " + to );
 								String subject = "Hadoop - Alert";
 								String body = "Alert! " + alert.getName() + " is " + alert.getValue();
 								
@@ -95,8 +92,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 								message.setText(body);
 								mailSender.send(message);
 								
-							} else if (alert.getAction() == "rebalance") {
-								// Rebalance cluster
 							}
 						}
 					}														
@@ -105,7 +100,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				this.messagingTemplate.convertAndSend("/data/" + cluster.getId(), metrics);			
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
@@ -128,7 +123,7 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				}										
 			} catch (ResourceAccessException e) {
 				// TODO: handle exception
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
@@ -163,7 +158,6 @@ public class MetricsController implements ApplicationListener<BrokerAvailability
 				long currentAlertTime = alert.getTimestamp();
 				long previousAlertTime = previous.getTimestamp();			
 				long timeGap = currentAlertTime - previousAlertTime;			
-				//Log.info("Key: " + alert.getKey()+ " GAP Time: " + timeGap);
 
 				//Check if recent
 				if(timeGap < recent) {					

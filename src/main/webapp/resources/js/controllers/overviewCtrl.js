@@ -20,7 +20,7 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 		
 		$scope.buildReplicationGraph();
 		$scope.buildStorageGraph();
-		$scope.buildHeapGraph();
+		//$scope.buildHeapGraph();
 	
 		//Init websocket
 		connect($scope.cluster.id, function(data, sub) {
@@ -28,45 +28,45 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			$scope.metrics = data.beans;
 			console.log($scope.metrics);
 			
-			var freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
-			var usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
+			//var freeHeap = parseFloat($scope.metrics[0].MemHeapMaxM) - parseFloat($scope.metrics[0].MemHeapUsedM) ;
+			//var usedHeap = parseFloat($scope.metrics[0].MemHeapUsedM);
 
-			var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
-			var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+			//var blocksReplicated = parseFloat($scope.metrics[6].BlocksTotal) - parseFloat($scope.metrics[6].UnderReplicatedBlocks);
+			//var blocksUnderReplicated = parseFloat($scope.metrics[6].UnderReplicatedBlocks);
 			
-			var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
-			var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
+			//var capacityFree = parseFloat($scope.metrics[6].CapacityRemainingGB);
+			//var capacityUsed = parseFloat($scope.metrics[6].CapacityUsedGB);
 			
-			$scope.unReplicated = $scope.metrics[30].UnderReplicatedBlocks;
-			$scope.replicatedBlocks = $scope.metrics[30].BlocksTotal - $scope.unReplicated;
+			//$scope.unReplicated = $scope.metrics[30].UnderReplicatedBlocks;
+			//$scope.replicatedBlocks = $scope.metrics[30].BlocksTotal - $scope.unReplicated;
 
 			
 			
 			
-			$('.heapBreakdown').highcharts({
-				chart: {
-        			type: 'pie'
-        		},
-        		title: {
-        			text: ''
-        		},
-        		series: [
-        		         {
-        		        	 data: [["Used", usedHeap], ["Unused", freeHeap]],
-        		        	 innerSize: '50%'
-        		         }
-        		],
-        		plotOptions: {
-        			pie: {
-        				animation: false
-        			}
-        			
-        		},
-        		legend: {
-        			align: 'left',
-        			layout: 'vertical'
-        		}
-        	});
+//			$('.heapBreakdown').highcharts({
+//				chart: {
+//        			type: 'pie'
+//        		},
+//        		title: {
+//        			text: ''
+//        		},
+//        		series: [
+//        		         {
+//        		        	 data: [["Used", usedHeap], ["Unused", freeHeap]],
+//        		        	 innerSize: '50%'
+//        		         }
+//        		],
+//        		plotOptions: {
+//        			pie: {
+//        				animation: false
+//        			}
+//        			
+//        		},
+//        		legend: {
+//        			align: 'left',
+//        			layout: 'vertical'
+//        		}
+//        	});
 
 		}, function(data) {
 			var metrics = data;
@@ -303,6 +303,8 @@ angular.module('admin').controller('OverviewCtrl', function (MonitorService, $sc
 			MonitorService.getMetricFromKey($scope.cluster.id, "MemHeapUsedM", function(response) {
 				heapUsed = response.data;
 				var freeHeap = heapTotal - heapUsed;
+				console.log(heapUsed);
+				console.log(freeHeap);
 				
 				$('.heapBreakdown').highcharts({
 					chart: {
